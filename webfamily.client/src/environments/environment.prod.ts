@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
     appUrl: 'api/',
-    userKey: 'identityAppUser',
+    userKey: 'access-token-User',
     Facebook: {
         AppId: "1324213154862809",
         AppSecret: "593ff0ac4cb01fa263ef8e07e7ef9632"

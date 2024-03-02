@@ -93,7 +93,6 @@ builder.Services.AddCors(o =>
            .AllowAnyHeader()
            .AllowAnyMethod()
            );
-
     });
 });
 

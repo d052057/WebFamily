@@ -55,7 +55,7 @@ namespace Api.Controllers
         [HttpPost("refresh-token")]
         public async Task<ActionResult<UserDto>> RefereshToken()
         {
-            var token = Request.Cookies["identityAppRefreshToken"];
+            var token = Request.Cookies["Access-RefreshToken"];
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (IsValidRefreshTokenAsync(userId, token).GetAwaiter().GetResult())
@@ -481,7 +481,7 @@ namespace Api.Controllers
                 HttpOnly = true,
             };
 
-            Response.Cookies.Append("identityAppRefreshToken", refreshToken.Token, cookieOptions);
+            Response.Cookies.Append("Access-RefreshToken", refreshToken.Token, cookieOptions);
         }
 
         private async Task<bool> IsValidRefreshTokenAsync(string userId, string token)
