@@ -1,0 +1,27 @@
+
+.form-floating :is(label, i) {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all 0.2s linear;
+}
+
+.label {
+  left: 18px;
+  pointer-events: none;
+  font-size: 22px;
+  font-weight: 100;
+}
+
+input:is(:focus, :valid) ~ label {
+  color: var(--bs-primary);
+  top: 1rem;
+  font-size: 12px;
+  font-weight: 500;
+}
+/* put icon eye to the right side */
+.form-floating i {
+  right: 15px;
+  cursor: pointer;
+}
+
