@@ -15,7 +15,7 @@ namespace Api.Controllers
 {
     
     [EnableCors("CorsPolicy")]
-    //[Authorize()]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController(UserManager<User> userManager,
@@ -24,6 +24,7 @@ namespace Api.Controllers
         private readonly UserManager<User> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
+        //[Authorize(Roles = "Admin")]
         [HttpGet("get-members")]
         public async Task<ActionResult<IEnumerable<MemberViewDto>>> GetMembers()
         {
