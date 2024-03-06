@@ -81,11 +81,11 @@ export class LoginComponent implements OnInit {
             this.router.navigateByUrl('/');
           }
         },
-        error: error => {
-          if (error.error.errors) {
-            this.errorMessages = error.error.errors;
+        error: err => {
+          if (err.error.error) {
+            this.errorMessages = err.error.errors;
           } else {
-            this.errorMessages.push(error.error);
+            this.errorMessages.push(err.error);
           }
         }
       })

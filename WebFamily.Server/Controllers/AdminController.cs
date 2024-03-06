@@ -24,7 +24,6 @@ namespace Api.Controllers
         private readonly UserManager<User> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-        //[Authorize(Roles = "Admin")]
         [HttpGet("get-members")]
         public async Task<ActionResult<IEnumerable<MemberViewDto>>> GetMembers()
         {

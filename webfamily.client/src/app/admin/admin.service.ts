@@ -15,7 +15,7 @@ export class AdminService {
   }
 
   getMembers() {
-    return this.http.get<MemberView[]>(this.adminUrl + 'get-members', { withCredentials: true });
+    return this.http.get<MemberView[]>(this.adminUrl + 'get-members');
   }
 
   getMember(id: string) {

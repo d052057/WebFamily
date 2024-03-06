@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -30,7 +31,16 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Name = "Authorization",
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+        });
+        options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 
 builder.Services.AddDbContext<Context>(options =>
 {
@@ -74,6 +84,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
             // the issuer which in here is the api project url we are using
             ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:ClientUrl"],
             // validate the issuer (who ever is issuing the JWT)
             ValidateIssuer = true,
             // don't validate audience (angular side)
@@ -82,11 +93,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ClockSkew = TimeSpan.Zero
         };
     });
-builder.Services.AddCors(o =>
+
+builder.Services.AddCors(opt =>
 {
-    o.AddPolicy("WebFamilyCors", policy =>
+    opt.AddPolicy("WebFamilyCors", policy =>
     {
-        o.AddPolicy("CorsPolicy", builder => builder
+        opt.AddPolicy("CorsPolicy", corsbuilder => corsbuilder
            .WithOrigins("*")
            .AllowAnyOrigin()
            .SetIsOriginAllowed(origin => true)
@@ -142,16 +154,16 @@ builder.Services.AddAuthorization(opt =>
     opt.AddPolicy("AdminAndManagerPolicy", policy => policy.RequireRole("Admin").RequireRole("Manager"));
     opt.AddPolicy("AllRolePolicy", policy => policy.RequireRole("Admin", "Manager", "Player"));
 
-    opt.AddPolicy("AdminEmailPolicy", policy => policy.RequireClaim(ClaimTypes.Email, "admin@example.com"));
-    opt.AddPolicy("MillerSurnamePolicy", policy => policy.RequireClaim(ClaimTypes.Surname, "miller"));
-    opt.AddPolicy("ManagerEmailAndWilsonSurnamePolicy", policy => policy.RequireClaim(ClaimTypes.Surname, "wilson")
-        .RequireClaim(ClaimTypes.Email, "manager@example.com"));
+    opt.AddPolicy("AdminEmailPolicy", policy => policy.RequireClaim(ClaimTypes.Email, "d052057@yahoo.com"));
+    opt.AddPolicy("MillerSurnamePolicy", policy => policy.RequireClaim(ClaimTypes.Surname, "sotheary"));
+    opt.AddPolicy("ManagerEmailAndWilsonSurnamePolicy", policy => policy.RequireClaim(ClaimTypes.Surname, "phou")
+        .RequireClaim(ClaimTypes.Email, "sotheary.phou@gmail.com"));
     opt.AddPolicy("VIPPolicy", policy => policy.RequireAssertion(context => SD.VIPPolicy(context)));
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//Configure the HTTP request pipeline.
 //app.UseCors(opt =>
 //{
 //    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:4200");
@@ -164,7 +176,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("WebFamilyCors");
 // adding UseAuthentication into our pipeline and this should come before UseAuthorization
 // Authentication verifies the identity of a user or service, and authorization determines their access rights.
 app.UseAuthentication();
@@ -190,5 +202,5 @@ catch (Exception ex)
     logger.LogError(ex.Message, "Failed to initialize and seed the database");
 }
 #endregion
-app.UseCors("WebFamilyCors");
+
 app.Run();

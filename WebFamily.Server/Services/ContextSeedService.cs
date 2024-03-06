@@ -59,7 +59,7 @@ namespace Api.Services
 
                 var manager = new User
                 {
-                    FirstName = "Sothary",
+                    FirstName = "Sotheary",
                     LastName = "Phou",
                     UserName = "sotheary.phou@gmail.com",
                     Email = "sotheary.phou@gmail.com",
