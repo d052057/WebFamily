@@ -1,0 +1,48 @@
+<div class="container-fluid mt-1">
+  <h3 class="text-start text-primary"><i class="bi bi-folder2-open"></i> {{ val.photoFolder }}</h3>
+  <div class="row g-4" id="gallery-container">
+    <div *ngFor="let image of dataResource.value(); let i = index"
+         class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+      <div class="gallery-item"
+           [class.visible]="visibleImages[i]"
+           (click)="openModal(i)">
+        <img [src]="fileFolder + image.title | safe: 'resourceUrl'"
+             [alt]="image.title"
+             class="img-fluid gallery-image"
+             loading="lazy">
+        <div class="overlay">
+          <i class="bi bi-arrows-fullscreen"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal-backdrop"
+     [class.show]="showModal"
+     (click)="closeModal()"
+     *ngIf="showModal">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <button class="modal-nav modal-prev" (click)="previousImage()">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <div class="modal-image-container">
+      <img [src]="fileFolder + dataResource.value()[currentImageIndex].title | safe: 'resourceUrl'"
+           [alt]=""
+           class="modal-image img-fluid">
+    </div>
+
+    <button class="modal-nav modal-next" (click)="nextImage()">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+
+    <div class="modal-counter">
+      {{ currentImageIndex + 1 }} / {{ dataResource.value().length }}
+    </div>
+  </div>
+</div>

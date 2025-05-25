@@ -1,0 +1,42 @@
+<div class="container mt-1">
+  <h3>Remove Menu Item (Folder)</h3>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    <!-- {{ entryForm.value | json }}<br>-->
+    <!-- {{ dirForm | json }}<br> -->
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Choose Menu</mat-label>
+        <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
+          menu
+        </span>
+        <mat-select (selectionChange)="onMenuSelected($event)" [(value)]="menuSelectedIndex" formControlName="menuId">
+          <mat-option *ngFor='let s of menuDataSource(); let i = index' [value]="i">
+            {{ s.menu }}
+          </mat-option>
+          <mat-option value='{{ menuDataSource().length }}'>links</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline" *ngIf="menuSelectedIndex >= 0">
+        <mat-label>Choose Menu Title</mat-label>
+        <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
+          title
+        </span>
+        <mat-select (selectionChange)="onTitleSelected($event)" [(value)]="menuTitleSelectedIndex" formControlName="titleId">
+          <mat-option *ngFor='let s of titleDataSource(); let i = index' [value]="i">
+            {{ s.directory || s.param }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div *ngIf="submitted && form.get('titleId')?.getError('required') && f.titleId.touched" class="text-danger">Required</div>
+    </div>
+    <div class="btn-group">
+      <button type="submit" class="btn btn-primary mr-1 active" [disabled] ="form.invalid">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+

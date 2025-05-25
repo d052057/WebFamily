@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--Author: Yitong Phou-->
+<html>
+<head>
+    <title>Yitong Phou - Javascript Class</title>
+    <meta charset="UTF-8">
+    <meta description="School Project" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <script src="assets/js/jquery.min.js"></script>
+
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="assets/css/brandColor.css" />
+    <link rel="stylesheet" href="assets/css/customColors.css" />
+    <link rel="stylesheet" href="assets/css/site.css" />
+    <script src="assets/js/brandColor.js"></script>
+    <script src="assets/js/initBrandColor.js"></script> 
+    <script src="assets/js/site.js"></script>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+</head>
+<body>
+     <nav class="navbar navbar-expand-sm" id='menu'>
+          <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
+                  aria-expanded="false" aria-label="Toggle navigation">
+               <span class="p-circle">YP</span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapsibleNavId">
+               <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                         <a class="nav-link" href="../index.html" id="home">
+                              <!-- bootstrap icon svg-->
+                              <svg class="bi bi-house-fill" style="margin-top:-5px;" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+                                   <path d="M8.5 12.995V16.5a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5v-7a.5.5 0 01.146-.354l6-6a.5.5 0 01.708 0l6 6a.5.5 0 01.146.354v7a.5.5 0 01-.5.5h-4a.5.5 0 01-.5-.5V13c0-.25-.25-.5-.5-.5H9c-.25 0-.5.25-.5.495z"></path>
+                                   <path fill-rule="evenodd" d="M15 4.5V8l-2-2V4.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5z" clip-rule="evenodd"></path>
+                              </svg>Home<span class="visually-hidden">(current)</span>
+                         </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                         <a class="nav-link dropdown-toggle" href="#" id="dropdownId" role="button"  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Projects</a>
+                         <ul class="dropdown-menu" aria-labelledby="dropdownId">
+                              <a class="dropdown-item" id="setup">Brand Color Setup</a>
+                              <a class="dropdown-item" id="form">BootStrap Form with Shading Colors</a>
+                              <a class="dropdown-item" id="shade">Shading Colors by Day</a>
+                              <a class="dropdown-item" id="viewForm">View-Only Form</a>
+                         </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="other">Other Projects</a>
+                    </li>
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="about">About Me</a>
+                    </li>
+
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="lessonLearn">Lesson Learn</a>
+                    </li>
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="cooking">Cooking</a>
+                    </li>
+                    <li class="nav-item">
+                         <a class="nav-link" href="#" id="carouselVideo">Carousel Video</a>
+                    </li>
+               </ul>
+          </div>
+     </nav>
+     <div class="container-fluid body-content">
+          <h1>Daily Theme Project</h1>
+          <div class="form">
+               <button type="button" class="btn btn-sun">Sunday</button>
+               <button type="button" class="btn btn-mon">Monday</button>
+               <button type="button" class="btn btn-tue">Tuesday</button>
+               <button type="button" class="btn btn-wed">Wednesday</button>
+               <button type="button" class="btn btn-thu">Thursday</button>
+               <button type="button" class="btn btn-fri">Friday</button>
+               <button type="button" class="btn btn-sat">Saturday</button>
+          </div>
+          <div class="row jumbotron">
+
+               <div class="col-md-10">
+                    <section id="statement" style="display:block;" class="statement">
+                    </section>
+               </div>
+               <div class="col-md-2">
+                    <div class="card bg-light">
+                         <div class="card-header" id="dayName" style="text-align:center;"></div>
+                         <div class="card-body">
+                              <div id="dayNumber" style="text-align:center; font-size:30px">
+
+                              </div>
+                         </div>
+                         <div class="card-footer" id="monthName" style="text-align:center;"></div>
+                    </div>
+               </div>
+          </div>
+          <hr />
+          <div>
+               <section id="content" style="display:none;" class="section">
+               </section>
+
+          </div>
+     </div>
+
+</body>
+</html>

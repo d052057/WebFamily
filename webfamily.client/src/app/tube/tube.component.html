@@ -1,0 +1,62 @@
+<div class="container p-3">
+  <mat-form-field appearance="outline">
+    <mat-label>Search for</mat-label>
+    <input type="search" appVoice
+           matInput
+           placeholder="{{ langSearch }}"
+           [ngModel]="searchVal()"
+           (ngModelChange)="onSearch($event)"
+           (voiceInput)="onVoiceInput($event)"
+           [microphone]="isUserSpeaking"
+           [language]="langData[langSelected].code"
+           style="width:100% !important">
+    <span matSuffix style="display: flex; padding-right:1rem;">
+      <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+        <mat-select-trigger>
+          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+        </mat-option>
+      </mat-select>
+      <span style="display: flex; padding-left:1rem; ">
+        <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+        <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+      </span>
+    </span>
+  </mat-form-field>
+  <mat-table #table [dataSource]="tubeRecords()" matSort class="mat-elevation-z8" multiTemplateDataRows>
+
+    <ng-container matColumnDef="webTubeLink">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Tube Link</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.webTubeLink}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="videoId">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Video Id</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.videoId}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+      <mat-cell *matCellDef="let row">{{row.webTubeTitle}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef>
+        <span><i class='bi bi-plus-circle' (click)="addNew()"></i> Add</span>
+      </mat-header-cell>
+
+      <mat-cell *matCellDef="let row; let i=index;">
+
+        <span class='bi bi-pencil-fill' (click)="startEdit(row)" style="margin-right: 1rem"> Edit</span>
+        <span class='bi bi-trash-fill' (click)="deleteItem(row)"> Delete</span>
+      </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

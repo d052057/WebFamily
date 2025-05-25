@@ -1,0 +1,52 @@
+<div class="container mt-1">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <div class="form-row" style="margin-bottom:1rem;">
+      <div class="form-group">
+        <label class="form-label" for="title">From File name</label>
+        <span class="form-control" formControlName="title" id="title">{{ data.title }}</span>
+      </div>
+    </div>
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Rename To</mat-label>
+        <input type="text" appVoice
+               formControlName="toFile"
+               matInput
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isUserSpeaking"
+               [language]="langData[langSelected].code"
+               [ngClass]="{ 'is-invalid': submitted && f.assigned.errors }" />
+        <span matSuffix style="display: flex; padding-right:1rem;">
+          <mat-select [(value)]="langSelected">
+            <mat-select-trigger>
+              <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+            </mat-select-trigger>
+            <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+              <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+            </mat-option>
+          </mat-select>
+          <span style="display: flex; padding-left:1rem; ">
+            <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+            <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+          </span>
+        </span>
+        <mat-hint>Do not enter file extension...</mat-hint>
+        <div *ngIf="submitted && f.assigned.errors" class="invalid-feedback">
+          <div *ngIf="f.assigned.errors.required">Assigned is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <div class="btn-group mt-2">
+        <button type="submit" class="btn btn-primary mr-1">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm mr-1"></span>
+          Submit
+        </button>
+        <button class="btn btn-outline-info" [mat-dialog-close]="false">
+          Close
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

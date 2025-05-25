@@ -1,0 +1,186 @@
+<div class="container mt-2">
+  <h3>{{ isReadOnly? 'Edit Webtube':'Create Webtube' }}</h3>
+  <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Current Speaking Language</mat-label>
+      <mat-select [(value)]="langSelected">
+        <mat-select-trigger>
+          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+        </mat-option>
+      </mat-select>
+
+    </mat-form-field>
+  </div>
+  <form [formGroup]="fldform" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
+        <mat-label>Youtube link</mat-label>
+        <input type="text" formControlName="webTubeLink" matInput
+               [ngClass]="{ 'is-invalid': submitted && f.webTubeLink.errors }"
+               (change)="parseVideoLink()" [readonly]="isReadOnly">
+        <div *ngIf="submitted && f.webTubeLink.errors" class="invalid-feedback">
+          <div *ngIf="f.webTubeLink.errors.required">Youtube link is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
+        <mat-label>Video Id</mat-label>
+        <input formControlName="videoId" matInput
+               [ngClass]="{ 'is-invalid': submitted && f.videoId.errors }" [readonly]="isReadOnly" />
+        <div *ngIf="submitted && f.videoId.errors" class="invalid-feedback">
+          <div *ngIf="f.note.errors.required">Video ID is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline" [appearance]="isReadOnly? 'fill':'outline'">
+        <mat-label>Video ID List</mat-label>
+        <input type="text" formControlName="videoListId" matInput />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Note
+        </mat-label>
+        <div class="textarea-container">
+          <textarea formControlName="note" appVoice
+                    matInput
+                    (voiceInput)="onVoiceInput($event)"
+                    [microphone]="isNoteUserSpeaking"
+                    [language]="langData[langSelected].code"
+                    [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+                    rows="5"></textarea>
+          <mat-icon (click)="checkMic('note')" *ngIf="!isNoteUserSpeaking" class="top-corner-icon circle">mic_off</mat-icon>
+          <mat-icon (click)="checkMic('note')" *ngIf="isNoteUserSpeaking" class="top-corner-icon circle">mic</mat-icon>
+
+          <div *ngIf="submitted && f.note.errors" class="invalid-feedback">
+            <div *ngIf="f.note.errors.required">Note is required</div>
+          </div>
+        </div>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input type="text" appVoice
+               formControlName="webTubeTitle"
+               matInput
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isTitleUserSpeaking"
+               [language]="langData[langSelected].code"
+               [ngClass]="{ 'is-invalid': submitted && f.webTubeTitle.errors }" />
+        <span matSuffix style="padding-right:1rem">
+          <mat-icon (click)="checkMic('webTubeTitle')" *ngIf="!isTitleUserSpeaking" class="circle">mic_off</mat-icon>
+          <mat-icon (click)="checkMic('webTubeTitle')" *ngIf="isTitleUserSpeaking" class="circle">mic</mat-icon>
+        </span>
+        <div *ngIf="submitted && f.webTubeTitle.errors" class="invalid-feedback">
+          <div *ngIf="f.webTubeTitle.errors.required">Title is required</div>
+        </div>
+      </mat-form-field>
+
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Default Url Image</mat-label>
+        <input type="text" formControlName="thumbnailDefaultUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailDefaultUrl.errors }" />
+        <div *ngIf="submitted && f.thumbnailDefaultUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.thumbnailDefaultUrl.errors.required">thumbnailDefaultUrl is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Standard Url Image</mat-label>
+        <input type="text" formControlName="thumbnailStandardUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailStandardUrl.errors }" />
+        <div *ngIf="submitted && f.thumbnailStandardUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.thumbnailStandardUrl.errors.required">thumbnailStandardUrl is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Medium Url Image</mat-label>
+        <input type="text" formControlName="thumbnailMediumUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMediumUrl.errors }" />
+        <div *ngIf="submitted && f.thumbnailMediumUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.thumbnailMediumUrl.errors.required">thumbnailMediumUrl is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>High Url Image</mat-label>
+        <input type="text" formControlName="thumbnailHighUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailHighUrl.errors }" />
+        <div *ngIf="submitted && f.thumbnailHighUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.thumbnailHighUrl.errors.required">thumbnailHighUrl is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Max Resolution Url Image</mat-label>
+        <input type="text" formControlName="thumbnailMaxresUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMaxresUrl.errors }" />
+        <div *ngIf="submitted && f.thumbnailMaxresUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.thumbnailMaxresUrl.errors.required">thumbnailMaxresUrl is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row" style="display:none">
+      <mat-form-field appearance="outline">
+        <mat-label>Webtube Videos Series</mat-label>
+        <input formControlName="webTubeSeries" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailDefaultWidth" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailMediumWidth" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailHighWidth" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailMaxresWidth" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailStandardWidth" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailDefaultHeight" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailMediumHeight" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailHighHeight" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailMaxresHeight" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input formControlName="thumbnailStandardHeight" matInput />
+      </mat-form-field>
+
+    </div>
+    <div class="form-group pt-3">
+      <button class="btn btn-primary me-2">
+        {{ isReadOnly ? 'Update': 'Save'}}
+      </button>
+      <button class="btn btn-outline-info" [mat-dialog-close]="false">
+        Close
+      </button>
+    </div>
+  </form>
+
+  <app-add-series [series]="getSeries()"></app-add-series>
+
+</div>
+<!--<div>
+  {{ webtubesService.youtube.value() | json }}
+</div>-->

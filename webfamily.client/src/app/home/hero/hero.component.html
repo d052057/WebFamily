@@ -1,0 +1,41 @@
+<div id="banner" class="m-0 p-0 text-white angkor" [@fadeInOut]>
+  <div class="top-left" style="font-size:150%">
+    <span style="font-family: Moulpali;">ប្រាសាទបាយ័ន</span><br />
+    Bayon Temple,<br />Siem Reap Province,<br />Cambodia
+  </div>
+  <div class="calendar card bg-light top-right">
+    <div class="card-header" style="padding-right:5rem; padding-left:5rem">{{ dayName }}</div>
+    <div class="card-body text-primary">
+      <div id="dayNumber" style="font-size:30px">
+        {{ dayNumber }}<sup>{{ order }}</sup>
+      </div>
+    </div>
+    <div class="card-footer">{{ monthName }}</div>
+  </div>
+</div>
+<div>
+</div>
+
+<!-- ============================= -->
+<div class="container-fluid mt-1">
+  <h1 class="text-center text-primary">Phou Family Website</h1>
+  <div class="row">
+    <div *ngFor="let record of items" class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 px-2 mb-1">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <img src="{{ record }}" style="cursor: pointer" class="card-img-top img-fluid" alt="recordname">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  @defer (on  viewport) {
+  <app-todo-list></app-todo-list>
+  } @placeholder {
+  <div>loading todo list ...</div>
+  }
+</div>
+

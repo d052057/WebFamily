@@ -1,0 +1,146 @@
+<div class="container mt-1" [@fadeInOut]>
+  <h3 class="text-center">Update Database From File Folders</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Folder</th>
+        <th scope="col">Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('musics')" [disabled]="musicsUpdate">
+              <span *ngIf="musicsUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Refresh Musics Data
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of musicUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate">
+              <span *ngIf="booksUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update Books
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of bookUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('movies')" [disabled]="moviesUpdate">
+              <span *ngIf="moviesUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update Movies
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of movieUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('videos')" [disabled]="videosUpdate">
+              <span *ngIf="videosUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update Videos
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of videoUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('photos')" [disabled]="photosUpdate">
+              <span *ngIf="photosUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update Photos
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of photoUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate">
+              <span *ngIf="textUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update Text Files
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of textUpdateStatus ; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('americansongs')" [disabled]="songsUpdate">
+              <span *ngIf="songsUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update English
+              Songs
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of americanSongUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate">
+              <span *ngIf="rpmsUpdate" class="spinner-border spinner-border-sm mr-1"></span>
+              Update រស្មីពានមាស
+            </button>
+          </div>
+        </td>
+        <td>
+          <ul *ngFor="let stat of rpmUpdateStatus; index as i">
+            <li>{{ stat }}</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

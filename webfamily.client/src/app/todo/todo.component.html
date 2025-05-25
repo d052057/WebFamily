@@ -1,0 +1,78 @@
+<div class="main-body">
+  <h1>Todo List Entry Maintenance</h1>
+  <mat-form-field appearance="outline">
+    <mat-label>Search for</mat-label>
+    <input appVoice type="search" matInput
+           placeholder="{{ langSearch }}"
+           [ngModel]="searchVal()"
+           (ngModelChange)="onSearch($event)"
+            (voiceInput)="onVoiceInput($event)"
+           [microphone]="isUserSpeaking"
+           [language]="langData[langSelected].code"
+           style="width:100% !important">
+    <span matSuffix style="display: flex; padding-right:1rem;">
+      <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+        <mat-select-trigger>
+          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+        </mat-option>
+      </mat-select>
+      <span style="display: flex; padding-left:1rem; ">
+        <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+        <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+      </span>
+    </span>
+  </mat-form-field>
+
+  <div class="table-container">
+    <mat-table #table [dataSource]="filteredData()" matSort class="mat-elevation-z8" multiTemplateDataRows>
+
+      <!-- ID Column -->
+      <ng-container matColumnDef="recordId">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.recordId}} </mat-cell>
+      </ng-container>
+
+      <!-- Progress Column -->
+      <ng-container matColumnDef="displayDueDate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.displayDueDate }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="displayTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Start Time </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.displayTime }}</mat-cell>
+      </ng-container>
+
+
+      <ng-container matColumnDef="note">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Note </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{ row.note }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="assigned">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned To </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.assigned}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef>
+          <span><i class='bi bi-plus-circle' (click)="openAddNew()"></i> Add New</span>
+        </mat-header-cell>
+
+        <mat-cell *matCellDef="let row; let i=index;">
+
+          <span class='bi bi-pencil-fill' (click)="openEdit(row)" style="margin-right: 1rem"> Edit</span>
+          <span class='bi bi-trash-fill' (click)="deleteTodo(row.recordId)"> Delete</span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+      <tr class="mat-row no-data-row" *matNoDataRow>
+        <td class="mat-cell" colspan="5">No data matching the filter "{{ searchVal() }}"</td>
+      </tr>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<h1 class="text-start">bootstrap-icons</h1>
+<ul class="row row-cols-3 row-cols-sm-4 row-cols-lg-6 row-cols-xl-8 list-unstyled list">
+  <li class="col mb-4" data-categories="shapes" *ngFor="let item of icons">
+    <a class="d-block text-body-emphasis text-decoration-none">
+      <div class="px-3 py-4 mb-2 bg-body-secondary text-center rounded">
+        <i class="bi bi-{{item}}"></i>
+      </div>
+      <div class="name text-muted text-decoration-none text-center pt-1">{{item}}</div>
+    </a>
+  </li>
+</ul>

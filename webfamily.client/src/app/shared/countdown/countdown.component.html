@@ -1,0 +1,20 @@
+<div class="container p-3">
+<div class="bg-danger text-center">
+  <h4 class="pull-left">Session Timeout Warning</h4>
+</div>
+<div class="modal-body">
+  <p style="font-size: 1.5rem;">
+      Your session is about to time out, do you want to continue your session?
+      {{displayTime}} time left
+  </p>
+</div>
+
+<div class="form-group pt-3 text-center">
+    <button  class="btn btn-primary me-2" [mat-dialog-close]="true">
+      Stay Logged In
+    </button>
+    <button class="btn btn-outline-info" [mat-dialog-close]="false">
+      Logout
+    </button>
+  </div>
+</div>

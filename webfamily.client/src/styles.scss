@@ -1,0 +1,309 @@
+/* You can add global styles to this file, and also import other style files */
+@use "public/assets/styles/bootstrap.css";
+@use "@angular/material/prebuilt-themes/indigo-pink.css";
+/*colors =['#221924', '#004422', '#062751', '#F78914','#990000', '#708238', '#6a0dad'];
+*/
+.form-control {
+  border-color: rgba(var(--bs-primary-rgb), .3 );
+}
+
+.input-group-text {
+  background-color: rgba(var(--bs-primary-rgb),.3 );
+}
+
+.form-control:focus {
+  border-color: rgba(var(--bs-primary),.8 );
+  box-shadow: 0 0 0 0.1rem rgba(var(--bs-primary-rgb),.8 );
+}
+
+select[multiple]:focus option:checked {
+  background: var(--bs-primary) linear-gradient(0deg, var(--bs-primary-rgb) 0%, var(--bs-primary-rgb) 100%) !important;
+}
+
+.dropdown-item {
+  color: var(--bs-primary);
+}
+
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: white !important;
+  background-color: rgba(var(--bs-primary-rgb), .8);
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: var(--bs-primary);
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: Moulpali;
+  src: url('/khmerfont/Moulpali.ttf') format("truetype");
+}
+
+mat-icon {
+  font-family: 'Material Icons' !important;
+}
+
+
+h1, h2, h3 {
+  font-family: 'Arial', sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%);
+}
+
+.spinner-border {
+  color: var(--bs-primary);
+}
+
+ul > li > a:hover,
+ul > li > a:focus {
+  background-color: #eee;
+}
+
+ul > li:hover,
+ul > li:focus {
+  background-color: #eee;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: #eee;
+}
+
+.nav > .nav-item.active > a,
+.nav > .nav-item.active > a:hover,
+.nav > .nav-item.active > a:focus {
+  background-color: #efefef;
+}
+
+.navbar .nav-item > a:hover,
+.nav li.toolbaritem a:hover {
+  color: #E03930;
+}
+
+mat-row {
+  &:hover {
+    background-color: var(--bs-blue-700);
+    color: black;
+  }
+
+  &:focus {
+    background-color: var(--bs-blue-600);
+  }
+
+  &:active {
+    background-color: var(--bs-blue-400);
+  }
+
+  &.highlight {
+    background-color: var(--bs-blue-400)
+  }
+}
+
+.mat-mdc-header-row {
+  background-color: var(--bs-primary);
+  color: white;
+}
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+  font-size: 1.2rem;
+}
+
+.mat-mdc-header-cell {
+  font-style: italic;
+  background-color: inherit;
+  color: inherit;
+}
+
+/*pagination*/
+.ngx-pagination .current {
+  background: var(--bs-primary) !important;
+}
+
+/*audio mic*/
+.circle {
+  background-color: #fff;
+  border: 1px solid var(--bs-primary);
+  border-radius: 50% !important;
+  color: var(--bs-primary);
+}
+/*mat-form-field--filled:has(input[readonly]) {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: rgba(var(--bs-primary-rgb),.1 );
+}*/
+.mdc-text-field--filled:has(input[readonly]) {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: rgba(var(--bs-primary-rgb),.1 );
+}
+
+.top-corner-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.textarea-container {
+  position: relative;
+}
+
+.mdc-notched-outline > * {
+  border-color: var(--bs-green) !important;
+}
+
+.mdc-text-field--focused .mdc-notched-outline > * {
+  border-color: var(--bs-primary) !important;
+}
+
+.mdc-text-field--invalid .mdc-notched-outline > * {
+  border-color: var(--bs-green) !important;
+}
+/*ngx-pagination*/
+.ngx-pagination {
+  margin-left: 0;
+  margin-bottom: 1rem;
+}
+
+.ngx-pagination::before, .ngx-pagination::after {
+  content: ' ';
+  display: table;
+}
+
+.ngx-pagination::after {
+  clear: both;
+}
+
+.ngx-pagination li {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  margin-right: 0.0625rem;
+  border-radius: 0;
+}
+
+.ngx-pagination li {
+  display: inline-block;
+}
+
+.ngx-pagination a,
+.ngx-pagination button {
+  color: #0a0a0a;
+  display: block;
+  padding: 0.1875rem 0.625rem;
+  border-radius: 0;
+}
+
+.ngx-pagination a:hover,
+.ngx-pagination button:hover {
+  background: #e6e6e6;
+}
+
+.ngx-pagination .current {
+  padding: 0.1875rem 0.625rem;
+  background: #2199e8;
+  color: #fefefe;
+  cursor: default;
+}
+
+.ngx-pagination .disabled {
+  padding: 0.1875rem 0.625rem;
+  color: #cacaca;
+  cursor: default;
+}
+
+.ngx-pagination .disabled:hover {
+  background: transparent;
+}
+
+.ngx-pagination a, .ngx-pagination button {
+  cursor: pointer;
+}
+
+.ngx-pagination .pagination-previous a::before,
+.ngx-pagination .pagination-previous.disabled::before {
+  content: '«';
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.ngx-pagination .pagination-next a::after,
+.ngx-pagination .pagination-next.disabled::after {
+  content: '»';
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+
+.ngx-pagination .show-for-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.ngx-pagination .small-screen {
+  display: none;
+}
+
+@media screen and (max-width: 601px) {
+  .ngx-pagination.responsive .small-screen {
+    display: inline-block;
+  }
+
+  .ngx-pagination.responsive li:not(.small-screen):not(.pagination-previous):not(.pagination-next) {
+    display: none;
+  }
+}
+
+.navbar-brand {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+/* Container Settings */
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+
+/* Logo Base Styles */
+.logo-perfect {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+  line-height: 0;
+  /* Default size (adjust as needed) */
+  width: 60px;
+  height: 60px;
+  font-size: 60px;
+  /* Force SVG rendering */
+  ::ng-deep svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    overflow: visible !important;
+  }
+}

@@ -1,0 +1,20 @@
+<div class="container my-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-6 mb-4">
+            <div class="card text-center shadow-lg border-light">
+              <div class="card-body">
+                <p class="card-text lead" *ngIf="message">
+                  {{ message }}
+                </p>
+                <p class="card-text text-muted mt-3">
+                  Note: This message is visible only to logged-in users.
+                </p>
+                <p>1. add import from '../app/shared/svg/svgComponent' in app.module.ts</p>
+                <p>2. add imports SvgComponent in app.module.ts</p>
+                <p>3. add import in a non-standalone application</p>
+                <mat-icon svgIcon="logo" style="background-color: orange"></mat-icon>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>

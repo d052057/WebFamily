@@ -1,0 +1,20 @@
+<div class="container mt-2" *ngIf="series().length > 0">
+    <h1>Webtube Series</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width:20%">Seq</th>
+          <th style="width:60%">Title</th>
+          <th style="width:20%">Video Id</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of series()">
+          <td>{{s.seqNumber}}</td>
+          <td>{{s.videoTitle}}</td>
+          <td>{{s.videoId}}</td>
+        </tr>
+  
+      </tbody>
+    </table>
+  </div>

@@ -1,0 +1,46 @@
+<div class="container mt-1">
+  <h1><i class="bi bi-download"></i> Youtube Download</h1>
+  <form [formGroup]="downloadform" (ngSubmit)="onSubmit()">
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Download Youtube Videos</mat-label>
+        <input type="url" formControlName="tubeUrl"
+                (change)="parseVideoLink()"
+               matInput
+               [ngClass]="{ 'is-invalid': submitted && f.tubeUrl.errors }"
+               required />
+        <mat-hint>copy Youtube Url and paste it here...</mat-hint>
+        <div *ngIf="submitted && f.tubeUrl.errors" class="invalid-feedback">
+          <div *ngIf="f.tubeUrl.errors.required">Youtube Url is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Designated Path</mat-label>
+        <input type="text" formControlName="updatePath" matInput [ngClass]="{ 'is-invalid': submitted && f.updatePath.errors }" required />
+        <mat-hint>Directory in Medias such as videos\test..., movies\test..., musics\test...</mat-hint>
+        <div *ngIf="submitted && f.updatePath.errors" class="invalid-feedback">
+          <div *ngIf="f.updatePath.errors.required">Designated path is required</div>
+        </div>
+      </mat-form-field>
+    </div>
+
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <!--<mat-label>Youtube Videos List</mat-label>-->
+        <input  type="text" formControlName="videoList"  matInput readonly tabindex="-1"/>
+        <mat-hint>Youtube videos list ...</mat-hint>        
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <div class="btn-group mt-2">
+        <button type="submit" class="btn btn-primary mr-1" [disabled]="downloadform.invalid">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm mr-1"></span>
+          Submit
+        </button>
+
+      </div>
+    </div>
+  </form>
+</div>

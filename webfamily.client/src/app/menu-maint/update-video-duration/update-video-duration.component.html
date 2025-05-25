@@ -1,0 +1,25 @@
+<div class="container">
+  <h1 style="text-transform: capitalize">{{ menuFolder }} - Duration Update </h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Record Id</th>
+        <th>Title</th>
+        <th>Duration</th>
+        <th>Type</th>
+        <th>Assets</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let record of dataSource">
+      <tr>
+        <td>{{ record.recordId }}</td>
+        <td>{{ record.title }}</td>
+        <td>{{ record.duration | timeConversion }}</td>
+        <td>{{ record.type }}</td>
+        <td>{{ record.assets }}</td>
+      </tr>
+    </tbody>
+
+  </table>
+  <div><button class="btn btn-primary" (click)="updateDuration()" *ngIf="dataSource.length">Update Duration</button></div>
+</div>

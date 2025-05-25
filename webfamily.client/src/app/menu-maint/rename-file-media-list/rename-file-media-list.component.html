@@ -1,0 +1,79 @@
+<div class="container mt-1">
+  <div class="form-group mb-2">
+    <div class="row">
+      <mat-form-field appearance="outline" class="col-2">
+        <mat-label>Choose Menu</mat-label>
+        <mat-select (selectionChange)="onMenuSelected()" [(value)]="menuSelectedIndex">
+          <mat-option *ngFor='let s of menuData(); let i = index' [value]="i">
+            {{ s.menu }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="margin-left:1rem" class="col-3" *ngIf="menuSelectedIndex >= 0">
+        <mat-label>Choose Menu Item/ Folder</mat-label>
+        <mat-select (selectionChange)="onSelectedTitle()" [(value)]="menuItemSelectedIndex">
+          <mat-option *ngFor='let s of titleData(); let i = index' [value]="i">
+            {{ s.directory || s.param }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="margin-left: 1rem " class="col" *ngIf="menuItemSelectedIndex >= 0">
+        <mat-label>Search for</mat-label>
+        <input type="search" matInput appVoice
+               placeholder="{{ langSearch }}"
+               [ngModel]="searchVal()"
+               (ngModelChange)="onSearch($event)"
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isUserSpeaking"
+               [language]="langData[langSelected].code"
+               style="width:100% !important">
+        <span matSuffix style="display: flex; padding-right:1rem;">
+          <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+            <mat-select-trigger>
+              <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+            </mat-select-trigger>
+            <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+              <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+            </mat-option>
+          </mat-select>
+          <span style="display: flex; padding-left:1rem; ">
+            <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+            <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+          </span>
+        </span>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="table-container" *ngIf="menuItemSelectedIndex >= 0">
+    <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+      <ng-container matColumnDef="title">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> File Name </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.title}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> MimeType </mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.type}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let row; let i=index;">
+
+          <span class='bi bi-pencil-fill' (click)="openRename(row)" style="margin-right: 1rem"> Edit</span>
+          <span class='bi bi-trash-fill' (click)="deleteMediaFile(row)"> Delete</span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+      <!-- Row shown when there is no matching data. -->
+      <mat-row *matNoDataRow>
+        <mat-cell colspan="3">No data matching the filter "{{ searchVal() }}"</mat-cell>
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>

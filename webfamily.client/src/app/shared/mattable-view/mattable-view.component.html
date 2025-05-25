@@ -1,0 +1,11 @@
+<div>
+    <mat-table mat-table [dataSource]="data()" matSort matSortDisableClear matSortActive="column.name"
+        matSortDirection="asc" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container [matColumnDef]="column.name" *ngFor="let column of columns();">
+            <mat-header-cell *matHeaderCellDef> {{column.display}}</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element[column.name]}}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns()"></mat-header-row>
+        <mat-row *matRowDef="let row; let rowIndex = index; columns: displayedColumns()"></mat-row>
+    </mat-table>
+</div>

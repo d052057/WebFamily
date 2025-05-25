@@ -1,0 +1,74 @@
+
+<div class="container-fluid pt-5">
+  <div class="row  justify-content-center">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      <ngx-video-player controls
+                        [autoplay]="autoplay"
+                        [src]="currentVideo"
+                        (stateEvent)="videoStateEvent($event)">
+      </ngx-video-player>
+    </div>
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      <div class="card" style="max-width: 100%;">
+        <div class="card-header">
+          <div>
+            <marquee *ngIf="isPlaying" behavior="scroll" direction="left" [ngClass]="'text-primary'">
+              {{ currentVideo$.getValue() }}
+            </marquee>
+          </div>
+          <div class="row">
+            <mat-form-field appearance="outline">
+              <input  appVoice type="search" matInput placeholder="{{ langSearch }}"
+                      
+                      [ngModel]="searchVal()"
+                      (ngModelChange)="onSearch($event)"
+                     
+                      (voiceInput)="onVoiceInput($event)"
+                      [microphone]="isUserSpeaking"
+                      [language]="langData[langSelected].code" />
+                     
+              <span matSuffix style="display: flex; padding-right:1rem;">
+                <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+                  <mat-select-trigger>
+                    <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+
+                  </mat-select-trigger>
+                  <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+                    <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+                  </mat-option>
+                </mat-select>
+                <span style="display: flex; padding-left:1rem; ">
+                  <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+                  <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+
+                </span>
+              </span>
+            </mat-form-field>
+          </div>
+          <!--====-->
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-start"
+                *ngFor="let t of  filteredData() | paginate:
+                {
+                  itemsPerPage: itemsPerPage(),
+                  currentPage: currentPage(),
+                  totalItems: filteredData().length
+                }
+                ; index as i"
+                (click)="selectedRow(t)" [ngClass]="{ 'text-bg-primary': t === rowSelect }">{{ t.id }} {{ t.title }}<span>{{ t.duration }}</span></li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <pagination-controls previousLabel="Prev"
+                               nextLabel="Next"
+                               [maxSize]="5"
+                               [directionLinks]="true"
+                               (pageChange)="currentPage.set($event)">
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

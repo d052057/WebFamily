@@ -1,0 +1,407 @@
+/* Author: Yitong Phou */
+.designShackLogo {
+     background-image: url(/assets/logo/2x.png);
+     background-size: 158px 25px;
+     background-repeat: no-repeat;
+     display: block !important;
+}
+
+/*css for weekly shade*/
+.shadetextColor {
+     color: var(--txtColor);
+}
+
+.statement {
+     font-size: larger;
+}
+
+#content fieldset {
+     background-color: transparent;
+     border-color: transparent;
+}
+
+.sunShade100 {
+     background-color: rgba(var(--sunColor), var(--alpha100));
+}
+
+.sunShade200 {
+     background-color: rgba(var(--sunColor), var(--alpha200));
+}
+
+.sunShade300 {
+     background-color: rgba(var(--sunColor), var(--alpha300));
+}
+
+.sunShade400 {
+     background-color: rgba(var(--sunColor), var(--alpha400));
+}
+
+.sunShade500 {
+     background-color: rgba(var(--sunColor), var(--alpha500));
+}
+
+.sunShade600 {
+     background-color: rgba(var(--sunColor), var(--alpha600));
+}
+
+.sunShade700 {
+     background-color: rgba(var(--sunColor), var(--alpha700));
+}
+
+.sunShade800 {
+     background-color: rgba(var(--sunColor), var(--alpha800));
+}
+
+.sunShade900 {
+     background-color: rgba(var(--sunColor), var(--alpha900));
+}
+/*monday*/
+.monShade100 {
+     background-color: rgba(var(--monColor), var(--alpha100));
+}
+
+.monShade200 {
+     background-color: rgba(var(--monColor), var(--alpha200));
+}
+
+.monShade300 {
+     background-color: rgba(var(--monColor), var(--alpha300));
+}
+
+.monShade400 {
+     background-color: rgba(var(--monColor), var(--alpha400));
+}
+
+.monShade500 {
+     background-color: rgba(var(--monColor), var(--alpha500));
+}
+
+.monShade600 {
+     background-color: rgba(var(--monColor), var(--alpha600));
+}
+
+.monShade700 {
+     background-color: rgba(var(--monColor), var(--alpha700));
+}
+
+.monShade800 {
+     background-color: rgba(var(--monColor), var(--alpha800));
+}
+
+.monShade900 {
+     background-color: rgba(var(--monColor), var(--alpha900));
+}
+/*tuesday*/
+.tueShade100 {
+     background-color: rgba(var(--tueColor), var(--alpha100));
+}
+
+.tueShade200 {
+     background-color: rgba(var(--tueColor), var(--alpha200));
+}
+
+.tueShade300 {
+     background-color: rgba(var(--tueColor), var(--alpha300));
+}
+
+.tueShade400 {
+     background-color: rgba(var(--tueColor), var(--alpha400));
+}
+
+.tueShade500 {
+     background-color: rgba(var(--tueColor), var(--alpha500));
+}
+
+.tueShade600 {
+     background-color: rgba(var(--tueColor), var(--alpha600));
+}
+
+.tueShade700 {
+     background-color: rgba(var(--tueColor), var(--alpha700));
+}
+
+.tueShade800 {
+     background-color: rgba(var(--tueColor), var(--alpha800));
+}
+
+.tueShade900 {
+     background-color: rgba(var(--tueColor), var(--alpha900));
+}
+/*wednesday*/
+.wedShade100 {
+     background-color: rgba(var(--wedColor), var(--alpha100));
+}
+
+.wedShade200 {
+     background-color: rgba(var(--wedColor), var(--alpha200));
+}
+
+.wedShade300 {
+     background-color: rgba(var(--wedColor), var(--alpha300));
+}
+
+.wedShade400 {
+     background-color: rgba(var(--wedColor), var(--alpha400));
+}
+
+.wedShade500 {
+     background-color: rgba(var(--wedColor), var(--alpha500));
+}
+
+.wedShade600 {
+     background-color: rgba(var(--wedColor), var(--alpha600));
+}
+
+.wedShade700 {
+     background-color: rgba(var(--wedColor), var(--alpha700));
+}
+
+.wedShade800 {
+     background-color: rgba(var(--wedColor), var(--alpha800));
+}
+
+.wedShade900 {
+     background-color: rgba(var(--wedColor), var(--alpha900));
+}
+/*Thursday*/
+.thuShade100 {
+     background-color: rgba(var(--thuColor), var(--alpha100));
+}
+
+.thuShade200 {
+     background-color: rgba(var(--thuColor), var(--alpha200));
+}
+
+.thuShade300 {
+     background-color: rgba(var(--thuColor), var(--alpha300));
+}
+
+.thuShade400 {
+     background-color: rgba(var(--thuColor), var(--alpha400));
+}
+
+.thuShade500 {
+     background-color: rgba(var(--thuColor), var(--alpha500));
+}
+
+.thuShade600 {
+     background-color: rgba(var(--thuColor), var(--alpha600));
+}
+
+.thuShade700 {
+     background-color: rgba(var(--thuColor), var(--alpha700));
+}
+
+.thuShade800 {
+     background-color: rgba(var(--thuColor), var(--alpha800));
+}
+
+.thuShade900 {
+     background-color: rgba(var(--thuColor), var(--alpha900));
+}
+/*Friday*/
+.friShade100 {
+     background-color: rgba(var(--friColor), var(--alpha100));
+}
+
+.friShade200 {
+     background-color: rgba(var(--friColor), var(--alpha200));
+}
+
+.friShade300 {
+     background-color: rgba(var(--friColor), var(--alpha300));
+}
+
+.friShade400 {
+     background-color: rgba(var(--friColor), var(--alpha400));
+}
+
+.friShade500 {
+     background-color: rgba(var(--friColor), var(--alpha500));
+}
+
+.friShade600 {
+     background-color: rgba(var(--friColor), var(--alpha600));
+}
+
+.friShade700 {
+     background-color: rgba(var(--friColor), var(--alpha700));
+}
+
+.friShade800 {
+     background-color: rgba(var(--friColor), var(--alpha800));
+}
+
+.friShade900 {
+     background-color: rgba(var(--friColor), var(--alpha900));
+}
+/*Saturday*/
+.satShade100 {
+     background-color: rgba(var(--satColor), var(--alpha100));
+}
+
+.satShade200 {
+     background-color: rgba(var(--satColor), var(--alpha200));
+}
+
+.satShade300 {
+     background-color: rgba(var(--satColor), var(--alpha300));
+}
+
+.satShade400 {
+     background-color: rgba(var(--satColor), var(--alpha400));
+}
+
+.satShade500 {
+     background-color: rgba(var(--satColor), var(--alpha500));
+}
+
+.satShade600 {
+     background-color: rgba(var(--satColor), var(--alpha600));
+}
+
+.satShade700 {
+     background-color: rgba(var(--satColor), var(--alpha700));
+}
+
+.satShade800 {
+     background-color: rgba(var(--satColor), var(--alpha800));
+}
+
+.satShade900 {
+     background-color: rgba(var(--satColor), var(--alpha900));
+}
+/*background color*/
+.bgSunColor {
+     background-color: rgb(var(--sunColor));
+}
+
+.bgMonColor {
+     background-color: rgb(var(--monColor));
+}
+
+.bgTueColor {
+     background-color: rgb(var(--tueColor));
+}
+
+.bgWedColor {
+     background-color: rgb(var(--wedColor));
+}
+
+.bgThuColor {
+     background-color: rgb(var(--thuColor));
+}
+
+.bgFriColor {
+     background-color: rgb(var(--friColor));
+}
+
+.bgSatColor {
+     background-color: rgb(var(--satColor));
+}
+/*border color*/
+.bdSunColor {
+     border-color: rgb(var(--sunColor));
+}
+
+.bdMonColor {
+     border-color: rgb(var(--monColor));
+}
+
+.bdTueColor {
+     border-color: rgb(var(--tueColor));
+}
+
+.bdWedColor {
+     border-color: rgb(var(--wedColor));
+}
+
+.bdThuColor {
+     border-color: rgb(var(--thuColor));
+}
+
+.bdFriColor {
+     border-color: rgb(var(--friColor));
+}
+
+.bdSatColor {
+     border-color: rgb(var(--satColor));
+}
+/*color*/
+.sunColor {
+     color: rgb(var(--sunColor));
+}
+
+.monColor {
+     color: rgb(var(--monColor));
+}
+
+.tueColor {
+     color: rgb(var(--tueColor));
+}
+
+.wedColor {
+     color: rgb(var(--wedColor));
+}
+
+.thuColor {
+     color: rgb(var(--thuColor));
+}
+
+.friColor {
+     color: rgb(var(--friColor));
+}
+
+.satColor {
+     color: rgb(var(--satColor));
+}
+
+.weeklyShade hr {
+     border-width: 1px;
+}
+.todayColor {
+     color: rgb(var(--todayColor));
+}
+.todayBgColor {
+     background-color: rgb(var(--todayColor));
+}
+.todayBdColor {
+     border-color: rgb(var(--todayColor));
+}
+
+select::-webkit-scrollbar {
+     background: rgba(var(--todayColor), var(--alpha200));
+}
+select::-webkit-scrollbar-thumb
+{
+	background-color: rgba(var(--todayColor), var(--alpha500));
+}
+select::-webkit-scrollbar-track
+{
+	background-color:rgba(var(--todayColor), var(--alpha200));
+}
+/**
+select::-webkit-scrollbar-piece {
+     color:red;
+}
+select::-webkit-scrollbar-button {
+     color:red;
+}
+textarea::-webkit-resizer {
+     background-color: green;
+}
+**/
+h3 {
+     background-color: rgba(var(--todayColor),var(--alpha200));
+     border-left-color: rgb(var(--todayColor));
+     border-left-width: 4px;
+     border-left-style:solid;
+     padding-left: 10px;
+     padding-top:4px;
+     padding-bottom:4px;
+     color:rgb(var(--todayColor));
+}
+b,
+strong {
+     color: rgb(var(--todayColor));
+}

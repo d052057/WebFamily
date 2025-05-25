@@ -1,0 +1,169 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <div class="container-fluid" wmAnimate="landing" aos speed="normal">
+    <a class="navbar-brand logo-container" href="/">
+      <mat-icon svgIcon="logo" class="logo-perfect"></mat-icon>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a routerLink="/" class="nav-link active" aria-current="page"><i class='bi bi-house'></i> Home</a></li>
+        <ng-container *ngIf="accountService.user$ | async">
+          <li class="nav-item dropdown" *appUserHasRole="['Admin']">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class='bi bi-list-task'></i> Admin
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a routerLink="/admin" class="dropdown-item"><i class="bi bi-person-gear"></i> Users Maintenance</a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/todo"><i class="bi bi-list-task"></i> Todo Maintenance</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/menumaint']"><i class="bi bi-gear"></i> Menu Maintenance</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/tube']"><i class="bi bi-share"></i> WebTube Maintenance</a>
+              </li>
+              <li>
+                <a class="dropdown-item" [routerLink]="['/tube/downloadyoutube']"><i class="bi bi-download"></i> Download YouTube</a>
+              </li>
+            </ul>
+          </li>
+
+        </ng-container>
+        <ng-container>
+          <li class="nav-item"><a routerLink="/play" class="nav-link"><i class='bi bi-person'></i> Play</a></li>
+        </ng-container>
+
+        <li class="nav-item"><a routerLink="/contact" class="nav-link"><i class='bi bi-people'></i> Contact</a></li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-camera-reels'></i> Movies
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of movieMenu()">
+              <a class="dropdown-item" [routerLink]="['/movies', p.param]" *ngIf="p.param !== 'bob'">{{ p.title }}</a>
+            </li>
+            <ng-container *ngIf="accountService.user$ | async">
+
+              <li *ngFor="let p of movieMenu()">
+                <a class="dropdown-item" [routerLink]="['/movies', p.param]" *ngIf="isViewAble(p.param)">{{ p.title }}</a>
+              </li>
+
+            </ng-container>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-camera-video'></i> Videos
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of videoMenu()">
+              <a class="dropdown-item" [routerLink]="['/videos', p.param]">{{ p.title }}</a>
+            </li>
+          </ul>
+
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-camera'></i> Photos
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of photoMenu()">
+              <a class="dropdown-item" [routerLink]="['/photos', p.param]">{{ p.title }}</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-file-earmark-pdf'></i> Documents
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of bookMenu()">
+              <a class="dropdown-item" [routerLink]="['doc/books', p.param]">{{ p.title }}</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['doc/textbooks','books','text']">Text Doc Files</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-record-circle'></i> Medias
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of musicMenu()">
+              <a class="dropdown-item" [routerLink]="['/musics', p.param]">{{ p.title }}</a>
+            </li>
+            <li>
+              <a class="dropdown-item" [routerLink]="['audioplayer/songs','musics','AmericanMusics','Many Varieties']">English Songs</a>
+            </li>
+            <li><a class="dropdown-item" [routerLink]="['/rpm']">រស្មីពានមាស</a></li>
+            <li><a class="dropdown-item" [routerLink]="['audioplayer/thaiaudio','musics','got','ก๊อต จักรพรรณ์']">ก๊อต จักรพรรณ์</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-link'></i> Links
+          </a>
+          <ul class="dropdown-menu">
+            <li *ngFor="let p of linkMenu()">
+              <a class="dropdown-item" href="{{ p.param }}" target="_blank">{{ p.title }}</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bi bi-play-circle'></i> WebTubes
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" [routerLink]="['/tubelink']">YouTube Link</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/webdownload">Web Download</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="school/index.html">School Project</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/jellyfin/">JellyFin</a>
+            </li>
+         
+            <li><a class="dropdown-item" [routerLink]="'/bootstrap'">Bootstrap 5.3.3 and Icons List</a></li>
+          </ul>
+        </li>
+
+        <ng-container *ngIf="(accountService.user$ | async) === null">
+          <li class="auth-buttons">
+            <button class="auth-button login-button" routerLink="/account/login"><i class='bi bi-person'></i> Login</button>
+            <button class="auth-button login-button" routerLink="/account/register"><i class='bi bi-vector-pen'></i> Register</button>
+          </li>
+        </ng-container>
+        <ng-container *ngIf="(accountService.user$ | async) as user">
+          <li><a class="nav-link"><i class='bi bi-person-badge'></i> {{user.firstName | titlecase}}</a></li>
+          <li class="auth-buttons">
+            <button class="auth-button logout-button" (click)="logout()"><i class='bi bi-door-open'></i> LogOut</button>
+          </li>
+        </ng-container>
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+<ngx-spinner type="ball-scale-multiple">
+  <p style="color: white">Loading...</p>
+</ngx-spinner>
+<router-outlet></router-outlet>
+<!--</div>-->
+
+

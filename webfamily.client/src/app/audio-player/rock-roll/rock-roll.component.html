@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <div class="col-auto px-0">
+      <div id="sidebar" class="collapse collapse-horizontal show border-end">
+        <div class="bg-body-tertiary rounded-3">
+          <div class="card" style="max-width: 100%;">
+            <div class="card-header">
+              <h3>Directory</h3>
+              <div class="row">
+                <mat-form-field appearance="outline">
+                  <input type="search" appVoice
+                         matInput
+                         placeholder="{{ langSearch }}"
+                         [ngModel]="searchVal()"
+                         (voiceInput)="onVoiceInput($event)"
+                         [microphone]="isUserSpeaking"
+                         [language]="langData[langSelected].code"
+                         (ngModelChange)="onSearch($event)">
+
+                  <span matSuffix style="display: flex; padding-right:1rem;">
+                    <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+                      <mat-select-trigger>
+                        <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+
+                      </mat-select-trigger>
+                      <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+                        <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+                      </mat-option>
+                    </mat-select>
+                    <span style="display: flex; padding-left:1rem; ">
+                      <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+                      <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+                    </span>
+                  </span>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="card-body">
+              <!--<div id="sidebar-nav">-->
+              <div class="container-fluid">
+                <ul class="list-group list-group-flush" *ngFor="let datavalue of filteredData() | paginate:
+                    {
+                    itemsPerPage: itemsPerPage(),
+                    currentPage: currentPage(),
+                    totalItems: filteredData().length
+                    }; index as i" style="max-width: 100%;">
+                  <li class="list-group-item text-nowrap" (click)="playRock(datavalue.directory,  i)" [ngClass]="{ 'text-bg-primary': i === currentFolderIndex }">
+                    {{ datavalue.directory }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <pagination-controls previousLabel="Prev"
+                                 nextLabel="Next"
+                                 [maxSize]="5"
+                                 [directionLinks]="true"
+                                 (pageChange)="currentPage.set($event)">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main class="col ps-md-2 pt-2">
+      <a href="#" data-bs-target="#sidebar" data-bs-toggle="collapse" class="border rounded-3 p-1 text-decoration-none"
+         [attr.aria-expanded]="true"><i class="bi bi-list bi-lg py-2 p-1"></i> Menu</a>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

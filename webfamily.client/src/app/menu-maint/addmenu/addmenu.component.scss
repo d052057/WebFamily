@@ -1,0 +1,14 @@
+.input-group-prepend {
+  width: 20rem;
+}
+
+.form-control.is-invalid,
+.form-control:invalid {
+  border-left: 5px solid var(--bs-blue-700);
+}
+
+.form-control.is-valid,
+.form-control:valid {
+  border-left: 5px solid var(--bs-border-color);
+}
+

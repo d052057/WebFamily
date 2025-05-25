@@ -1,0 +1,13 @@
+/*.viewOnly {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}*/
+input[readonly] {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  /* Optional: Add styling to further indicate it's non-interactive */
+/*  background-color: #eee;
+  color: #555;
+  border: 1px solid #ccc;
+*/
+}

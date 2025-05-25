@@ -1,0 +1,76 @@
+<div class="container mt-1">
+  <h5>Add Menu Item (Folder)</h5>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
+    <!-- {{ this.f.value | json }}<br> -->
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Choose Menu</mat-label>
+        <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
+          menu
+        </span>
+        <mat-select (selectionChange)="onMenuSelected($event)" [(value)]="menuSelectedIndex" formControlName="menu">
+          <mat-option *ngFor='let s of menu() ; let i = index' [value]="i">
+            {{ s.menu }}
+          </mat-option>
+          <mat-option value='{{ menu().length }}'>links</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row" *ngIf="menuSelectedIndex >= 0">
+      <mat-form-field appearance="outline">
+        <mat-label>Menu Param (folder name)</mat-label>
+        <input matInput formControlName="param" required placeholder="Enter folder/directory name"
+               [ngClass]="{ 'is-invalid': f.param.errors  && f.param.touched}" />
+
+        <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
+          folder
+        </span>
+      </mat-form-field>
+      <div *ngIf="form.get('param')?.getError('existed')" class="text-danger">Directory or folder is already existed!</div>
+      <div *ngIf="form.get('param')?.getError('required') && f.param.touched" class="text-danger">
+        Directory path is required.
+      </div>
+    </div>
+    <div class="row" *ngIf="form.get('param')?.valid">
+      <mat-form-field appearance="outline">
+        <mat-label>Menu Item Title</mat-label>
+        <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
+          title
+        </span>
+        <input matInput appVoice
+               formControlName="menuTitle"
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isUserSpeaking"
+               [language]="langData[langSelected].code"
+               required
+               placeholder="{{ langPlaceHolder }}"
+               [ngClass]="{ 'is-invalid': submitted && f.menuTitle.touched && f.menuTitle.errors}" />
+        <span matSuffix style="display: flex; padding-right:1rem;">
+          <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+            <mat-select-trigger>
+              <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+
+            </mat-select-trigger>
+            <mat-option *ngFor="let s of langData; let i = index" [value]="i">
+              <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+            </mat-option>
+          </mat-select>
+          <span style="display: flex; padding-left:1rem; ">
+            <mat-icon (click)="checkMic()" *ngIf="!isUserSpeaking" class="circle">mic_off</mat-icon>
+            <mat-icon (click)="checkMic()" *ngIf="isUserSpeaking" class="circle">mic</mat-icon>
+          </span>
+        </span>
+      </mat-form-field>
+      <div *ngIf="form.get('menuTitle')?.getError('existed')" class="text-danger">Title is already existed!</div>
+
+    </div>
+
+    <div class="btn-group">
+      <button type="submit" class="btn btn-primary mr-1" [disabled]="form.invalid">
+        <span *ngIf="submitting" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit
+      </button>
+    </div>
+  </form>
+</div>
+

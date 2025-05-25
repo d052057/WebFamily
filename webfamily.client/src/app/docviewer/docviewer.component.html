@@ -1,0 +1,41 @@
+<div class="container-fluid">
+
+  <div class="row flex-nowrap">
+    <div class="col-auto px-0">
+      <div id="sidebar" class="collapse collapse-horizontal show border-end">
+        <div class="card" style="max-width: 100%;">
+          <div class="card-header" [ngClass]="{ 'text-bg-secondary': 0 === 0 }">
+            <h5>Documents List</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between align-items-start"
+                  *ngFor="let t of dataSource() | paginate:
+                  {
+                     itemsPerPage: itemsPerPage(),
+                     currentPage: currentPage(),
+                     totalItems: dataSource().length
+                   }
+                   ; index as i"
+                  (click)="selectedRow(t)" [ngClass]="{ 'text-bg-primary': t === rowSelected }">{{ t.title }}</li>
+            </ul>
+          </div>
+          <div class="card-footer">
+            <pagination-controls previousLabel="Prev"
+                                 nextLabel="Next"
+                                 [maxSize]="5"
+                                 [directionLinks]="true"
+                                 (pageChange)="currentPage.set($event)">
+            </pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main class="col ps-md-2 pt-2">
+      <a href="#" data-bs-target="#sidebar" data-bs-toggle="collapse" class="border rounded-3 p-1 text-decoration-none"
+         [attr.aria-expanded]="true"><i class="bi bi-list bi-lg py-2 p-1"></i> Pdf Document</a>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
