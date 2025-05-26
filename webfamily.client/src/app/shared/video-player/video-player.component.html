@@ -1,0 +1,282 @@
+<div class="row">
+  <div class="col-md-8">
+    <figure #figure class="video-container">
+      <video #videoPlayer preload="metadata" crossorigin="anonymous">
+        <!-- Use trackBy for better performance with captions -->
+        <ng-container *ngFor="let caption of currentVideo()?.captions; trackBy: trackByCaption">
+          <track [src]="caption.src"
+                 kind="subtitles"
+                 [label]="caption.label"
+                 [attr.default]="caption.default ? '' : null">
+        </ng-container>
+
+        <!-- Audio tracks with trackBy -->
+        <ng-container *ngIf="currentVideo()?.hasAudioTracks">
+          <track *ngFor="let track of currentVideo()?.audioTracks; trackBy: trackByAudioTrack"
+                 [src]="track.src"
+                 [kind]="track.kind"
+                 [srclang]="track.language"
+                 [label]="track.label"
+                 [default]="track.default">
+        </ng-container>
+
+        <p>Your browser doesn't support HTML5 video.</p>
+      </video>
+
+      <audio #externalAudio hidden></audio>
+
+      <!-- Optimized thumbnail preview with better positioning -->
+      <div #thumbnailPreview
+           class="thumbnail-preview round position-absolute"
+           [class.d-block]="showThumbnail()"
+           [class.d-none]="!showThumbnail()"
+           style="z-index: 1000; pointer-events: none;">
+        <div class="thumbnail-image border rounded shadow bg-dark" *ngIf="!isFullscreen()"
+             style="width: 160px; height: 90px; background-size: cover; background-position: center;">
+        </div>
+        <div class="thumbnail-image border rounded shadow bg-dark" *ngIf="isFullscreen()"
+             style="width: 640px; height: 360px; background-size: cover; background-position: center;">
+        </div>
+        <div class="thumbnail-time text-white px-2 py-1 text-center small bg-dark bg-opacity-75 rounded mt-1">
+          {{ thumbnailTime() / 1000 | timeConversion }}
+        </div>
+      </div>
+
+      <!-- Custom controls with signal-based bindings -->
+      <div class="video-controls position-absolute bottom-0 start-0 end-0 px-2 py-1 bg-dark bg-opacity-75 text-white">
+        <!-- Progress bar with improved interaction -->
+        <div class="progress position-relative mb-2"
+             style="height: 8px; cursor: pointer;"
+             (mousedown)="onProgressBarClick($event)"
+             (mousemove)="onProgressBarMove($event)"
+             (mouseenter)="_showThumbnail.set(true)"
+             (mouseleave)="_showThumbnail.set(false)">
+
+          <!-- Buffer progress -->
+          <div class="progress-bar bg-light bg-opacity-25 position-absolute top-0 start-0 h-100"
+               [style.width.%]="bufferProgress()"
+               role="progressbar">
+          </div>
+
+          <!-- Video progress -->
+          <div class="progress-bar bg-danger position-absolute top-0 start-0 h-100"
+               [style.width.%]="videoProgress()"
+               role="progressbar">
+          </div>
+        </div>
+
+        <!-- Control buttons with signal bindings -->
+        <div class="control-buttons d-flex align-items-center justify-content-between w-100">
+          <!-- Play/Pause button -->
+          <button class="btn btn-sm text-white border-0 p-1"
+                  (click)="togglePlay()"
+                  [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'">
+            <i class="bi fs-5"
+               [class.bi-pause-fill]="isPlaying()"
+               [class.bi-play-fill]="!isPlaying()"></i>
+          </button>
+
+          <!-- Time display -->
+          <div class="time-display ms-2 small text-nowrap">
+            {{ currentTime() / 1000 | timeConversion }} / {{ duration() / 1000 | timeConversion }}
+          </div>
+
+          <!-- Volume control - Default Audio -->
+          <div *ngIf="isDefaultAudio()" class="volume-control d-flex align-items-center ms-2">
+            <button class="btn btn-sm text-white border-0 p-1"
+                    (click)="toggleMute()"
+                    [attr.aria-label]="isMuted() ? 'Unmute' : 'Mute'">
+              <i class="bi fs-6"
+                 [class.bi-volume-mute-fill]="isMuted()"
+                 [class.bi-volume-up-fill]="!isMuted()"></i>
+            </button>
+            <input type="range"
+                   class="form-range volume-slider ms-1"
+                   min="0"
+                   max="1"
+                   step="0.01"
+                   style="width: 80px;"
+                   [value]="volume()"
+                   (input)="onVolumeChange($event)"
+                   [attr.aria-label]="'Volume: ' + (volume() * 100 | number:'1.0-0') + '%'">
+          </div>
+
+          <!-- Volume control - External Audio -->
+          <div *ngIf="!isDefaultAudio()" class="volume-control d-flex align-items-center ms-2">
+            <button class="btn btn-sm text-white border-0 p-1"
+                    (click)="toggleAudioMute()"
+                    [attr.aria-label]="isAudioMuted ? 'Unmute Audio' : 'Mute Audio'">
+              <i class="bi fs-6"
+                 [class.bi-volume-mute-fill]="isAudioMuted"
+                 [class.bi-volume-up-fill]="!isAudioMuted"></i>
+            </button>
+            <input type="range"
+                   class="form-range volume-slider ms-1"
+                   min="0"
+                   max="1"
+                   step="0.01"
+                   style="width: 80px;"
+                   [value]="audioVolume"
+                   (input)="onAudioVolumeChange($event)"
+                   [attr.aria-label]="'Audio Volume: ' + (audioVolume * 100 | number:'1.0-0') + '%'">
+          </div>
+
+          <!-- Caption control -->
+          <div class="caption-control ms-2" *ngIf="currentVideo()?.hasCaptions">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="captionDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [class.text-warning]="captionsEnabled"
+                      [attr.aria-label]="'Captions: ' + (captionsEnabled ? 'On' : 'Off')">
+                <i class="bi bi-badge-cc-fill fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="captionDropdown">
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleCaptions(null)"
+                          [class.active]="!captionsEnabled">
+                    Off
+                  </button>
+                </li>
+                <li *ngFor="let track of textTracks; trackBy: trackByTextTrack">
+                  <button class="dropdown-item"
+                          (click)="toggleCaptions(track)"
+                          [class.active]="track.mode === 'showing'">
+                    {{ track.label || 'Unknown' }}
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Audio tracks control -->
+          <div class="audio-control ms-2" *ngIf="currentVideo()?.hasAudioTracks">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="audioTrackDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Audio Track'">
+                <i class="bi bi-translate fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="audioTrackDropdown">
+                <li *ngFor="let track of currentVideo()?.audioTracks; trackBy: trackByAudioTrack">
+                  <button class="dropdown-item"
+                          (click)="selectAudioTrack(track)"
+                          [class.active]="track.id === currentAudioIndex">
+                    {{ track.label }}
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Chapters control -->
+          <div class="chapters-control ms-2" *ngIf="currentVideo()?.hasChapters">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="chaptersDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Chapters'">
+                <i class="bi bi-list-ul fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="chaptersDropdown">
+                <li *ngFor="let chapter of currentVideo()?.chapters; trackBy: trackByChapter">
+                  <button class="dropdown-item"
+                          (click)="seekToTime(chapter.start)">
+                    {{ chapter.title }} ({{ chapter.start | timeConversion }})
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Speed control -->
+          <div class="speed-control ms-2">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="speedDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Playback Speed: ' + playbackRate() + 'x'">
+                <i class="bi bi-speedometer2 fs-6"></i>
+                <small class="ms-1">{{ playbackRate() }}x</small>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="speedDropdown">
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleSpeed(1)"
+                          [class.active]="playbackRate() === 1">
+                    1x (Normal)
+                  </button>
+                </li>
+                <li *ngFor="let sp of speed; trackBy: trackBySpeed">
+                  <button class="dropdown-item"
+                          (click)="toggleSpeed(sp)"
+                          [class.active]="sp === playbackRate()">
+                    {{ sp }}x
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Spacer -->
+          <div class="flex-grow-1"></div>
+
+          <!-- Fullscreen button -->
+          <button class="btn btn-sm text-white border-0 p-1"
+                  (click)="toggleFullscreen()"
+                  [attr.aria-label]="isFullscreen() ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+            <i class="bi fs-5"
+               [class.bi-fullscreen-exit]="isFullscreen()"
+               [class.bi-fullscreen]="!isFullscreen()"></i>
+          </button>
+        </div>
+      </div>
+    </figure>
+  </div>
+
+  <!-- Optimized Video playlist -->
+  <div class="col-md-4">
+    <div class="playlist-container">
+      <h3>Playlist</h3>
+      <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+        <button *ngFor="let video of videos(); trackBy: trackByVideo; let i = index"
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-start p-2"
+                [class.active]="currentVideo()?.id === video.id"
+                [class.list-group-item-dark]="currentVideo()?.id === video.id"
+                (click)="playVideo(video)"
+                [attr.aria-label]="'Play ' + video.title">
+          <div class="flex-grow-1">
+            <div class="fw-medium">{{ video.title }}</div>
+            <small class="text-muted" *ngIf="video.description">
+              {{ video.description | slice:0:50 }}{{ video.description && video.description.length > 50 ? '...' : '' }}
+            </small>
+          </div>
+          <div class="text-end ms-2">
+            <span class="badge bg-secondary" *ngIf="video.duration">
+              {{ video.duration | timeConversion }}
+            </span>
+            <div class="small text-muted mt-1" *ngIf="currentVideo()?.id === video.id">
+              <i class="bi bi-play-fill"></i> Playing
+            </div>
+          </div>
+        </button>
+
+        <!-- Empty state -->
+        <div *ngIf="videos().length === 0" class="list-group-item text-center text-muted py-4">
+          <i class="bi bi-music-note-list fs-1 d-block mb-2"></i>
+          No videos in playlist
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

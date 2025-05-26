@@ -4,9 +4,9 @@ import { BehaviorSubject, MonoTypeOperatorFunction, Observable, Subject, combine
 import { VideoEventTypes } from './video-event-types.model';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
-import { TimePipe } from '../pipe/time.pipe';
-import { ChapterPipe } from '../pipe/chapter.pipe';
-import { SortPipe } from '../pipe/sort.pipe';
+import { TimePipe } from '../pipes/time.pipe';
+import { ChapterPipe } from '../pipes/chapter.pipe';
+import { SortPipe } from '../pipes/sort.pipe';
 export interface ISourceAttribute {
   src: string;
   type: string;

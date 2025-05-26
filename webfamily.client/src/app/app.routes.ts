@@ -32,13 +32,13 @@ export const routes: Routes = [
   },
   {
     path: 'videos/:folder',
-    loadComponent: () => import('./media-player/media-player.component')
-      .then(mod => mod.MediaPlayerComponent)
+    loadComponent: () => import('./play-media/play-media.component')
+      .then(mod => mod.PlayMediaComponent)
   },
   {
     path: 'movies/:folder',
-    loadComponent: () => import('./media-player/media-player.component')
-      .then(mod => mod.MediaPlayerComponent)
+    loadComponent: () => import('./play-media/play-media.component')
+      .then(mod => mod.PlayMediaComponent)
   },
   {
     path: 'photos/:folder',

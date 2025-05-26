@@ -1,0 +1,157 @@
+figure {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  .thumbnail-preview {
+    position: absolute;
+    display: none;
+    transform: translate(-80px, -60px);
+    z-index: 10;
+    pointer-events: none;
+    width: 160px;
+
+    .thumbnail-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+    }
+
+    .thumbnail-time {
+    }
+
+    .text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      margin-left: 8px;
+    }
+  }
+
+  .video-controls {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
+    z-index: 10;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    flex-direction: column;
+    padding: 4px;
+    gap: 4px;
+
+    .progress {
+      height: 8px !important; // Enforce height
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      overflow: visible; // Important for visibility
+      width: 100%;
+
+      .progress-bar {
+        height: 100%;
+        background-color: #ff5252;
+        transition: width 0.2s ease;
+        position: relative;
+        z-index: 2;
+      }
+
+      .progress-buffered {
+        z-index: 1;
+      }
+    }
+  }
+
+  .control-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+
+    .time-display {
+    }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+    }
+
+    .caption-control {
+    }
+
+    .audio-control {
+    }
+
+    .chapters-control {
+    }
+
+    .speed-control {
+    }
+
+    .fullscreen-control {
+    }
+  }
+  /* Normal hover state - NOT in fullscreen */
+  &:not(:fullscreen):hover .video-controls {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* Fullscreen styles */
+  &:fullscreen {
+    video {
+      max-height: 100vh;
+      max-width: 100vw;
+      width: auto;
+      height: auto;
+
+      @media (min-aspect-ratio: 16/9) {
+        height: 100vh;
+        width: auto;
+      }
+
+      @media (max-aspect-ratio: 16/9) {
+        width: 100vw;
+        height: auto;
+      }
+    }
+
+    .video-controls {
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding-bottom: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      /* Fullscreen hover state */
+      &:hover {
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity 0.3s ease;
+      }
+    }
+  }
+}
+
+.bi {
+  font-size: 1.2rem;
+}

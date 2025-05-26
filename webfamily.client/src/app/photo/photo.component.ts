@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { Subject, Subscription, finalize, first, takeUntil } from 'rxjs';
 import { MediaService } from '../shared/services/media.service';
-import { SafePipe } from '../shared/pipe/safe.pipe';
+import { SafePipe } from '../shared/pipes/safe.pipe';
 export interface Iphoto {
   fileFolder: string,
   photoFolder: string

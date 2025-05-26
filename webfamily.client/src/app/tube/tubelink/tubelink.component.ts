@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TubeService } from './../../tube/services/tube.service';
 import { finalize } from 'rxjs';
 import { Webtube } from './../models/webtubes.model';
-import { SafePipe } from '../../shared/pipe/safe.pipe';
+import { SafePipe } from '../../shared/pipes/safe.pipe';
 
 @Component({
     selector: 'app-tubelink',

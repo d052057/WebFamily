@@ -1,7 +1,7 @@
 import { Component, input, output, effect, Input, signal, OnInit } from '@angular/core';
 import { BaseOptionComponent } from '../base/base-option.component'
 import { NgClass } from '@angular/common';
-import {TimeConversionPipe } from '../../../app/shared/pipe/time-conversion.pipe'
+import {TimeConversionPipe } from '../../shared/pipes/time-conversion.pipe'
 import { audioInterface } from '../model/audio.model';
 import { FormsModule } from '@angular/forms';
 

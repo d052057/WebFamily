@@ -3,7 +3,7 @@ import { MediaService } from '../../shared/services/media.service';
 import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { TimeConversionPipe } from '../../shared/pipe/time-conversion.pipe';
+import { TimeConversionPipe } from '../../shared/pipes/time-conversion.pipe';
 import { DataSource } from '@angular/cdk/collections';
 @Component({
     selector: 'app-update-video-duration',
