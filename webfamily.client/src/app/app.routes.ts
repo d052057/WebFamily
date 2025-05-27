@@ -47,8 +47,8 @@ export const routes: Routes = [
   },
   {
     path: 'musics/:folder',
-    loadComponent: () => import('./media-player/media-player.component')
-      .then(mod => mod.MediaPlayerComponent)
+    loadComponent: () => import('./play-media/play-media.component')
+      .then(mod => mod.PlayMediaComponent)
   },
   {
     path: 'rpm',
@@ -83,7 +83,13 @@ export const routes: Routes = [
       loadComponent: () => import('./bootstrap-example/bootstrap-icons/bootstrap-icons.component')
         .then(mod => mod.BootstrapIconsComponent)
     }
+
     ]
+  },
+  {
+    path: 'song/:musics/:folder/:artish',
+    loadComponent: () => import('./play-audio/play-audio.component')
+      .then(mod => mod.PlayAudioComponent)
   },
   { path: 'contact', component: ContactComponent },
   { path: 'account', loadChildren: () => import('./account/account.module').then(module => module.AccountModule) },

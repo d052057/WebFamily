@@ -1,0 +1,104 @@
+<div class="container py-3" [@fadeInOut]>
+  <audio controls #AngAudioPlayer></audio>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <!-- Track info -->
+      <div class="text-center mb-3">
+        <h5 class="card-title mb-1">{{ currentAudio().title || 'No track selected' }}</h5>
+        <small class="text-muted">{{ currentAudioTime() | timeConversion }} / {{ totalAudioLength() | timeConversion }}</small>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="mb-3">
+        <input type="range" class="form-range"
+               [max]="totalAudioLength()"
+               [value]="currentAudioTime()"
+               (input)="seek($event)"
+               [disabled]="!isAudioLoaded()">
+      </div>
+
+      <!-- Main controls -->
+      <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="toggleShuffle()"
+                [class.active]="isShuffle()"
+                title="Shuffle">
+          <i class="bi bi-shuffle"></i>
+        </button>
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="playPrevious()"
+                [disabled]="audioListState()"
+                title="Previous">
+          <i class="bi bi-skip-start-fill"></i>
+        </button>
+
+        <button class="btn btn-primary rounded-circle play-pause-btn"
+                (click)="togglePlay()"
+                [disabled]="!isAudioLoaded()"
+                title="Play/Pause">
+          <i class="bi" [class.bi-pause-fill]="isAudioPlaying()" [class.bi-play-fill]="!isAudioPlaying()"></i>
+        </button>
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="playNext()"
+                [disabled]="audioListState()"
+                title="Next">
+          <i class="bi bi-skip-end-fill"></i>
+        </button>
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="toggleRepeat()"
+                [class.active]="isRepeat()"
+                title="Repeat">
+          <i class="bi bi-arrow-repeat"></i>
+        </button>
+      </div>
+
+      <!-- Secondary controls -->
+      <div class="d-flex justify-content-center align-items-center gap-3">
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="toggleMute()"
+                title="Mute/Unmute">
+          <i class="bi" [class.bi-volume-mute-fill]="isMute()" [class.bi-volume-up-fill]="!isMute()"></i>
+        </button>
+
+        <input type="range" class="form-range volume-slider"
+               min="0" max="100"
+               [value]="audioVolume()"
+               (input)="setVolume($event)"
+               style="width: 100px">
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="playRandom()"
+                [disabled]="audioListState()"
+                title="Play Random">
+          <i class="bi bi-shuffle"></i>
+        </button>
+
+        <button class="btn btn-outline-secondary rounded-circle"
+                (click)="toggleAutoPlay()"
+                [class.active]="isAudioAutoPlay()"
+                title="Autoplay">
+          <i class="bi bi-play-circle"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Playlist -->
+    <div class="card-footer bg-transparent" *ngIf="audioList()?.length">
+      <h6 class="card-subtitle mb-2 text-muted">Playlist - Track number: {{ currentTrackIndex() + 1 }}</h6>
+      <div #trackListContainer class="list-group playlist-items" style="max-height: 200px; overflow-y: auto;">
+        <button *ngFor="let item of audioList(); let i = index"
+                type="button"
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                [class.active]="i === currentTrackIndex()"
+                (click)="playTrack(i)">
+          <span class="me-2">{{ i + 1 }}.</span>
+          <span class="flex-grow-1 text-start">{{ item?.title || 'Untitled track' }}</span>
+          <span class="badge bg-secondary rounded-pill">{{ item.duration | timeConversion }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

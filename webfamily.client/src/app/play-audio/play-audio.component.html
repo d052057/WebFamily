@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-md-8">
+    <app-audio-player [dataSource]="audioListData()"></app-audio-player>
+  </div>
+  <div class="col-md-4">
+    <div class="playlist-container">
+      <h3>Playlist</h3>
+      <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+        @for (d of filteredData(); track d) {
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-start p-2"
+                (click)="playRock(d.directory)">
+          {{ d.directory }}
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+

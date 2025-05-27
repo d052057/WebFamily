@@ -19,7 +19,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { debounceTime, distinctUntilChanged, fromEvent, merge } from 'rxjs';
 
 import { AudioTrack, VideoSource, Speed_array } from './models/video.model';
-import { EventListenerService } from './services/event-handler.service';
+import { EventListenerService } from '../services/event-handler.service';
 import { TimeConversionPipe } from '../pipes/time-conversion.pipe';
 import { VideoFrameExtractor } from './videoUtils/videoUtils';
 
