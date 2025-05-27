@@ -1,4 +1,12 @@
 /* Add to your component's styles */
+root {
+  /*  --bs-orange: #fd7e14*/
+  --bs-green: #198754;
+  --bs-orange-opacity: rgba(253, 126, 20,0.2);
+}
+audio {
+    display: none;
+}
 .play-pause-btn {
   width: 50px;
   height: 50px;
@@ -28,3 +36,26 @@
 .playlist-items::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.card-body {
+  .jumbotron {
+    padding: 3rem 1rem;
+    margin-bottom: 1rem;
+    background-color: #e9ecef;
+    border-radius: .3rem;
+  }
+  button {
+    border: none;
+    background: var(--bs-green);
+    box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), inset -5px -5px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.3), -5px -5px 10px rgba(255,255,255,0.1);
+  }
+
+  button:hover,
+  .active {
+    background: var(--bs-primary);
+  }
+
+  i {
+    color: white;
+  }
+}
+
