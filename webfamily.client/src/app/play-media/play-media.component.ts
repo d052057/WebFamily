@@ -1,67 +1,86 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { VideoPlayerComponent } from '../shared/video-player/video-player.component';
-import { Subject, switchMap, takeUntil } from 'rxjs';
-import { of } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { MediaService } from '../shared/services/media.service';
-import { VideoUtils } from '../shared/video-player/videoUtils/videoUtils';
-import { VideoSource, AudioTrack, Chapter, VideoTrack } from '../shared/video-player/models/video.model';
+import { VideoSource } from '../shared/video-player/models/video.model';
 import { ActivatedRoute } from '@angular/router';
+import { rxResource } from '@angular/core/rxjs-interop';
+
+interface VideoRouteParams {
+  menuFolder: string | null;
+  menu: string | null;
+  fileFolder: string;
+}
+
 @Component({
   selector: 'app-play-media',
   imports: [VideoPlayerComponent],
   templateUrl: './play-media.component.html',
   styleUrl: './play-media.component.scss'
 })
-export class PlayMediaComponent implements OnInit, OnDestroy {
+export class PlayMediaComponent {
   private mediaService = inject(MediaService);
   private activatedRoute = inject(ActivatedRoute);
-  data!: VideoSource[];
-  private destroy$ = new Subject<void>();
-  medias!: any;
-  menuFolder: string = '';
-  menu: string = '';
-  fileFolder: string = '';
-  resource = this.mediaService.getMediaRecordRS;
-  constructor() {
-    effect( () => {
-      const localData = this.resource.value(); // This will trigger on change
-      if (localData) {
-        const result: any = [];
-        for (let v of localData) {
-          let tmp = {
-            title:  v.title,
-            src: this.fileFolder + v.url,
-            type: v.type,
-            duration: v.duration,
-            captions: v.captions,
-            chapters: v.chapters,
-            audioTracks: v.audioTracks
-          }
-          result.push(new VideoSource(tmp, v.id));
 
-        }
-        this.data = result;
+  readonly medias = environment.mediaConfig.medias;
+
+  routeParamsResource = rxResource({
+    request: () => ({}),
+    loader: () => this.activatedRoute.paramMap.pipe(
+      map(params => {
+        const folder = params.get('folder');
+        const menu = this.activatedRoute.snapshot.url[0]?.path || '';
+        const fileFolder = `${this.medias}/${menu}/${folder || ''}/`;
+        return {
+          menuFolder: folder,
+          menu: menu,
+          fileFolder: fileFolder
+        } as VideoRouteParams;
+      })
+    )
+  });
+
+  // Single computed property returning RouteParams interface
+  routeParams = computed<VideoRouteParams | undefined>(() => {  return this.routeParamsResource.value(); });
+
+  // Computed property for processed video data
+  videoSources = computed(() => {
+    const params = this.routeParams();
+
+    if (!params?.menuFolder || !params.menu) return [];
+
+    const mediaData = this.mediaService.getMediaRecordRS.value();
+    if (!mediaData) return [];
+
+    const result: VideoSource[] = [];
+
+    for (let v of mediaData) {
+      const tmp = {
+        title: v.title,
+        src: params.fileFolder + v.url,
+        type: v.type,
+        duration: v.duration,
+        captions: v.captions,
+        chapters: v.chapters,
+        audioTracks: v.audioTracks
       };
-    });
-  };
-  ngOnInit(): void {
-    this.medias = environment.mediaConfig.medias;
-    this.activatedRoute.paramMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (params: any) => {
-          this.menuFolder = (params.get('folder'));
-          this.menu = (this.activatedRoute.snapshot.url[0].path); // should return musics
-          this.fileFolder = this.medias + '/' + this.menu + "/" + this.menuFolder + "/";
-          this.mediaService.menu.set(this.menu);
-          this.mediaService.folder.set(this.menuFolder);
-        }
-      );
-  }
+      result.push(new VideoSource(tmp, v.id));
+    }
+    return result;
+  });
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  constructor() {
+    effect(() => {
+      const params = this.routeParams();
+      if (params?.menuFolder && params?.menu) {
+        this.mediaService.menu.set(params.menu);
+        this.mediaService.folder.set(params.menuFolder);
+      }
+    });
+
+    effect(() => {
+      const sources = this.videoSources();
+    });
   }
 }
