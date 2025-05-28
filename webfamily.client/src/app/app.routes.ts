@@ -91,6 +91,11 @@ export const routes: Routes = [
     loadComponent: () => import('./play-audio/play-audio.component')
       .then(mod => mod.PlayAudioComponent)
   },
+  {
+    path: 'audio/:musics/:folder/:artish',
+    loadComponent: () => import('./audio-play-album/audio-play-album.component')
+      .then(mod => mod.AudioPlayAlbumComponent)
+  },
   { path: 'contact', component: ContactComponent },
   { path: 'account', loadChildren: () => import('./account/account.module').then(module => module.AccountModule) },
   { path: 'audioplayer', loadChildren: () => import('./audio-player/audio-player.module').then(module => module.AudioPlayerModule) },

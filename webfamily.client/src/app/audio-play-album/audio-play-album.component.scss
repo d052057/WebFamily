@@ -1,0 +1,22 @@
+.main {
+  margin-top: 1rem;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
+  /* margin: 0 auto;*/
+  position: relative;
+  min-height: 80vh;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), inset -5px -5px 15px var(--bs-orange-opacity), 5px 5px 15px rgba(0,0,0,0.3), -5px -5px 15px var(--bs-orange-opacity);
+}
+.jumbotron {
+  padding: 3rem 1rem;
+  margin-bottom: 1rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+}

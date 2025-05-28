@@ -15,12 +15,12 @@ interface RouteParams {
 }
 
 @Component({
-  selector: 'app-play-audio',
+  selector: 'app-audio-play-album',
   imports: [AudioPlayerComponent],
-  templateUrl: './play-audio.component.html',
-  styleUrls: ['./play-audio.component.scss','playlist.scss']
+  templateUrl: './audio-play-album.component.html',
+  styleUrl: './audio-play-album.component.scss'
 })
-export class PlayAudioComponent {
+export class AudioPlayAlbumComponent {
   activatedRoute = inject(ActivatedRoute);
   mediaService = inject(MediaService);
 
@@ -28,14 +28,9 @@ export class PlayAudioComponent {
   medias = environment.mediaConfig.medias;
   menuFolder!: string;
   menuSubFolder!: string;
-  artist: string = '';  
+  artist: string = '';
 
-  resource = this.mediaService.rockDirectoryResource;
-
-  filteredData = computed(() => {
-    return this.resource.value() || [];
-  }); 
-  audioList = this.mediaService.getRockMediaRecordRS;
+  audioList = this.mediaService.getMediaRecordRS;
   audioListData = computed(() => {
     return this.audioList.value() || [];
 
@@ -47,32 +42,26 @@ export class PlayAudioComponent {
         menuFolder: params.get('musics'),
         menuSubFolder: params.get('folder'),
         artist: params.get('artist'),
-        fileDir: (`${this.medias}/${params.get('musics')}/${params.get('folder') }`)
+        fileDir: (`${this.medias}/${params.get('musics')}/${params.get('folder')}`)
       }))
     )
   });
- 
-  params = computed<RouteParams | undefined>(() => {
+
+  routeParams = computed<RouteParams | undefined>(() => {
     return this.routeParamsResource.value();
   });
   constructor() {
     effect(() => {
-        const p = this.routeParamsResource.value();
+      const params = this.routeParams();
+      if (params?.menuFolder && params?.fileDir && params?.menuSubFolder) {   
+        this.mediaService.menu.set(params.menuFolder);
+        this.mediaService.fileFolder.set(params.fileDir);
+        this.mediaService.folder.set(params.menuSubFolder);
+      }
     });
     effect(() => {
-      const p = this.resource.value() || [];
+      const localData = this.audioListData(); // This will trigger on change
+
     });
-    effect(() => {
-      const localData = this.audioList.value(); // This will trigger on change
-      
-    });
-  }
- 
-  playRock(folder: string) {
-    let temp = folder.split("\\");
-    let newFolder = temp.join("/");
-    const fileDir = this.params()?.fileDir ?? '';
-    this.mediaService.rockFolder.set(folder);
-    this.mediaService.rockFileFolder.set(fileDir + "/" + newFolder);
   }
 }

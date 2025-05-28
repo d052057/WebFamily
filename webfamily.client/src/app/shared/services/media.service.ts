@@ -4,7 +4,9 @@ import { menuType, mediaMetaDatum } from '../../models';
 import { map, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
-
+export interface folder {
+  directory: string;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -54,11 +56,10 @@ export class MediaService  {
     let file = decodeURIComponent(folder) + fileName;
     return this.http.get(file, { responseType: 'text' })
   }
-  // Get mediaMetaData
 
-  //getMedia(folder: string, menu: string): Observable<any> {
-  //  return this.http.get<any>( '/MediaMetaData/GetFilesByFolder?folder=' + folder + "&menu=" + menu)
-  //}
+  rockDirectoryResource = rxResource<folder[], any>({
+    loader: () => this.http.get<folder[]>('/MediaMetaData/GetRockDirectory'),
+  });
 
   rockFolder = signal<any>('');
   rockFileFolder = signal<any>('');
