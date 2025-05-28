@@ -98,7 +98,6 @@ export const routes: Routes = [
   },
   { path: 'contact', component: ContactComponent },
   { path: 'account', loadChildren: () => import('./account/account.module').then(module => module.AccountModule) },
-  { path: 'audioplayer', loadChildren: () => import('./audio-player/audio-player.module').then(module => module.AudioPlayerModule) },
   { path: 'not-found', component: NotFoundComponent },
   { path: '**', component: NotFoundComponent, pathMatch: 'full' }
 ];

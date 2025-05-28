@@ -1,8 +1,0 @@
-<div *ngIf="processLoading" class="fade show overlay">
-  <div class="spinner-border" role="status">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-</div>
-<div class="col-xs-1 justify-content-center mt-4" *ngIf="audioList() !== undefined">
-  <app-thai-audio [audioList]="audioList()" [artist]="artist" [(autoPlay)]="autoPlay" [(audioVolume)]="audioVolume"></app-thai-audio>
-</div>
