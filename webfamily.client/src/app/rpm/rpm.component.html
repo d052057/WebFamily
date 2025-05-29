@@ -2,7 +2,7 @@
   <!-- Left content area (2/3 width) -->
   <div class="content-area">
       <div *ngIf="selectedPicture">
-        <app-audio-player [dataSource]="dataResult" [imagePoster]="poster"></app-audio-player>
+        <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster"></app-audio-player>
       </div>
   </div>
 

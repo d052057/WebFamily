@@ -16,17 +16,18 @@ import { AudioPlayerComponent } from '../shared/audio-player/audio-player.compon
 })
 export class RpmComponent {
   selectedPicture: RpmCoverItem | null = null;
-  dataResult: any;
   poster: any = '';
   onPictureSelected(picture: RpmCoverItem): void {
     this.selectedPicture = picture;
     this.poster = picture.coverUrl;
-    this.getRpmRecord(picture.recordId);
+    this.rpmService.recordId.set(picture.recordId); // set the recordId in the service
+    this.rpmService.rpmTrackUrl.set(this.mediaConfig.AssetRpmFolder + '/' + picture.folder); // set the track URL
   }
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private rpmService = inject(RpmService);
   rpmResource = this.rpmService.getRpmMenuRS;
+  rpmTrackResource = this.rpmService.getRpmTracksRS;
   readonly mediaConfig = environment.mediaConfig;
   constructor() { 
     this.rpmService.coverFolder.set(this.mediaConfig.AssetRpmCoverFolder)
@@ -36,27 +37,8 @@ export class RpmComponent {
     const resource = this.rpmResource.value();    
     return resource;
   })
-
-  getRpmRecord(rpmRecordId: string) {
-    let result: AudioItem[] = [];
-    this.rpmService.getRpmTracks(rpmRecordId)
-      .subscribe(
-        {
-          next: (data: any) => {
-            let id = 0; 
-            for (let v of data) {
-              const tmp = {
-                id: id++,
-                title: v.title,
-                duration: v.duration,
-                url: this.mediaConfig.AssetRpmFolder + '/' + this.selectedPicture?.folder + '/' + v.title,
-                type: 'audio/wav',
-              };
-              result.push(tmp); 
-            }
-            this.dataResult = result           
-          }
-        }
-      )
-  }
+  dataResult = computed(() => {
+    const resource = this.rpmTrackResource.value();
+    return resource;
+  })
 }
