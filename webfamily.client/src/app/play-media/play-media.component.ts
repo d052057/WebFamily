@@ -6,12 +6,7 @@ import { MediaService } from '../shared/services/media.service';
 import { VideoSource } from '../shared/video-player/models/video.model';
 import { ActivatedRoute } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
-
-interface VideoRouteParams {
-  menuFolder: string | null;
-  menu: string | null;
-  fileFolder: string;
-}
+import { VideoRouteParams} from './interfaces/video.interface'; 
 
 @Component({
   selector: 'app-play-media',

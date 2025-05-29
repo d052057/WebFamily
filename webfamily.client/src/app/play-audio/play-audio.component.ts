@@ -6,13 +6,7 @@ import { environment } from '../../environments/environment';
 import { AudioItem } from '../shared/audio-player/models/audio.model';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-
-interface RouteParams {
-  menuFolder: string | null;
-  menuSubFolder: string | null;
-  artist: string | null;
-  fileDir: string;
-}
+import { RouteParams } from './interfaces/audio.interface'; 
 
 @Component({
   selector: 'app-play-audio',

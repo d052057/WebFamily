@@ -1,17 +1,8 @@
-
+import { VideoFile, VideoTrack, AudioTrack, Chapter } from '../interfaces/videoplayer.interface';
 export const Speed_array: number[] = [0.5, 0.75, 1, 1.25, 1.50, 1.75, 2, 2.25, 2.50, 2.75, 3]  
 
 // Define AudioTrack interface since it's not available in all browsers TypeScript definitions
-export interface AudioTrack {
-  enabled: boolean;
-  id: number;
-  kind: string;
-  label: string;
-  language: string;
-  src: string;
-  sourceBuffer: SourceBuffer | null;
-  default: boolean;
-}
+
 export class VideoSource {
   public id: number;
   public title: string;
@@ -43,35 +34,4 @@ export class VideoSource {
     this.hasChapters = !!jsonFile.chapters?.length;
     this.hasCaptions = !!jsonFile.captions?.length;
   }
-}
-
-export interface VideoFile {
-  title: string;
-  src: string;
-  type: string;
-  poster?: string;
-  duration?: number;
-  description?: string;
-  captions?: VideoTrack[];
-  audioTracks?: AudioTrack[]; // Add this line
-  chapters?: Chapter[]; // Add this line  
-}
-
-/* captions */
-export interface VideoTrack {
-  src: string;
-  kind: string;
-  srclang: string;
-  label: string;
-  default?: boolean;
-}
-export interface Chapter {
-  title: string;
-  start: number;
-  end: number;
-}
-export interface Chapter {
-  title: string;
-  start: number;
-  end: number;
 }
