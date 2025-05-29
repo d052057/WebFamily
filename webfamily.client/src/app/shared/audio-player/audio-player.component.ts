@@ -1,7 +1,7 @@
-import { Component, ElementRef, output, signal, viewChild, effect, OnInit, OnDestroy, inject, computed, Input } from '@angular/core';
-import { Subject, switchMap, takeUntil, map, from, catchError, of } from 'rxjs';
+import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input } from '@angular/core';
+import { Subject, from  } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
-import { AudioItem, AutoplayCapability, PlaybackMode } from './models/audio.model';
+import { AudioItem, AutoplayCapability } from './models/audio.model';
 import { TimeConversionPipe } from './../pipes/time-conversion.pipe';
 import { EventListenerService } from '../services/event-handler.service';
 import { fadeInOut } from '../services/animations';

@@ -9,7 +9,7 @@
       </div>
       <div class="flex-grow-1">
         <article class="jumbotron">
-          <div class="text-center">
+          <div class="text-center" *ngIf="currentAudio()">
             <h5 class="card-title mb-1">{{ currentAudio().title || 'No track selected' }}</h5>
             <small class="text-muted">{{ currentAudioTime() | timeConversion }} / {{ totalAudioLength() | timeConversion }}</small>
           </div>

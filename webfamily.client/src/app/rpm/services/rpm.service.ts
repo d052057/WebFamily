@@ -1,14 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Rpm } from '../interfaces/rpm.interface';
-import { map, Observable } from 'rxjs';
+import { map } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment'; // Import environment if needed'
 @Injectable({
   providedIn: 'root'
 })
 export class RpmService {
   private http = inject(HttpClient);
-  coverFolder = signal<any>(''); // signal
+  readonly mediaConfig = environment.mediaConfig;
+  coverFolder = signal<any>(this.mediaConfig.AssetRpmCoverFolder); // signal
   
   getRpmMenuRS = rxResource<any, any>({
     request: () =>
@@ -39,11 +41,17 @@ export class RpmService {
   recordId = signal<any>(''); // signal
   rpmTrackUrl = signal<any>(''); // signal
   getRpmTracksRS = rxResource<any, any>({
-    request: () =>
-    ({
-      recordId: this.recordId(),
-      url: this.rpmTrackUrl()
-    }),
+    request: () => {
+      const recordId = this.recordId();
+      const url = this.rpmTrackUrl();
+
+      // Skip the request if either value is empty/invalid
+      if (!recordId || !url) {
+        return undefined;
+      }
+
+      return { recordId, url };
+    },
     loader: ({ request }) => this.http.get<Rpm>('/Rpm/GetRpmTracks/' + request.recordId)
       .pipe(
         map((data: any) => {

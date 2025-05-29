@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { debounceTime, distinctUntilChanged, fromEvent, merge } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { AudioTrack } from './interfaces/videoplayer.interface'; 
 import { VideoSource, Speed_array } from './models/video.model';
 import { EventListenerService } from '../services/event-handler.service';
@@ -142,8 +142,6 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     this.audio = this.externalAudioRef.nativeElement;
     this.setupEventListeners();
     this.setupKeyboardShortcuts();
-    
-
   }
 
   private setupEventListeners(): void {

@@ -6,7 +6,6 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 import { UserHasRoleDirective } from './shared/directives/user-has-role.directive';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { MenuServiceService } from './shared/services/menu-service.service';
 import { MatIconModule } from '@angular/material/icon';
 import { SvgIconService } from './shared/services/svg-icon.service';

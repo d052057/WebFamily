@@ -24,13 +24,13 @@ export class PhotoComponent implements OnInit {
   showModal = false;
   currentImageIndex = 0;
   fileFolder!: any;
+  menu: any;
 
   val: any = {
     photoFolder: '',
     fileFolder: ''
   }
-  photoParam!: ParamMap | any;
-  menu: any;
+
   dataResource = this.mediaService.getMediaRecordRS;
   visibleImages: boolean[] = [];
 
@@ -45,8 +45,8 @@ export class PhotoComponent implements OnInit {
       map(params => 
         {
           this.val.photoFolder = params.get('folder'),
-          this.val.fileFolder = this.mediaConfig.AssetPhotoFolder + "/" + params.get('folder') + "/",
           this.fileFolder = this.mediaConfig.AssetPhotoFolder + "/" + params.get('folder') + "/",
+            this.val.fileFolder = this.fileFolder,
           this.menu = this.activatedRoute.snapshot.url[0].path; // should return photos
         }
       )
@@ -73,7 +73,7 @@ export class PhotoComponent implements OnInit {
   public ngOnInit(): void {
     setTimeout(() => {
       this.checkVisibility();
-    }, 100);
+    }, 50);
   }
 
   checkVisibility() {
