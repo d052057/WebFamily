@@ -88,6 +88,7 @@ export class AudioPlayerComponent {
   // Signals for reactive state management
   private readonly _audios = signal<AudioItem[]>([]);
   readonly videos = this._audios.asReadonly();
+  @Input() imagePoster: string = '/images/family/calida.jpg';
 
   @Input()
   set dataSource(value: AudioItem[]) {

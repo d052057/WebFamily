@@ -52,8 +52,8 @@ export const routes: Routes = [
   },
   {
     path: 'rpm',
-    loadChildren: () => import('./rpm/rpm.module')
-      .then(mod => mod.RpmModule)
+    loadComponent: () => import('./rpm/rpm.component')
+      .then(mod => mod.RpmComponent)
   },
   {
     path: 'tube',

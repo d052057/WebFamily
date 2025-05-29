@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Rpm } from '../models/rpm.model';
+import { Rpm } from '../interfaces/rpm.interface';
 import { map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';

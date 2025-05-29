@@ -1,24 +1,55 @@
-html,
 body {
-  height: 100%;
-  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+* {
+  box-sizing: border-box;
+}
+.main-container {
+  display: flex;
+  height: calc(100vh - 56px); /* Adjust 56px to your navbar height */
+  margin-top: 56px; /* Add margin equal to navbar height if navbar is fixed */
+}
+
+.content-area {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Add these properties for better zoom handling */
+  overflow: hidden;
+  position: relative;
+}
+.content-area > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    /* Maintain the height calculation on mobile */
+    height: calc(100vh - 56px);
+    margin-top: 56px;
+  }
+
+  .content-area {
+    flex: 1;
+    /* Ensure proper scaling on mobile zoom */
+    min-height: 0;
   }
 }
 
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
-
-img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  /*    box-shadow: inset 5px 5px 5px rgba(0,0,0,0.2), inset -5px -5px 15px rgba(255,255,255,0.1), 5px 5px 15px rgba(0,0,0,0.3), -5px -5px 15px rgba(255,255,255,0.1);
-*/ /*padding: 0px;*/
-  /*border-radius: 10px;*/
+/* Additional fix for high zoom levels */
+@media (min-resolution: 150dpi) {
+  .main-container {
+    /* You might need to adjust this value based on testing */
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+  }
 }
