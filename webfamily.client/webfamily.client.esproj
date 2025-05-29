@@ -13,10 +13,9 @@
     </VisualStudio>
   </ProjectExtensions>
   <ItemGroup>
+    <None Remove="src\app\audio-player\**" />
     <None Remove="src\app\material\**" />
+    <TypeScriptConfiguration Remove="src\app\audio-player\**" />
     <TypeScriptConfiguration Remove="src\app\material\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\app\audio-player\thai-audio\" />
   </ItemGroup>
 </Project>
