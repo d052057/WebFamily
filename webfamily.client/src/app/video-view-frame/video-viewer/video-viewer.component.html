@@ -1,0 +1,47 @@
+<div class="video-viewer-container">
+  <div class="video-display">
+    <div class="canvas-container">
+      <canvas #canvas (wheel)="onWheel($event)"></canvas>
+      <div class="control-buttons">
+        <button class="fullscreen-btn" (click)="toggleFullScreen()" title="Toggle fullscreen">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+          </svg>
+        </button>
+        <button class="export-btn" (click)="exportCurrentFrame()" title="Export current frame">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="video-controls">
+      <span class="time-display">{{ formatTime(currentTime) }}</span>
+      <span class="frame-display">Frame: {{ currentFrame }}/{{ totalFrames }}</span>
+      <input type="range"
+             class="time-slider"
+             min="0"
+             [max]="videoDuration"
+             [value]="currentTime"
+             step="0.1"
+             (input)="onTimeSliderChange($event)"
+             [disabled]="!isVideoLoaded">
+      <span class="time-display">{{ formatTime(videoDuration) }}</span>
+    </div>
+
+    <div class="instructions">
+      <p>
+        <strong>Controls:</strong>
+        Mouse wheel to move frame by frame |
+        Arrow keys (←→) to navigate frames |
+        Home/End keys for first/last frame |
+        Export button to save current frame as image
+      </p>
+    </div>
+  </div>
+
+  <video #videoElement style="display: none;"></video>
+</div>

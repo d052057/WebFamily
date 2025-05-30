@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, FormsModule } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
 
-import { Observable, Subject, Subscription, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 

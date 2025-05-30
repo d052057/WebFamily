@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MediaService } from '../shared/services/media.service';
-import { finalize, map } from 'rxjs';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Router, ActivatedRoute, RouterOutlet, OutletContext } from '@angular/router';
+import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-docviewer',

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, LOCALE_ID, OnInit, inject, signal } from '@angular/core';
-import { AbstractControlOptions, FormControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
+import { AbstractControlOptions, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
 import { SnackService } from '../../shared/services/snack.service';
 import { TodoService } from '../services/todo.service';
 import { CommonModule, formatDate } from '@angular/common';
@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { languages } from '../../../app/models/languages';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { VoiceDirective } from '../../shared/directives/voice.directive';

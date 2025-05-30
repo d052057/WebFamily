@@ -1,11 +1,11 @@
-import { Component, HostListener, OnDestroy, OnInit, effect, inject } from '@angular/core';
+import { Component, HostListener, OnInit, effect, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
-import { Subject, Subscription, finalize, first, map, takeUntil } from 'rxjs';
+import { map } from 'rxjs';
 import { MediaService } from '../shared/services/media.service';
 import { SafePipe } from '../shared/pipes/safe.pipe';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { rxResource} from '@angular/core/rxjs-interop';
 export interface Iphoto {
   fileFolder: string,
   photoFolder: string

@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, computed, inject } from '@angular/core';
 import { MediaService } from '../../shared/services/media.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgClass, NgFor } from '@angular/common';

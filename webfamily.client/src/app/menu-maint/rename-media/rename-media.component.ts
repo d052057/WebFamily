@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormControl, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { languages } from '../../../app/models/languages';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject, Subscription, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 import { SvgIconService } from '../../shared/services/svg-icon.service';
 

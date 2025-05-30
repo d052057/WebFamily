@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TodoMaintComponent } from './todomaint/todomaint.component';
-import { MatTableDataSource } from '@angular/material/table';
 import { TodoService } from './services/todo.service';
 import { MatTableModule } from '@angular/material/table'
 import { SnackService } from '../shared/services/snack.service'
@@ -10,11 +9,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Subject, Subscription, takeUntil } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { languages } from '../../app/models/languages'
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CdkColumnDef } from '@angular/cdk/table';
 import { VoiceDirective } from '../shared/directives/voice.directive';
 import { SvgIconService } from "../shared/services/svg-icon.service"

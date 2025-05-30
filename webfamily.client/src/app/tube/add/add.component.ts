@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { AbstractControlOptions, FormControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import urlParser from "js-video-url-parser";
 import { finalize, map } from 'rxjs/operators';

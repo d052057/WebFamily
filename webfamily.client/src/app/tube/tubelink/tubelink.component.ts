@@ -3,7 +3,6 @@ import { NgxPaginationModule, PaginationInstance } from 'ngx-pagination';
 import { GridVideoComponent } from '../../shared/grid-video/grid-video.component';
 import { CommonModule } from '@angular/common';
 import { TubeService } from './../../tube/services/tube.service';
-import { finalize } from 'rxjs';
 import { Webtube } from './../models/webtubes.model';
 import { SafePipe } from '../../shared/pipes/safe.pipe';
 

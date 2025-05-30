@@ -41,6 +41,11 @@ export const routes: Routes = [
       .then(mod => mod.PlayMediaComponent)
   },
   {
+    path: 'frames/:folder',
+    loadComponent: () => import('./video-view-frame/video-view-frame.component')
+      .then(mod => mod.VideoViewFrameComponent)
+  },
+  {
     path: 'photos/:folder',
     loadComponent: () => import('./photo/photo.component')
       .then(mod => mod.PhotoComponent)

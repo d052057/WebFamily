@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, computed, inject, signal, viewChild } from '@angular/core';
 import { TubeService } from './services/tube.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -7,14 +7,14 @@ import { CommonModule } from '@angular/common';
 import { AddComponent } from './add/add.component';
 import { SnackService } from '../shared/services/snack.service';
 import { Webtube } from './models/webtubes.model'
-import { first, Subject, Subscription, takeUntil } from 'rxjs';
+import { first, Subject, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { languages } from '../../app/models/languages';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VoiceDirective } from '../../app/shared/directives/voice.directive';
 import { SvgIconService } from '../shared/services/svg-icon.service';
 @Component({

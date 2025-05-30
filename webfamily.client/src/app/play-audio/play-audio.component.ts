@@ -1,9 +1,8 @@
-import { Component, computed, effect, inject, Signal } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
-import { map, Subject, takeUntil } from 'rxjs';
+import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AudioItem } from '../shared/audio-player/models/audio.model';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouteParams } from './interfaces/audio.interface'; 

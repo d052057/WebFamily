@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TubeService } from '../services/tube.service'
-import { FormControl, FormGroup, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import urlParser from "js-video-url-parser";

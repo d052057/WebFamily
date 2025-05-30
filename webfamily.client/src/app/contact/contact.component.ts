@@ -1,5 +1,4 @@
 import { Component, VERSION } from '@angular/core';
-import { JsonPrettyPipe } from '../shared/pipes/json-pretty.pipe';
 import { fadeInOut } from '../shared/services/animations';
 import { SocialMediaComponent } from '../shared/components/social-media/social-media.component';
 @Component({

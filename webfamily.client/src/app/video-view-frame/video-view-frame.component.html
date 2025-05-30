@@ -1,0 +1,19 @@
+<div class="app-container">
+
+  <div class="content-container">
+    <app-video-viewer *ngIf="selectedVideo"
+                      [videoInfo]="selectedVideo">
+    </app-video-viewer>
+
+    <div class="video-list">
+      <h2>Available Videos</h2>
+      <ul>
+        <li *ngFor="let video of videoSources()"
+            [class.active]="selectedVideo?.id === video.id"
+            (click)="selectVideo(video)">
+          {{ video.title }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

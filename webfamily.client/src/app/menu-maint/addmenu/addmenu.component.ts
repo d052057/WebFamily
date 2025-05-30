@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, linkedSignal, signal } from '@angular/core';
-import { AbstractControl, AbstractControlOptions, FormControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal } from '@angular/core';
+import { AbstractControl, AbstractControlOptions, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
 import { AccountService } from '../../account/account.service';
@@ -10,9 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { languages } from '../../../app/models/languages';
-import { Subject, Subscription, takeUntil } from 'rxjs';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { menuType } from '../../models';
+import { Subject, takeUntil } from 'rxjs';
 import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 import { SvgIconService } from '../../shared/services/svg-icon.service';
 
