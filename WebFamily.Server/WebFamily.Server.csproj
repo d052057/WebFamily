@@ -57,4 +57,15 @@
 	<ItemGroup>
 	  <None Include="Data\photos.json" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="ffmpeg.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="ffplay.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="ffprobe.exe">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>
