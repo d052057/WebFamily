@@ -1,0 +1,98 @@
+[
+  {
+    "title": "PowerScript To Generate SSL Certificate in Windows:",
+    "lines": [
+      "1. Run the powerscript below.",
+      "2. The script 'localhost' will be generated and run MMC.exe as administrator.",
+      "3. Copy the cert 'localhost' from localmachine to 'Trusted Root Certification Authorities'",
+      "Code:",
+      "New-SelfSignedCertificate -Subject \"localhost\" -TextExtension @(\"2.5.29.17={text}DNS=localhost&IPAddress=127.0.0.1&IPAddress=::1\")"
+    ]
+  },
+  {
+    "title": "Ng Immigration Code to migrate Angular Version before 19 to 19",
+    "lines": [
+      "ng generate @schematics/angular:use-application-builder",
+      "ng generate @schematics/angular:update-workspace-config",
+      "ng generate @schematics/angular:update-ssr-imports",
+      "ng generate @angular/core:standalone",
+      "ng generate @angular/core:signal-input-migration",
+      "ng generate @angular/core:output-migration",
+      "ng generate @angular/core:signal-queries-migration",
+      "ng generate @angular/core:route-lazy-loading",
+      "ng generate @angular/core:inject",
+      "ng generate @angular/core:control-flow",
+      "ng update @angular/core --name=control-flow-migration",
+      "ng generate @angular/core:migration signal-queries",
+      "ng generate @angular/core:cleanup-unused-imports"
+    ]
+  },
+  {
+    "title": "Bat (.bat) file script to list files IN QUOTE in a directory:",
+    "lines": [
+      "@echo off",
+      "setlocal enabledelayedexpansion",
+      "for /f \"tokens=*\" %%f in ('dir /b') do (",
+      "echo '%%f',",
+      ")",
+      "endlocal"
+    ]
+  },
+  {
+    "title": "Upgrade Angular to latest Check Process:",
+    "lines": [
+      "npm i -g npm-check-updates",
+      "npm-check-updates -u",
+      "npm uninstall @angular/cli",
+      "npm install @angular/cli@latest",
+      "Note:run this in vs2022 terminal",
+      "ng update @angular/core @angular/cli @angular-devkit/build-angular",
+      "npm install",
+      "ng build"
+    ]
+  },
+  {
+    "title": "Bat file script to list files in a directory:",
+    "lines": [
+      "@echo off",
+      "setlocal enabledelayedexpansion",
+      "for /f \"tokens=*\" %%f in ('dir /b') do (",
+      "echo '%%f',",
+      "endlocal"
+    ]
+  },
+  {
+    "title": "Create Class model",
+    "lines": [
+      "ng g class <model-name> --type=model --skip-tests",
+      "Create Project from template",
+      "dotnet new --uninstall standaloneangulartemplate.template",
+      "dotnet new --install",
+      "dotnet new standalone-angular -o MyNewProject"
+    ]
+  },
+  {
+    "title": "Add DefaultAppPool (create application pool for IIS)",
+    "lines": [
+      "IIS App Pool\\DefaultAppPool"
+    ]
+  },
+  {
+    "title": "Extract Audio from Media",
+    "lines": [
+      "ffmpeg -i yourFile.webm -vn -acodec libmp3lame -q:a 4 output.mp3",
+      "ffmpeg -i input_video.mp4 -vn -acodec flac output.flac",
+      "note: a 4 is the quality of the audio, 0 is the best and 9 is the worst"
+    ]
+  },
+  {
+    "title": "Setting Static Ip address on IIS - run from cmd",
+    "lines": [
+      "netsh interface ip set address \"Ethernet 2\" static 192.168.1.158 255.255.255.0 192.168.1.1",
+      "netsh interface ip set dns \"Ethernet 2\" static 192.168.1.1",
+      "netsh interface ip add dns \"Ethernet 2\" 8.8.8.8 index=2",
+      "or",
+      "netsh interface ip set address \"Ethernet 2\" static 192.168.1.158 255.255.255.0 192.168.1.1 && netsh interface ip set dns \"Ethernet 2\" static 192.168.1.1 && netsh interface ip add dns \"Ethernet 2\" 8.8.8.8 index=2"
+    ]
+  }
+]

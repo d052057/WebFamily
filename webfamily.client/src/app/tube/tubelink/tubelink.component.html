@@ -1,0 +1,102 @@
+<div class="container-fluid pt-5">
+  <div class="row  justify-content-center">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      @if (isPlaying) {
+        <div class="nga-embed nga-embed-youtube nga-z-depth mb-2">
+          <iframe #videoPlayer id='videoPlayer' class="nga-embed-item" [src]=" rowSelect | safe: 'resourceUrl'" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      }
+    </div>
+    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      <div class="card" style="max-width: 100%;">
+        <div class="card-header">
+          @if (isPlaying) {
+            <marquee behavior="scroll" direction="left" [ngClass]="'text-primary'">
+              {{ currentVideo }}
+            </marquee>
+          }
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            @for (t of dataSource() | paginate: config; track t; let i = $index) {
+              <li class="list-group-item d-flex justify-content-between align-items-start"
+                (click)="selectedRow(t, dataSource().indexOf(t))" [ngClass]="{ 'text-bg-primary': i === videoIndex }">{{ dataSource().indexOf(t) + 1}} {{ t.webTubeTitle }}<span>{{ t.note }}</span></li>
+              }
+            </ul>
+          </div>
+          <div class="card-footer">
+            <pagination-template #p="paginationApi"
+              [id]="'custom'"
+              (pageChange)="config.currentPage = $event">
+
+              <nav role="navigation" [attr.aria-label]="screenReaderPaginationLabel">
+                @if (!(autoHide && p.pages.length <= 1)) {
+                  <ul class="ngx-pagination" [class.responsive]="responsive"
+                    >
+                    @if (directionLinks) {
+                      <li class="pagination-previous" [class.disabled]="p.isFirstPage()">
+                        @if (1 < p.getCurrent()) {
+                          <a tabindex="0" (keyup.enter)="p.previous()" (click)="p.previous()">
+                            {{ previousLabel }} <span class="show-for-sr">{{ screenReaderPageLabel }}</span>
+                          </a>
+                        }
+                        @if (p.isFirstPage()) {
+                          <span aria-disabled="true">
+                            {{ previousLabel }} <span class="show-for-sr">{{ screenReaderPageLabel }}</span>
+                          </span>
+                        }
+                      </li>
+                    }
+                    <li class="small-screen">
+                      {{ p.getCurrent() }} / {{ p.getLastPage() }}
+                    </li>
+                    @for (page of p.pages; track page) {
+                      <li [class.current]="p.getCurrent() === page.value"
+                        [class.ellipsis]="page.label === '...'"
+                        >
+                        @if (p.getCurrent() !== page.value) {
+                          <a tabindex="0" (keyup.enter)="p.setCurrent(page.value)" (click)="p.setCurrent(page.value)">
+                            <span class="show-for-sr">{{ screenReaderPageLabel }} </span>
+                            <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+                          </a>
+                        }
+                        @if (p.getCurrent() === page.value) {
+                          <span aria-live="polite">
+                            <span class="show-for-sr">{{ screenReaderCurrentLabel }} </span>
+                            <span>{{ (page.label === '...') ? page.label : (page.label | number:'') }}</span>
+                          </span>
+                        }
+                      </li>
+                    }
+                    @if (directionLinks) {
+                      <li class="pagination-next" [class.disabled]="p.isLastPage()">
+                        @if (!p.isLastPage()) {
+                          <a tabindex="0" (keyup.enter)="p.next()" (click)="p.next()">
+                            {{ nextLabel }} <span class="show-for-sr">{{ screenReaderPageLabel }}</span>
+                          </a>
+                        }
+                        @if (p.isLastPage()) {
+                          <span aria-disabled="true">
+                            {{ nextLabel }} <span class="show-for-sr">{{ screenReaderPageLabel }}</span>
+                          </span>
+                        }
+                      </li>
+                    }
+                  </ul>
+                }
+              </nav>
+            </pagination-template>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (isShow) {
+    <h1>Series...</h1>
+    <!--<app-grid-video [videoList]="videoSeries" (serieSelectedEvent)="fromSeriesSelected($event)"></app-grid-video>-->
+    <app-video-series
+                      [videoList]="videoSeries"
+                      [isLoading]="webtubeRecordsRS.isLoading()"
+                      (serieSelectedEvent)="fromSeriesSelected($event)"></app-video-series>
+  }

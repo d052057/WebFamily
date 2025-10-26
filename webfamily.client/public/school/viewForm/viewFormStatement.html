@@ -1,0 +1,48 @@
+<!--Author:Yitong Phou-->
+<h3>Sharing Codes Between View and Data Entry Forms</h3>
+<article>
+     In Mfg shop environments, viewing data forms are used to support daily production operations.
+     With web applications, viewing data forms can be simply just data entry forms with a view only CSS class.
+     It is simple to add view only CSS class to existing data entry forms.<br />
+     The benefits of doing this are 
+     <ul>
+          <li>Reduce redundancy codes</li>
+          <li>Time, Cost and Quality</li>
+          <li>Maintain codes in one place -- it is same concept like adding code into a lookup table in database.</li>
+     </ul>
+     Below is an example of using view only CSS class with a data entry form (load a data entry form, remove submit button and add CSS class):
+     <pre>
+     /*View Only CSS content */<strong>
+           .viewOnly {
+               pointer-events: none;
+               cursor: not-allowed;
+           }
+     </strong>&lt;!--HTML codes before loading.-->   
+     <strong>&lt;section id='content'>
+          &lt;div id='btnDiv'>
+               ... submit buttons group goes here
+          &lt;/div>
+          &lt;div>
+               ... data entry form goes here
+          &lt;/div>
+          &lt;/section>
+     </strong>&lt;!--load data entry from to a web page -->
+     <strong>$("#content").load("your HTML document.html");</strong>
+     </strong>&lt;!--Remove buttons elements-->
+     <strong>$("#btnDiv").remove();</strong>    
+     &lt;!--Add viewOnly class to parent of the form--><strong>
+          $("#content").wrapInner("&lt;div class='viewOnly'>&lt;/div>")</strong>
+          &lt;!--The result in HTML code after it has been loaded--><strong>
+          &lt;section id='content'>
+          &lt;div class='viewOnly'>
+               ... data entry form goes here
+               ...
+          &lt;/div>
+          &lt;/section></strong>
+     &lt;!--To do these steps in one line in Jquery-->
+     <strong>$('#content').load("yourDataEntryForm.html", function (data) {
+          $("#btnDiv").remove();
+          $("#content").wrapInner("&lt;div class='viewOnly'>&lt;/div>");
+     });</strong>
+     </pre>
+</article>

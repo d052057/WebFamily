@@ -1,0 +1,115 @@
+<div class="container p-3">
+  <h3>{{ data? 'Edit Existing Assignment':'Add new Assignment' }}</h3>
+  <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Current Speaking Language</mat-label>
+      <mat-select [(value)]="langSelected">
+        <mat-select-trigger>
+          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+        </mat-select-trigger>
+        @for (s of langData; track s; let i = $index) {
+          <mat-option [value]="i">
+            <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+          </mat-option>
+        }
+      </mat-select>
+
+    </mat-form-field>
+  </div>
+  <form [formGroup]="fldform" (ngSubmit)="onSubmit()">
+    <div class="form-group col-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="datepicker" class="form-control" formControlName="dueDate"
+          [ngClass]="{ 'is-invalid': submitted && f.dueDate.errors }">
+        <span matSuffix style="padding-right:1rem">
+          <mat-datepicker #datepicker></mat-datepicker>
+          <mat-datepicker-toggle [for]="datepicker"></mat-datepicker-toggle>
+        </span>
+
+        @if (submitted && f.dueDate.errors) {
+          <div class="invalid-feedback">
+            @if (f.dueDate.errors.required) {
+              <div>Due Date is required</div>
+            }
+          </div>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Start time</mat-label>
+        <input matInput [matTimepicker]="timepicker" formControlName="displayTime">
+        <mat-timepicker #timepicker></mat-timepicker>
+        <mat-timepicker-toggle [for]="timepicker" matSuffix />
+      </mat-form-field>
+
+    </div>
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>
+          Note
+        </mat-label>
+        <div class="textarea-container">
+          <textarea appVoice formControlName="note"
+            matInput
+            [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+            (voiceInput)="onVoiceInput($event)"
+            [microphone]="isNoteUserSpeaking"
+            [language]="langData[langSelected].code"
+            rows="5">
+
+          </textarea>
+          @if (!isNoteUserSpeaking) {
+            <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic_off</mat-icon>
+          }
+          @if (isNoteUserSpeaking) {
+            <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic</mat-icon>
+          }
+
+          @if (submitted && f.note.errors) {
+            <div class="invalid-feedback">
+              @if (f.note.errors.required) {
+                <div>Note is required</div>
+              }
+            </div>
+          }
+        </div>
+      </mat-form-field>
+    </div>
+    <div class="form-group col-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Assigned To</mat-label>
+        <input appVoice type="text"
+          formControlName="assigned"
+          matInput
+          (voiceInput)="onVoiceInput($event)"
+          [microphone]="isAssignedUserSpeaking"
+          [language]="langData[langSelected].code"
+          [ngClass]="{ 'is-invalid': submitted && f.assigned.errors }" />
+        <span matSuffix style="padding-right:1rem">
+          @if (!isAssignedUserSpeaking) {
+            <mat-icon (click)="checkMic('assigned')" class="circle">mic_off</mat-icon>
+          }
+          @if (isAssignedUserSpeaking) {
+            <mat-icon (click)="checkMic('assigned')" class="circle">mic</mat-icon>
+          }
+        </span>
+        @if (submitted && f.assigned.errors) {
+          <div class="invalid-feedback">
+            @if (f.assigned.errors.required) {
+              <div>Assigned is required</div>
+            }
+          </div>
+        }
+      </mat-form-field>
+    </div>
+    <div class="form-group pt-3">
+      <button class="btn btn-primary me-2">
+        {{data ? 'Update': 'Save'}}
+      </button>
+      <button class="btn btn-outline-info" [mat-dialog-close]="false">
+        Close
+      </button>
+
+    </div>
+  </form>
+</div>

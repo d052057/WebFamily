@@ -1,0 +1,118 @@
+.jumbotron {
+  padding: 2rem 1rem;
+  margin-bottom: 2rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+  position: relative;
+}
+.command-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h5 {
+    margin: 0;
+  }
+}
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Success state for copy button with animation
+.copy-btn.copied {
+  background: #28a745;
+
+  &:hover {
+    background: #1e7e34;
+  }
+
+  svg {
+    animation: checkmark-appear 0.3s ease-in-out;
+  }
+}
+
+// Failed state for copy button with animation
+.copy-btn.failed {
+  background: #dc3545;
+
+  &:hover {
+    background: #c82333;
+  }
+
+  svg {
+    animation: error-shake 0.5s ease-in-out;
+  }
+}
+
+@keyframes checkmark-appear {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-2px);
+  }
+
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+pre code {
+  display: block;
+  font-family: "Fira Code", "Courier New", monospace;
+  font-size: 0.9rem;
+  background: #f6f8fa;
+  color: #24292e;
+  padding: 1rem;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+code {
+  font-family: "Fira Code", "Courier New", monospace;
+  background: #f6f8fa;
+  color: #c7254e;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}

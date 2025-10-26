@@ -1,0 +1,43 @@
+th:first-child {
+    width:20%
+}
+button {
+    width:100%;
+}
+.bouncing-dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-right: 8px;
+}
+
+.bouncing-dots span {
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite;
+}
+
+.bouncing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.bouncing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

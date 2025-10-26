@@ -1,0 +1,206 @@
+/* You can add global styles to this file, and also import other style files */
+@use "public/assets/styles/bootstrap.css";
+/*colors =['#221924', '#004422', '#062751', '#F78914','#990000', '#708238', '#6a0dad'];
+*/
+:root {
+  --bs-C: #0d6efd;
+}
+.form-control {
+  border-color: rgba(var(--bs-primary-rgb), .3 );
+}
+
+.input-group-text {
+  background-color: rgba(var(--bs-primary-rgb),.3 );
+}
+
+.form-control:focus {
+  border-color: rgba(var(--bs-primary),.8 );
+  box-shadow: 0 0 0 0.1rem rgba(var(--bs-primary-rgb),.8 );
+}
+
+select[multiple]:focus option:checked {
+  background: var(--bs-primary) linear-gradient(0deg, var(--bs-primary-rgb) 0%, var(--bs-primary-rgb) 100%) !important;
+}
+
+.dropdown-item {
+  color: var(--bs-primary);
+}
+
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: white !important;
+  background-color: rgba(var(--bs-primary-rgb), .8);
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: var(--bs-primary);
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: Moulpali;
+  src: url('/khmerfont/Moulpali.ttf') format("truetype");
+}
+
+h1, h2, h3 {
+  font-family: 'Arial', sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  opacity: 0.5;
+  transform: translate(-50%, -50%);
+}
+
+.spinner-border {
+  color: var(--bs-primary);
+}
+
+ul > li > a:hover,
+ul > li > a:focus {
+  background-color: #eee;
+}
+
+ul > li:hover,
+ul > li:focus {
+  background-color: #eee;
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+  background-color: #eee;
+}
+
+.nav > .nav-item.active > a,
+.nav > .nav-item.active > a:hover,
+.nav > .nav-item.active > a:focus {
+  background-color: #efefef;
+}
+
+.navbar .nav-item > a:hover,
+.nav li.toolbaritem a:hover {
+  color: #E03930;
+}
+
+.nav-item .nav-link:focus,
+.nav-link.dropdown-toggle:focus {
+  color: #221924 !important;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  background-color: transparent;
+}
+
+/*audio mic*/
+.circle {
+  background-color: #fff;
+  border: 1px solid var(--bs-primary);
+  border-radius: 50% !important;
+  color: var(--bs-primary);
+}
+
+
+.top-corner-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.textarea-container {
+  position: relative;
+}
+.navbar-brand {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+/* Container Settings */
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+}
+
+/* Logo Base Styles */
+.logo-perfect {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow: visible !important;
+  line-height: 0;
+  /* Default size (adjust as needed) */
+  width: 60px;
+  height: 60px;
+  font-size: 60px;
+  /* Force SVG rendering */
+  ::ng-deep svg {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    overflow: visible !important;
+  }
+}
+
+/* FIXED: Card grid responsive fixes */
+.col-6, .col-sm-6, .col-md-4, .col-lg-3, .col-xl-2 {
+  min-width: 0; /* Prevent flex items from overflowing */
+}
+/* Original media query */
+@media screen and (max-width:600px) {
+  .banner {
+    height: 700px;
+  }
+}
+
+/* FIXED: Enhanced responsive adjustments */
+@media screen and (max-width: 768px) {
+  .top-right {
+    right: 1rem;
+    top: 1.5rem;
+    font-size: 120%;
+    max-width: calc(100vw - 2rem); /* Prevent overflow on smaller screens */
+  }
+
+  .top-left {
+    left: 1rem;
+    top: 4rem;
+    font-size: 120%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .top-right {
+    right: 0.5rem;
+    top: 1rem;
+    font-size: 100%;
+    max-width: calc(100vw - 1rem); /* Prevent overflow on mobile */
+  }
+
+  .top-left {
+    left: 0.5rem;
+    top: 3rem;
+    font-size: 100%;
+  }
+}
+
+/* FIXED: Additional safety for very small screens */
+@media screen and (max-width: 320px) {
+  .card-img-top {
+    height: 20vw;
+    animation-delay: 10ms;  /*Add delay here */
+  }
+}

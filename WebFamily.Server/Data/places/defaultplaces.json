@@ -1,0 +1,26 @@
+{
+  "id": "default",
+  "name": "WebFamily User",
+  "email": "d052057@yahoo.com",
+  "picture": "https://via.placeholder.com/40",
+  "savedPlaces": [
+    {
+      "id": "1",
+      "name": "Seattle Space Needle",
+      "address": "400 Broad St, Seattle, WA 98109",
+      "lat": 47.6205,
+      "lng": -122.3493,
+      "type": "landmark",
+      "dateAdded": "2025-07-02T07:48:06.7162594Z"
+    },
+    {
+      "id": "2",
+      "name": "Pike Place Market",
+      "address": "85 Pike St, Seattle, WA 98101",
+      "lat": 47.6089,
+      "lng": -122.3403,
+      "type": "market",
+      "dateAdded": "2025-07-02T07:48:06.716317Z"
+    }
+  ]
+}

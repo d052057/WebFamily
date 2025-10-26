@@ -1,0 +1,96 @@
+.video-viewer-container {
+  width: 100%;
+}
+
+.video-display {
+  position: relative;
+  width: 100%;
+  background-color: #000;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+}
+
+canvas {
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  cursor: ew-resize;
+}
+
+.control-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.fullscreen-btn,
+.export-btn {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 10;
+  opacity: 0.7;
+}
+
+.fullscreen-btn:hover,
+.export-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 1;
+}
+
+.canvas-container:fullscreen canvas {
+  max-height: 100vh;
+  height: 100vh;
+  width: 100%;
+  object-fit: contain;
+}
+
+.video-controls {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+}
+
+.time-slider {
+  flex-grow: 1;
+  margin: 0 10px;
+  height: 8px;
+}
+
+.time-display {
+  font-family: monospace;
+  font-size: 14px;
+  min-width: 40px;
+}
+
+.frame-display {
+  font-family: monospace;
+  font-size: 14px;
+  margin: 0 15px;
+  white-space: nowrap;
+}
+
+.instructions {
+  text-align: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 14px;
+  color: #555;
+}

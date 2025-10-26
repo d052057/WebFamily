@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 120" version="1.1" width="200" height="200">
+  <g id="svg_1" fill="currentColor" stroke="currentColor">
+    <patH stroke-width="8" d="M20 35 Q20 36 20 35 L40 85 L60 20 L80 85 L100 35 Q100 36 100 35" fill="none" stroke-linejoin="round"></patH>
+    <patH stroke-width="1" d="M40 90 h-20 l10 -30 z"></patH>
+    <patH stroke-width="1" d="M80 90 h20 l-10 -30 z"></patH>
+    <patH stroke-width="1" d="M40 90 l10 -30 h10 10 l10 30 z"></patH>
+    <patH stroke-width="1" d="M50 92 h20 z"></patH>
+    <patH stroke-width="1" d="M48 94 h24 z"></patH>
+    <patH stroke-width="1" d="M46 96 h28 z"></patH>
+    <patH stroke-width="1" d="M44 98 h32 z"></patH>
+    <patH stroke-width="8" d="M30 69 h60 z"></patH>
+    <circle R="58" CX="60" CY="60" fill="none" stroke-width="4"></circle>
+  </g>
+</svg>

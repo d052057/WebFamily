@@ -1,0 +1,42 @@
+<div class="container-fluid mt-1">
+  <!--<h3 class="text-start text-primary"><i class="bi bi-folder2-open"></i> {{ folderName }}</h3>-->
+  <!-- Gallery -->
+  @if (!isLoading && videoList().length > 0) {
+  <div class="row g-4" id="gallery-container">
+    @for (image of videoList(); track image; let i = $index) {
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+      <div class="gallery-item"
+           [class.visible]="visibleImages[i]"
+           (click)="selectSeries(image)">
+        <img [src]="getImgUrl(image)"
+             [alt]="image.title"
+             class="img-fluid gallery-image"
+             loading="lazy">
+        <div class="overlay">
+          <i class="bi bi-arrows-fullscreen"></i>
+          <!--<div class="overlay-title">
+            {{ image.videoTitle }}
+          </div>-->
+        </div>
+        <div class="image-title">
+          {{ image.videoTitle }}
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Down arrow indicator -->
+  <div class="scroll-indicator" [class.hidden]="!showDownArrow">
+    <i class="bi bi-chevron-down"></i>
+    <span>More images</span>
+  </div>
+  }
+
+  <!-- No images state -->
+  @if (!isLoading && videoList().length === 0) {
+  <div class="text-center p-5">
+    <p>No images found.</p>
+  </div>
+  }
+</div>

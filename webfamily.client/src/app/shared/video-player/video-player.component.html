@@ -1,0 +1,351 @@
+<div class="row">
+  <div class="col-md-8">
+    <figure #figure class="video-container">
+      <video #videoPlayer preload="metadata" crossorigin="anonymous">
+        <!-- Use trackBy for better performance with captions -->
+        @for (caption of currentVideo()?.captions; track trackByCaption($index, caption)) {
+        <track [src]="caption.src"
+               kind="subtitles"
+               [label]="caption.label"
+               [attr.default]="caption.default ? '' : null">
+        }
+
+        <!-- Audio tracks with trackBy -->
+        @if (currentVideo()?.hasAudioTracks) {
+        @for (track of currentVideo()?.audioTracks; track trackByAudioTrack($index, track)) {
+        <track [src]="track.src"
+               [kind]="track.kind"
+               [srclang]="track.language"
+               [label]="track.label"
+               [default]="track.default">
+        }
+        }
+
+        <p>Your browser doesn't support HTML5 video.</p>
+      </video>
+
+      <audio #externalAudio hidden></audio>
+
+      <!-- Optimized thumbnail preview with better positioning -->
+      <div #thumbnailPreview
+           class="thumbnail-preview round position-absolute"
+           [class.d-block]="showThumbnail()"
+           [class.d-none]="!showThumbnail()"
+           style="z-index: 1000; pointer-events: none;">
+        @if (!isFullscreen()) {
+        <div class="thumbnail-image border rounded shadow bg-dark"
+             style="width: 160px; height: 90px; background-size: cover; background-position: center;">
+        </div>
+        }
+        @if (isFullscreen()) {
+        <div class="thumbnail-image border rounded shadow bg-dark"
+             style="width: 640px; height: 360px; background-size: cover; background-position: center;">
+        </div>
+        }
+        <div class="thumbnail-time text-white px-2 py-1 text-center small bg-dark bg-opacity-75 rounded mt-1">
+          {{ (thumbnailTime() / 1000) | timeConversion }}
+
+        </div>
+      </div>
+
+      <!-- Custom controls with signal-based bindings -->
+      <div class="video-controls position-absolute bottom-0 start-0 end-0 px-2 py-1 bg-dark bg-opacity-75 text-white">
+        <!-- Progress bar with improved interaction -->
+        <div class="progress position-relative mb-2"
+             style="height: 8px; cursor: pointer;"
+             (mousedown)="onProgressBarClick($event)"
+             (mousemove)="onProgressBarMove($event)"
+             (mouseenter)="_showThumbnail.set(true)"
+             (mouseleave)="_showThumbnail.set(false)">
+
+          <!-- Buffer progress -->
+          <div class="progress-bar bg-light bg-opacity-25 position-absolute top-0 start-0 h-100"
+               [style.width.%]="bufferProgress()"
+               role="progressbar">
+          </div>
+
+          <!-- Video progress -->
+          <div class="progress-bar bg-danger position-absolute top-0 start-0 h-100"
+               [style.width.%]="videoProgress()"
+               role="progressbar">
+          </div>
+        </div>
+
+        <!-- Control buttons with signal bindings -->
+        <div class="control-buttons d-flex align-items-center justify-content-between w-100">
+          <!-- Play/Pause button -->
+          <button class="btn btn-sm text-white border-0 p-1"
+                  (click)="togglePlay()"
+                  [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'">
+            <i class="bi fs-5"
+               [class.bi-pause-fill]="isPlaying()"
+               [class.bi-play-fill]="!isPlaying()"></i>
+          </button>
+
+          <!-- Time display -->
+          <div class="time-display ms-2 small text-nowrap">
+            {{ currentTime() / 1000 | timeConversion }} / {{ duration() / 1000 | timeConversion }}
+          </div>
+
+          <!-- Volume control - Default Audio -->
+          @if (isDefaultAudio()) {
+          <div class="volume-control d-flex align-items-center ms-2">
+            <button class="btn btn-sm text-white border-0 p-1"
+                    (click)="toggleMute()"
+                    [attr.aria-label]="isMuted() ? 'Unmute' : 'Mute'">
+              <i class="bi fs-6"
+                 [class.bi-volume-mute-fill]="isMuted()"
+                 [class.bi-volume-up-fill]="!isMuted()"></i>
+            </button>
+            <input type="range"
+                   class="form-range volume-slider ms-1"
+                   min="0"
+                   max="1"
+                   step="0.01"
+                   style="width: 80px;"
+                   [value]="volume()"
+                   (input)="onVolumeChange($event)"
+                   [attr.aria-label]="'Volume: ' + (volume() * 100 | number:'1.0-0') + '%'">
+          </div>
+          }
+
+          <!-- Volume control - External Audio -->
+          @if (!isDefaultAudio()) {
+          <div class="volume-control d-flex align-items-center ms-2">
+            <button class="btn btn-sm text-white border-0 p-1"
+                    (click)="toggleAudioMute()"
+                    [attr.aria-label]="isAudioMuted ? 'Unmute Audio' : 'Mute Audio'">
+              <i class="bi fs-6"
+                 [class.bi-volume-mute-fill]="isAudioMuted"
+                 [class.bi-volume-up-fill]="!isAudioMuted"></i>
+            </button>
+            <input type="range"
+                   class="form-range volume-slider ms-1"
+                   min="0"
+                   max="1"
+                   step="0.01"
+                   style="width: 80px;"
+                   [value]="audioVolume"
+                   (input)="onAudioVolumeChange($event)"
+                   [attr.aria-label]="'Audio Volume: ' + (audioVolume * 100 | number:'1.0-0') + '%'">
+          </div>
+          }
+
+          <!-- Caption control -->
+          @if (currentVideo()?.hasCaptions) {
+          <div class="caption-control ms-2">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="captionDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [class.text-warning]="captionsEnabled"
+                      [attr.aria-label]="'Captions: ' + (captionsEnabled ? 'On' : 'Off')">
+                <i class="bi bi-badge-cc-fill fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="captionDropdown">
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleCaptions(null)"
+                          [class.active]="!captionsEnabled">
+                    Off
+                  </button>
+                </li>
+                @for (track of textTracks; track trackByTextTrack($index, track)) {
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleCaptions(track)"
+                          [class.active]="track.mode === 'showing'">
+                    {{ track.label || 'Unknown' }}
+                  </button>
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+          }
+
+          <!-- Audio tracks control -->
+          @if (currentVideo()?.hasAudioTracks) {
+          <div class="audio-control ms-2">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="audioTrackDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Audio Track'">
+                <i class="bi bi-translate fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="audioTrackDropdown">
+                @for (track of currentVideo()?.audioTracks; track trackByAudioTrack($index, track)) {
+                <li>
+                  <button class="dropdown-item"
+                          (click)="selectAudioTrack(track)"
+                          [class.active]="track.id === currentAudioIndex">
+                    {{ track.label }}
+                  </button>
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+          }
+
+          <!-- Chapters control -->
+          @if (currentVideo()?.hasChapters) {
+          <div class="chapters-control ms-2">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="chaptersDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Chapters'">
+                <i class="bi bi-list-ul fs-6"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="chaptersDropdown">
+                @for (chapter of currentVideo()?.chapters; track trackByChapter($index, chapter)) {
+                <li>
+                  <button class="dropdown-item"
+                          (click)="seekToTime(chapter.start)">
+                    {{ chapter.title }} ({{ chapter.start | timeConversion }})
+                  </button>
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+          }
+
+          <!-- Speed control -->
+          <div class="speed-control ms-2">
+            <div class="dropdown">
+              <button class="btn btn-sm text-white border-0 p-1 dropdown-toggle"
+                      type="button"
+                      id="speedDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      [attr.aria-label]="'Playback Speed: ' + playbackRate() + 'x'">
+                <i class="bi bi-speedometer2 fs-6"></i>
+                <small class="ms-1">{{ playbackRate() }}x</small>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="speedDropdown">
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleSpeed(1)"
+                          [class.active]="playbackRate() === 1">
+                    1x (Normal)
+                  </button>
+                </li>
+                @for (sp of speed; track trackBySpeed($index, sp)) {
+                <li>
+                  <button class="dropdown-item"
+                          (click)="toggleSpeed(sp)"
+                          [class.active]="sp === playbackRate()">
+                    {{ sp }}x
+                  </button>
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          <!-- Spacer -->
+          <div class="flex-grow-1"></div>
+
+          <!-- Fullscreen button -->
+          <button class="btn btn-sm text-white border-0 p-1"
+                  (click)="toggleFullscreen()"
+                  [attr.aria-label]="isFullscreen() ? 'Exit Fullscreen' : 'Enter Fullscreen'">
+            <i class="bi fs-5"
+               [class.bi-fullscreen-exit]="isFullscreen()"
+               [class.bi-fullscreen]="!isFullscreen()"></i>
+          </button>
+        </div>
+      </div>
+    </figure>
+    <div>
+      <p>{{ errorMessage() }} </p>
+    </div>
+  </div>
+
+  <!-- Optimized Video playlist -->
+  <div class="col-md-4">
+    <div class="playlist-container">
+      <h3>Playlist</h3>
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Search for</mat-label>
+          <input appVoice type="search" matInput
+                 placeholder="{{ langSearch }}"
+                 [ngModel]="searchVal()"
+                 (ngModelChange)="onSearch($event)"
+                 (voiceInput)="onVoiceInput($event)"
+                 [microphone]="isUserSpeaking"
+                 [language]="langData[langSelected].code"
+                 style="width:100% !important">
+          <span matSuffix style="display: flex; padding-right:1rem;">
+            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+              <mat-select-trigger>
+                <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+              </mat-select-trigger>
+              @for (s of langData; track s; let i = $index) {
+              <mat-option [value]="i">
+                <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+              </mat-option>
+              }
+            </mat-select>
+            <span style="display: flex; padding-left:1rem; ">
+              @if (!isUserSpeaking) {
+              <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
+              }
+              @if (isUserSpeaking) {
+              <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
+              }
+            </span>
+          </span>
+        </mat-form-field>
+      </div>
+      <div class="list-group list-group-flush" style="max-height: 400px; overflow-y: auto;">
+        @for (video of videos(); track trackByVideo(i, video); let i = $index) {
+        <button class="list-group-item list-group-item-action d-flex justify-content-between align-items-start p-2"
+                [class.active]="currentVideo()?.id === video.id"
+                [class.list-group-item-dark]="currentVideo()?.id === video.id"
+                (click)="playVideo(video)"
+                [attr.aria-label]="'Play ' + video.title">
+          <div class="flex-grow-1">
+            <div class="fw-medium">{{ video.title }}</div>
+            @if (video.description) {
+            <small class="text-muted">
+              {{ video.description | slice:0:50 }}{{ video.description && video.description.length > 50 ? '...' : '' }}
+            </small>
+            }
+          </div>
+          <div class="text-end ms-2">
+            @if (video.duration) {
+            <span class="badge bg-secondary">
+              {{ video.duration }}
+            </span>
+            }
+            @if (currentVideo()?.id === video.id) {
+            <div class="small text-muted mt-1">
+              <i class="bi bi-play-fill"></i> Playing
+            </div>
+            }
+          </div>
+        </button>
+        }
+
+        <!-- Empty state -->
+        @if (videos().length === 0) {
+        <div class="list-group-item text-center text-muted py-4">
+          <i class="bi bi-music-note-list fs-1 d-block mb-2"></i>
+          No videos in playlist
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

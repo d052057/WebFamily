@@ -1,0 +1,8 @@
+<app-photo-gallery [images]="dataResource.value() || []"
+                   [fileFolder]="fileFolder"
+                   [folderName]="val.photoFolder"
+                   [isLoading]="dataResource.isLoading()">
+</app-photo-gallery>
+<ngx-spinner type="ball-scale-multiple">
+  <p style="color: white">Loading...</p>
+</ngx-spinner>

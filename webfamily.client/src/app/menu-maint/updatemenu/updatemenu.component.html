@@ -1,0 +1,224 @@
+<div class="container mt-1 fade-in-out">
+  <h3 class="text-center">Update Database From File Folders</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Folder</th>
+        <th scope="col">Update Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onInitDatabaseUpdate()" [disabled]="initDatabaseUpdate">
+              Initial Media Database
+            </button>
+          </div>
+        </td>
+        <td>
+          {{ initDatabaseStatus }}
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('musics')" [disabled]="musicsUpdate">
+              @if (musicsUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Refresh Musics Data
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of musicUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate">
+              @if (booksUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update Books
+            </button>
+          </div>
+
+        </td>
+        <td>
+          @for (stat of bookUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('movies')" [disabled]="moviesUpdate">
+              @if (moviesUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update Movies
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of movieUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('videos')" [disabled]="videosUpdate">
+              @if (videosUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update Videos
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of videoUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('photos')" [disabled]="photosUpdate">
+              @if (photosUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update Photos
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of photoUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate">
+              @if (textUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update Text Files
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of textUpdateStatus ; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('americansongs')" [disabled]="songsUpdate">
+              @if (songsUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update English
+              Songs
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of americanSongUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate">
+              @if (rpmsUpdate) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Update រស្មីពានមាស
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of rpmUpdateStatus; track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

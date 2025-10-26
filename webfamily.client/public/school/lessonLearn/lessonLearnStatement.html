@@ -1,0 +1,12 @@
+<!--Author:Yitong Phou-->
+<h3>Lesson Learn from this Project</h3>
+Here are issues occurred during developing this project.  
+<ul>
+<li>MS-Edge has issue with declaring array in javascript class but not in Chrome, "SCRIPT1005: SCRIPT1005: Expected '('".  It causes Ms-Edge not to see javascript class.  However, there is a way around to fix. The issue will be investigated later.</li>
+<li>MS-Edge has issues 8 digit hex color codes and with <strong>style="background-color: rgba(var(--todayColor),var(--alpha100))"</strong> but not in Chrome. For now, CSS class must be defined and used it in the HTML instead (e.i &lt;p class="bgSunColor">This is a test&lt;/p>.
+However, MS-Edge has <u>no issue</u> with <strong>style="background-color: rgb(var(--todayColor))"</strong>.</li>
+<li>SVG path tag: Need to add &lt;/path> instead of "/>" at the end of the tag. Work for both Chrome and MS-Edge but MS-Edge complains about it.</li>
+<li>Chrome caching seems to be stubborn. Removing caching manually is required almost every times in order to see changes during debugging in VS2019 enviroment. Control key and F5 key won't refresh the caching.</li>
+<li>Githup.IO issue: welcome to the Unix world, file name is case sensitive... but CDN links and Microsoft world are not case sensitive on file names.</li>
+</ul>
+With those issues above, the project had to be rewritten and revised many times to the CSS, HTML and Javascript files. There are many browsers out there I have not tested it with.  Therefore, I can not guaranty that this will work across platform.

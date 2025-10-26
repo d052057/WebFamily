@@ -1,0 +1,25 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.action {
+  display: flex;
+  gap: 5px;
+}
+tr.no-data-row {
+  display: flex;
+  border-width: 0;
+  border-style: solid;
+  align-items: center;
+  box-sizing: border-box;
+
+  td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    word-wrap: break-word;
+    min-height: inherit;
+    height: 100%;
+  }
+}

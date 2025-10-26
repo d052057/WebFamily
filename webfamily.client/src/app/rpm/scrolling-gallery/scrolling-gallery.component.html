@@ -1,0 +1,45 @@
+<div class="gallery-container">
+  <div class="gallery-viewport" #galleryViewport>
+    <div class="gallery-track" #galleryTrack
+      [style.transform]="'translateY(' + translateY + 'px)'">
+      @for (picture of pictures; track picture; let i = $index) {
+        <div
+          class="picture-item"
+          [attr.data-picture-id]="picture.id"
+          (click)="onPictureClick(picture)"
+          [style.animation-delay]="(i % 2 === 0 ? '0.1s' : '0.2s')">
+          @if (!picture.coverUrl) {
+            <div class="picture-placeholder">
+              <i class="bi bi-image"></i>
+              Picture {{picture.id}}
+            </div>
+          }
+          @if (picture.coverUrl) {
+            <img
+              [src]="picture.coverUrl"
+              [alt]="picture.folder || 'Picture ' + picture.id"
+              class="picture-image">
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Navigation buttons -->
+  <button class="nav-button nav-up"
+    (click)="scrollUp()"
+    [disabled]="currentPosition === 0">
+    <i class="bi bi-chevron-up"></i>
+  </button>
+
+  <button class="nav-button nav-down"
+    (click)="scrollDown()"
+    [disabled]="currentPosition === maxPosition">
+    <i class="bi bi-chevron-down"></i>
+  </button>
+
+  <!-- Gallery indicator -->
+  <div class="gallery-indicator">
+    {{startItem}}-{{endItem}} of {{totalItems}}
+  </div>
+</div>

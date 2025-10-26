@@ -1,0 +1,29 @@
+
+<div class="container-fluid">
+  <!-- PDF Viewer -->
+  @if (routeParams()?.type === 'pdf') {
+  <div class="card">
+    <div class="card-header">
+      <h5>{{ docTitle }}</h5>
+    </div>
+    <div class="card-body p-0">
+      <ngx-extended-pdf-viewer [src]="pdfFile"
+                               [height]="'auto'"
+                               [textLayer]="true"
+                               [showHandToolButton]="true">
+      </ngx-extended-pdf-viewer>
+    </div>
+  </div>
+  }
+  <!-- Text Viewer -->
+  @if (routeParams()?.type === 'text') {
+  <div class="card">
+    <div class="card-header">
+      <h5>{{ docTitle }}</h5>
+    </div>
+    <div class="card-body">
+      <pre class="text-content">{{ textContent() }}</pre>
+    </div>
+  </div>
+  }
+</div>

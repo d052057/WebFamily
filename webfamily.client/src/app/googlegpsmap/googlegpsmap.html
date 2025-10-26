@@ -1,0 +1,577 @@
+
+<div class="container-fluid">
+  <!-- Header with Profile Integration -->
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <h2 class="text-primary mb-0">GPS Distance Calculator - Google Maps</h2>
+    <div class="d-flex align-items-center">
+      @if (!userProfile) {
+      <div class="auth-section">
+        <button (click)="signInWithGoogle()" class="btn btn-danger">
+          <i class="bi bi-google"></i> Sign in with Google
+        </button>
+      </div>
+      }
+      @if (userProfile) {
+      <div class="d-flex align-items-center gap-2">
+        <img [src]="userProfile.picture" [alt]="userProfile.name" class="rounded-circle border border-2 border-primary" style="width: 40px; height: 40px;">
+        <span class="fw-medium">{{ userProfile.name }}</span>
+        <button (click)="signOut()" class="btn btn-outline-secondary btn-sm">Sign Out</button>
+      </div>
+      }
+    </div>
+  </div>
+  <!-- Search Section -->
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-8">
+        <mat-form-field appearance="outline" style="display:flex">
+          <mat-label>Search for</mat-label>
+          <input appVoice type="text" matInput
+                 placeholder="{{ langSearch }}"
+                 [ngModel]="searchQuery()"
+                 (ngModelChange)="onSearchInput($event)"
+                 (voiceInput)="onVoiceInput($event)"
+                 [microphone]="isUserSpeaking"
+                 [language]="langData[langSelected].code"
+                 class="search-input"
+                 [class.loading]="isSearching">
+
+
+          <span matSuffix style="display: flex; padding-right:1rem;">
+            @if (searchQuery().length > 0) {
+            <mat-icon (click)="clearSearch()"
+                      style="cursor: pointer; margin-right: 0.5rem; color: #666;
+                 min-width: 24px; width: 24px; height: 24px;
+                 display: inline-flex; align-items: center; justify-content: center;"
+                      title="Clear search">
+              clear
+            </mat-icon>
+            }
+            @if (isSearching && searchQuery().length >= 3) {
+            <span class="spinner-container" style="margin-right: 1rem;">
+              <span class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </span>
+            </span>
+            }
+
+            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+              <mat-select-trigger>
+                <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+              </mat-select-trigger>
+              @for (s of langData; track s; let i = $index) {
+              <mat-option [value]="i">
+                <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+              </mat-option>
+              }
+            </mat-select>
+            <span style="display: flex; padding-left:1rem;">
+              @if (!isUserSpeaking) {
+              <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
+              }
+              @if (isUserSpeaking) {
+              <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
+              }
+            </span>
+          </span>
+        </mat-form-field>
+
+      </div>
+      <div class="col-md-4">
+        <div class="d-flex justify-content-start align-items-center gap-3 mb-4">
+          <button (click)="setActiveSearchPoint('A')"
+                  [class.active]="activeSearchPoint === 'A'"
+                  class="btn btn-primary btn-sm rounded-circle point bg-danger">
+            Point A
+          </button>
+          <button (click)="setActiveSearchPoint('B')"
+                  [class.active]="activeSearchPoint === 'B'"
+                  class="btn btn-primary btn-sm rounded-circle point bg-success">
+            Point B
+          </button>
+          <button (click)="setActiveSearchPoint('C')"
+                  [class.active]="activeSearchPoint === 'C'"
+                  class="btn btn-primary btn-sm rounded-circle point bg-blue">
+            Point C
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Search Results with improved visibility logic -->
+      @if (showSearchResults && searchResults.length > 0) {
+      <div class="mt-3">
+        <div class="list-group search-results">
+          @for (result of searchResults; track result.lat + ',' + result.lon) {
+          <div class="list-group-item list-group-item-action search-result-item"
+               (click)="selectSearchResult(result)">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="flex-grow-1">
+                <h6 class="mb-1">{{ result.display_name }}</h6>
+                <p class="mb-1 text-muted small">{{ result.lat }}, {{ result.lon }}</p>
+                <span class="badge bg-primary">{{ result.type | titlecase }}</span>
+                @if (result.importance) {
+                <span class="badge bg-info ms-1">
+                  Rating: {{ result.importance }}
+                </span>
+                }
+              </div>
+              <div class="ms-3">
+                @if (userProfile && userProfile.id !== 'default') {
+                <button (click)="savePlace(result); $event.stopPropagation()"
+                        class="btn btn-primary btn-sm">
+                  <i class="bi bi-bookmark-plus"></i>
+                </button>
+                }
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Show message when searching but no results yet -->
+      @if (isSearching && searchQuery().length >= 3 && searchResults.length === 0) {
+      <div class="mt-3">
+        <div class="alert alert-info d-flex align-items-center">
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          Searching for "{{ searchQuery() }}"...
+        </div>
+      </div>
+      }
+
+      <!-- Show message when no results found -->
+      @if (!isSearching && searchQuery().length >= 3 && searchResults.length === 0 && !showSearchResults) {
+      <div class="mt-3">
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle"></i>
+          No results found for "{{ searchQuery() }}". Try a different search term.
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  @if (userProfile) {
+  <div class="mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-bookmark-heart"></i> Your Saved Places
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          @for (place of userProfile.savedPlaces; track place.id) {
+          <div class="col-md-5 col-lg-3">
+            <div class="card h-100 saved-place-card" (click)="loadSavedPlace(place)">
+              <div class="card-body d-flex jumbotron">
+                <div class="me-3">
+                  <i [class]="'bi ' + getPlaceIcon(place.type) + ' text-primary fs-4'"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="card-title">
+                    {{ place.name }}<span style="float:right !important">
+                      <button (click)="removeSavedPlace(place.id); $event.stopPropagation()" class="btn btn-danger btn-sm rounded-circle">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </span>
+                  </h6>
+                  <p class="card-text text-muted small">{{ place.address }}</p>
+                  <small class="text-muted">Added: {{ place.dateAdded | date:'short' }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+
+
+  <!-- Coordinate Input Section -->
+  <div class="mb-4">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-geo-alt"></i> Manual Coordinate Input
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <!-- Point A -->
+          <div class="col-lg-4">
+            <div class="card border-danger">
+              <div class="card-header bg-danger text-white">
+                <h6 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Point A (Red)</h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Latitude</label>
+                    <input #latInputA type="number"
+                           [value]="pointA.latitude"
+                           (input)="updateCoordinate('A', 'lat', latInputA.value)"
+                           placeholder="Latitude"
+                           step="any"
+                           min="-90"
+                           max="90"
+                           class="form-control form-control-sm">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Longitude</label>
+                    <input #lngInputA type="number"
+                           [value]="pointA.longitude"
+                           (input)="updateCoordinate('A', 'lng', lngInputA.value)"
+                           placeholder="Longitude"
+                           step="any"
+                           min="-180"
+                           max="180"
+                           class="form-control form-control-sm">
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Current: {{ pointA.latitude | number:'1.6-6' }}, {{ pointA.longitude | number:'1.6-6' }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Point B -->
+          <div class="col-lg-4">
+            <div class="card border-success">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Point B (Green)</h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Latitude</label>
+                    <input #latInputB type="number"
+                           [value]="pointB.latitude"
+                           (input)="updateCoordinate('B', 'lat', latInputB.value)"
+                           placeholder="Latitude"
+                           step="any"
+                           min="-90"
+                           max="90"
+                           class="form-control form-control-sm">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Longitude</label>
+                    <input #lngInputB type="number"
+                           [value]="pointB.longitude"
+                           (input)="updateCoordinate('B', 'lng', lngInputB.value)"
+                           placeholder="Longitude"
+                           step="any"
+                           min="-180"
+                           max="180"
+                           class="form-control form-control-sm">
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Current: {{ pointB.latitude | number:'1.6-6' }}, {{ pointB.longitude | number:'1.6-6' }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Point C -->
+          <div class="col-lg-4">
+            <div class="card border-primary">
+              <div class="card-header bg-blue text-white">
+                <h6 class="mb-0"><i class="bi bi-geo-alt-fill"></i> Point C (Blue)</h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-2">
+                  <div class="col-6">
+                    <label class="form-label">Latitude</label>
+                    <input #latInputC type="number"
+                           [value]="pointC.latitude"
+                           (input)="updateCoordinate('C', 'lat', latInputC.value)"
+                           placeholder="Latitude"
+                           step="any"
+                           min="-90"
+                           max="90"
+                           class="form-control form-control-sm">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Longitude</label>
+                    <input #lngInputC type="number"
+                           [value]="pointC.longitude"
+                           (input)="updateCoordinate('C', 'lng', lngInputC.value)"
+                           placeholder="Longitude"
+                           step="any"
+                           min="-180"
+                           max="180"
+                           class="form-control form-control-sm">
+                  </div>
+                </div>
+                <small class="text-muted">
+                  Current: {{ pointC.latitude | number:'1.6-6' }}, {{ pointC.longitude | number:'1.6-6' }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <button (click)="calculate2Points()" class="btn btn-primary">
+      <i class="bi bi-rulers"></i> Calculate Distance (2 Points)
+    </button>
+    <button (click)="calculate3Points()" class="btn btn-primary">
+      <i class="bi bi-triangle"></i> Calculate Triangle (3 Points)
+    </button>
+    <button (click)="clearMap()" class="btn btn-secondary">
+      <i class="bi bi-eraser"></i> Clear Map
+    </button>
+    @if (results) {
+    <button (click)="exportResults()" class="btn btn-success">
+      <i class="bi bi-download"></i> Export Results
+    </button>
+    }
+    @if (userProfile && results) {
+    <button (click)="saveToMyMaps()" class="btn btn-info">
+      <i class="bi bi-map"></i> Save to My Maps
+    </button>
+    }
+  </div>
+
+  <!-- Map Controls -->
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center gap-2">
+            <button (click)="zoomIn()" class="btn btn-outline-primary btn-sm" title="Zoom In">
+              <i class="bi bi-zoom-in"></i>
+            </button>
+            <span class="badge bg-light text-dark">Zoom: {{ getCurrentZoom() }}</span>
+            <button (click)="zoomOut()" class="btn btn-outline-primary btn-sm" title="Zoom Out">
+              <i class="bi bi-zoom-out"></i>
+            </button>
+            <button (click)="resetZoom()" class="btn btn-outline-primary btn-sm" title="Reset View">
+              <i class="bi bi-arrows-fullscreen"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center gap-2">
+            <label for="mapTypeSelect" class="form-label mb-0">Map Type:</label>
+            <select #mapTypeSelect
+                    (change)="changeMapType(mapTypeSelect.value)"
+                    class="form-select form-select-sm"
+                    id="mapTypeSelect">
+              <option value="roadmap">Roadmap</option>
+              <option value="satellite">Satellite</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="terrain">Terrain</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="alert alert-info">
+    <i class="bi bi-info-circle"></i>
+    <strong>Instructions:</strong>
+    Click "Point A/B/C" buttons, then search for locations or click directly on the map.
+    Use manual coordinate input for precise positioning.
+  </div>
+
+  <!-- Google Maps Container -->
+  <div id="google-map" class="border border-2 rounded mb-4" style="height: 500px;"></div>
+
+  <!-- Results Section -->
+  @if (results) {
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="bi bi-calculator"></i> Calculation Results
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- Two Point Distance Results -->
+        @if (twoPointDistance) {
+        <div class="mb-4">
+          <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+              <h6 class="mb-0"><i class="bi bi-rulers"></i> Distance Between Two Points</h6>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h4 class="text-primary">{{ twoPointDistance.kilometers | number:'1.2-2' }} km</h4>
+                  <p class="text-muted">{{ twoPointDistance.miles | number:'1.2-2' }} miles</p>
+                  <small class="text-muted">{{ twoPointDistance.meters | number:'1.0-0' }} meters</small>
+                </div>
+                <div class="col-md-6">
+                  <div class="bg-light p-3 rounded">
+                    <div class="mb-2">
+                      <strong class="text-danger">Point A:</strong>
+                      <span class="font-monospace">{{ pointA.latitude | number:'1.6-6' }}, {{ pointA.longitude | number:'1.6-6' }}</span>
+                    </div>
+                    <div>
+                      <strong class="text-success">Point B:</strong>
+                      <span class="font-monospace">{{ pointB.latitude | number:'1.6-6' }}, {{ pointB.longitude | number:'1.6-6' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+        <!-- Triangle Results -->
+        @if (triangleResult) {
+        <div>
+          <div class="card border-warning">
+            <div class="card-header bg-warning text-dark">
+              <h6 class="mb-0"><i class="bi bi-triangle"></i> Triangle Calculations</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-4">
+                <!-- Side Distances -->
+                <div class="col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="bi bi-arrows-expand"></i> Side Distances</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between">
+                          <span><strong class="text-danger">A</strong> to <strong class="text-success">B</strong>:</span>
+                          <span>{{ triangleResult.distances.side1.kilometers | number:'1.2-2' }} km</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                          <span><strong class="text-success">B</strong> to <strong class="text-primary">C</strong>:</span>
+                          <span>{{ triangleResult.distances.side2.kilometers | number:'1.2-2' }} km</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between">
+                          <span><strong class="text-primary">C</strong> to <strong class="text-danger">A</strong>:</span>
+                          <span>{{ triangleResult.distances.side3.kilometers | number:'1.2-2' }} km</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Perimeter & Area -->
+                <div class="col-lg-6">
+                  <div class="card h-100">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="bi bi-aspect-ratio"></i> Measurements</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="mb-3">
+                        <h6 class="text-info"><i class="bi bi-arrow-repeat"></i> Perimeter</h6>
+                        <p class="mb-1 fs-5">{{ triangleResult.perimeter.kilometers | number:'1.2-2' }} km</p>
+                        <small class="text-muted">{{ triangleResult.perimeter.miles | number:'1.2-2' }} miles</small>
+                      </div>
+                      <div>
+                        <h6 class="text-success"><i class="bi bi-bounding-box"></i> Area</h6>
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <div class="text-center p-2 bg-light rounded">
+                              <div class="fw-bold">{{ triangleResult.area.squareKilometers | number:'1.2-2' }}</div>
+                              <small class="text-muted">km²</small>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="text-center p-2 bg-light rounded">
+                              <div class="fw-bold">{{ triangleResult.area.squareMiles | number:'1.2-2' }}</div>
+                              <small class="text-muted">sq mi</small>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="text-center p-2 bg-light rounded">
+                              <div class="fw-bold">{{ triangleResult.area.squareMeters | number:'1.0-0' }}</div>
+                              <small class="text-muted">m²</small>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <div class="text-center p-2 bg-light rounded">
+                              <div class="fw-bold">{{ triangleResult.area.hectares | number:'1.2-2' }}</div>
+                              <small class="text-muted">ha</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Coordinates Summary -->
+              <div class="mt-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-geo-alt"></i> Coordinates Summary</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row g-3">
+                      <div class="col-md-4">
+                        <div class="p-2 border-start border-4 border-danger bg-light">
+                          <strong class="text-danger">Point A:</strong><br>
+                          <span class="font-monospace small">{{ pointA.latitude | number:'1.6-6' }}, {{ pointA.longitude | number:'1.6-6' }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="p-2 border-start border-4 border-success bg-light">
+                          <strong class="text-success">Point B:</strong><br>
+                          <span class="font-monospace small">{{ pointB.latitude | number:'1.6-6' }}, {{ pointB.longitude | number:'1.6-6' }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="p-2 border-start border-4 border-primary bg-light">
+                          <strong class="text-primary">Point C:</strong><br>
+                          <span class="font-monospace small">{{ pointC.latitude | number:'1.6-6' }}, {{ pointC.longitude | number:'1.6-6' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+        <!-- Export Tools -->
+        <div class="mt-4 pt-3 border-top">
+          <div class="d-flex flex-wrap gap-2">
+            <button (click)="exportResults()" class="btn btn-success">
+              <i class="bi bi-file-earmark-arrow-down"></i> Export to JSON
+            </button>
+            @if (userProfile) {
+            <button (click)="saveToMyMaps()" class="btn btn-info">
+              <i class="bi bi-cloud-upload"></i> Save to Google My Maps
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Loading Overlay -->
+  @if (isSearching) {
+  <div class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background-color: rgba(0,0,0,0.5); z-index: 1000;">
+    <div class="text-center text-white">
+      <div class="spinner-border mb-3" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mb-0">Searching locations...</p>
+    </div>
+  </div>
+  }
+</div>

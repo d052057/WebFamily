@@ -1,0 +1,23 @@
+/*
+* Author: Yitong Phou
+*CSS variables*/
+:root {
+     --todayColor: '0,0,0';
+     --alpha900: .9;
+     --alpha800: .8;
+     --alpha700: .7;
+     --alpha600: .6;
+     --alpha500: .5;
+     --alpha400: .4;
+     --alpha300: .3;
+     --alpha200: .2;
+     --alpha100: .1;
+     --sunColor: '';
+     --monColor: '';
+     --tueColor: '';
+     --wedColor: '';
+     --thuColor: '';
+     --friColor: '';
+     --satColor: '';
+     --txtColor: ''; 
+}

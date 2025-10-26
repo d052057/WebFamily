@@ -1,0 +1,23 @@
+<div class="app-container">
+
+  <div class="content-container">
+    @if (selectedVideo) {
+      <app-video-viewer
+        [videoInfo]="selectedVideo">
+      </app-video-viewer>
+    }
+
+    <div class="video-list">
+      <h2>Available Videos</h2>
+      <ul>
+        @for (video of videoSources(); track video) {
+          <li
+            [class.active]="selectedVideo?.id === video.id"
+            (click)="selectVideo(video)">
+            {{ video.title }}
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

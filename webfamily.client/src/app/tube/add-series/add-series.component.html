@@ -1,0 +1,23 @@
+@if (series().length > 0) {
+  <div class="container mt-2">
+    <h1>Webtube Series</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width:20%">Seq</th>
+          <th style="width:60%">Title</th>
+          <th style="width:20%">Video Id</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of series(); track s) {
+          <tr>
+            <td>{{s.seqNumber}}</td>
+            <td>{{s.videoTitle}}</td>
+            <td>{{s.videoId}}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

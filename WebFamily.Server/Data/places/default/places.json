@@ -1,0 +1,72 @@
+{
+  "id": "default",
+  "name": "Yitong Phou",
+  "email": "yitong.phou@gmail.com",
+  "picture": "https://via.placeholder.com/40",
+  "savedPlaces": [
+    {
+      "id": "1",
+      "name": "Home",
+      "address": "17336 SE 149th st., sss, WA 98059",
+      "lat": 47.469313622021524,
+      "lng": -122.1095364043383,
+      "type": "home",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Angkor Wat, Cambodia",
+      "address": "Visitor Information",
+      "lat": 13.4124693,
+      "lng": 103.8669857,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Sisophon, Cambodia",
+      "address": "Home Town",
+      "lat": 13.5836237,
+      "lng": 102.9737739,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Chong Bok, Cambodia",
+      "address": "Chong Bok",
+      "lat": 14.343611,
+      "lng": 105.202778,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+
+    },
+    {
+      "id": "5",
+      "name": "Prasat Ta Krabey, Cambodia",
+      "address": "Ta Krabey",
+      "lat": 14.352778,
+      "lng": 103.373333,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Prasat Ta Muen Thom, Cambodia",
+      "address": "Ta Muen Thom",
+      "lat": 14.349262,
+      "lng": 103.266577,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    },
+    {
+      "id": "6",
+      "name": "Oddar Meanchey Province, Cambodia",
+      "address": "Oddar Meanchey",
+      "lat": 14.166667,
+      "lng": 103.5,
+      "type": "custom",
+      "dataAdded": "023-10-2023T00:00:00Z"
+    }
+  ]
+}

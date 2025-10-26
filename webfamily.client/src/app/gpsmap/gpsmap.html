@@ -1,0 +1,175 @@
+<div class="container-fluid">
+  <div class="controls">
+    <h2>GPS Distance Calculator with Map & Search</h2>
+
+    <!-- Search Section -->
+    <div class="search-section">
+      <h3>Location Search</h3>
+      <div class="search-controls">
+        <div class="search-input-container">
+          <input [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+            placeholder="Search for locations (e.g., 'New York', 'Eiffel Tower', '123 Main St')"
+            class="search-input"
+            type="text">
+            @if (searchQuery) {
+              <button (click)="clearSearch()" class="btn btn-small">Clear</button>
+            }
+          </div>
+
+          @if (searchQuery && !activeSearchPoint) {
+            <div class="point-selector">
+              <label>Assign search result to:</label>
+              <button (click)="setActiveSearchPoint('A')" class="btn btn-small btn-red">Point A</button>
+              <button (click)="setActiveSearchPoint('B')" class="btn btn-small btn-green">Point B</button>
+              <button (click)="setActiveSearchPoint('C')" class="btn btn-small btn-blue">Point C</button>
+            </div>
+          }
+
+          @if (activeSearchPoint) {
+            <div class="active-point-indicator">
+              <span class="point-indicator point-{{activeSearchPoint.toLowerCase()}}">
+                Ready to set Point {{activeSearchPoint}} - Search, click a result, or click the map
+              </span>
+              <button (click)="clearSearch()" class="btn btn-small">Cancel</button>
+            </div>
+          }
+        </div>
+
+        <!-- Search Results -->
+        @if (showSearchResults) {
+          <div class="search-results">
+            @if (isSearching) {
+              <div class="loading">Searching...</div>
+            }
+            @if (!isSearching && searchResults.length > 0) {
+              <div class="results-list">
+                @for (result of searchResults; track result) {
+                  <div
+                    (click)="selectSearchResult(result)"
+                    class="search-result-item">
+                    <div class="result-name">{{result.display_name}}</div>
+                    <div class="result-coords">{{result.lat}}, {{result.lon}}</div>
+                    @if (result.photos && result.photos.length > 0) {
+                      <div class="result-preview">
+                        <img [src]="result.photos[0].thumbnail"
+                          [alt]="result.photos[0].description"
+                          class="result-thumbnail">
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+              @if (!isSearching && searchResults.length === 0 && searchQuery.length >= 3) {
+                <div class="no-results">
+                  No locations found for "{{searchQuery}}"
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Manual Coordinate Input -->
+        <div class="coordinate-inputs">
+          <h3>Manual Coordinates</h3>
+
+          <div class="input-group">
+            <label>Point A (Red):</label>
+            <div class="coordinate-row">
+              <input [ngModel]="pointA.latitude"
+                (ngModelChange)="updateCoordinate('A', 'lat', $event)"
+                placeholder="Latitude"
+                type="number"
+                step="any"
+                min="-90"
+                max="90">
+                <input [ngModel]="pointA.longitude"
+                  (ngModelChange)="updateCoordinate('A', 'lng', $event)"
+                  placeholder="Longitude"
+                  type="number"
+                  step="any"
+                  min="-180"
+                  max="180">
+                  <button (click)="setActiveSearchPoint('A')" class="btn btn-small btn-red">Search</button>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label>Point B (Green):</label>
+                <div class="coordinate-row">
+                  <input [ngModel]="pointB.latitude"
+                    (ngModelChange)="updateCoordinate('B', 'lat', $event)"
+                    placeholder="Latitude"
+                    type="number"
+                    step="any"
+                    min="-90"
+                    max="90">
+                    <input [ngModel]="pointB.longitude"
+                      (ngModelChange)="updateCoordinate('B', 'lng', $event)"
+                      placeholder="Longitude"
+                      type="number"
+                      step="any"
+                      min="-180"
+                      max="180">
+                      <button (click)="setActiveSearchPoint('B')" class="btn btn-small btn-green">Search</button>
+                    </div>
+                  </div>
+
+                  <div class="input-group">
+                    <label>Point C (Blue):</label>
+                    <div class="coordinate-row">
+                      <input [ngModel]="pointC.latitude"
+                        (ngModelChange)="updateCoordinate('C', 'lat', $event)"
+                        placeholder="Latitude"
+                        type="number"
+                        step="any"
+                        min="-90"
+                        max="90">
+                        <input [ngModel]="pointC.longitude"
+                          (ngModelChange)="updateCoordinate('C', 'lng', $event)"
+                          placeholder="Longitude"
+                          type="number"
+                          step="any"
+                          min="-180"
+                          max="180">
+                          <button (click)="setActiveSearchPoint('C')" class="btn btn-small btn-blue">Search</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="buttons">
+                      <button (click)="calculate2Points()" class="btn">Calculate 2 Points</button>
+                      <button (click)="calculate3Points()" class="btn">Calculate Triangle</button>
+                      <button (click)="clearMap()" class="btn btn-secondary">Clear Map</button>
+                      <button (click)="clearSearchMarkers()" class="btn btn-small">Clear Search Markers</button>
+                    </div>
+
+                    <!-- Results Display -->
+                    @if (results) {
+                      <div class="results">
+                        <h3>Results:</h3>
+                        @if (twoPointDistance) {
+                          <div>
+                            <p><strong>Distance:</strong> {{twoPointDistance.kilometers}} km ({{twoPointDistance.miles}} miles)</p>
+                          </div>
+                        }
+                        @if (triangleResult) {
+                          <div>
+                            <p><strong>Triangle Sides:</strong></p>
+                            <ul>
+                              <li>A→B: {{triangleResult.distances.side1.kilometers}} km</li>
+                              <li>B→C: {{triangleResult.distances.side2.kilometers}} km</li>
+                              <li>C→A: {{triangleResult.distances.side3.kilometers}} km</li>
+                            </ul>
+                            <p><strong>Perimeter:</strong> {{triangleResult.perimeter.kilometers}} km</p>
+                            <p><strong>Area:</strong> {{triangleResult.area.squareKilometers}} km² ({{triangleResult.area.hectares}} hectares)</p>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <div id="map" class="map-container"></div>
+                </div>

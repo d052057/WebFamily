@@ -1,0 +1,19 @@
+<div class="main-container">
+  <!-- Left content area (2/3 width) -->
+  <div class="content-area">
+    @if (selectedPicture) {
+      <div>
+        <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster"></app-audio-player>
+      </div>
+    }
+  </div>
+
+  <!-- Right gallery area (1/3 width) -->
+  @if (dataResource().length > 0) {
+    <app-scrolling-gallery
+      [pictureData]="dataResource()"
+      (pictureSelected)="onPictureSelected($event)">
+    </app-scrolling-gallery>
+  }
+</div>
+

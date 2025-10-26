@@ -1,0 +1,18 @@
+<!--Author: Yitong Phou-->
+     <HTML>
+     <head>
+          ...
+          // your Bootstrap link..
+          // your Jquery link...
+          // ---
+          // contains colors property
+          <link rel="stylesheet" href="css/brandColor.css" />
+          // brandColor Javascript object codes
+          <script src="js/brandColor.js"></script>
+          // initualize colors for 7 days.
+          <script src="js/initBrandColor.js"></script>
+     </head>
+     <body>
+     ...
+     ...
+     </body>

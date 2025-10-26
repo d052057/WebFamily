@@ -1,0 +1,155 @@
+/*angular material*/
+@use "@angular/material/prebuilt-themes/indigo-pink.css";
+mat-icon {
+  font-family: 'Material Icons', 'Material Symbols Outlined' !important;
+}
+.mdc-text-field--filled:has(input[readonly]) {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  background-color: rgba(var(--bs-primary-rgb),.1 );
+}
+/* Simple, working approach for outline colors */
+.mat-mdc-form-field.mat-form-field-appearance-outline {
+  --mdc-outlined-text-field-outline-color: var(--bs-green);
+  --mdc-outlined-text-field-focus-outline-color: var(--bs-primary);
+  --mdc-outlined-text-field-hover-outline-color: var(--bs-green);
+}
+
+/* Critical: Remove any borders from icons */
+mat-icon, .material-symbols-outlined {
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+/* Complete Angular Material Form Field States */
+
+/* Base outline form field styling */
+.mat-mdc-form-field.mat-form-field-appearance-outline {
+  /* Default/Rest state */
+  --mdc-outlined-text-field-outline-color: var(--bs-green);
+  /* Hover state */
+  --mdc-outlined-text-field-hover-outline-color: var(--bs-info);
+  /* Focus state */
+  --mdc-outlined-text-field-focus-outline-color: var(--bs-primary);
+  /* Label colors */
+  --mdc-outlined-text-field-label-text-color: var(--bs-secondary);
+  --mdc-outlined-text-field-focus-label-text-color: var(--bs-primary);
+  /* Input text color */
+  --mdc-outlined-text-field-input-text-color: var(--bs-dark);
+  /* Placeholder color */
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--bs-secondary);
+}
+
+/* Error/Invalid state */
+.mat-mdc-form-field.mat-form-field-appearance-outline.mat-form-field-invalid {
+  --mdc-outlined-text-field-outline-color: var(--bs-danger);
+  --mdc-outlined-text-field-hover-outline-color: var(--bs-danger);
+  --mdc-outlined-text-field-focus-outline-color: var(--bs-danger);
+  --mdc-outlined-text-field-label-text-color: var(--bs-danger);
+  --mdc-outlined-text-field-focus-label-text-color: var(--bs-danger);
+  --mdc-outlined-text-field-error-label-text-color: var(--bs-danger);
+}
+
+/* Success/Valid state (custom class) */
+.mat-mdc-form-field.mat-form-field-appearance-outline.form-field-success {
+  --mdc-outlined-text-field-outline-color: var(--bs-success);
+  --mdc-outlined-text-field-hover-outline-color: var(--bs-success);
+  --mdc-outlined-text-field-focus-outline-color: var(--bs-success);
+  --mdc-outlined-text-field-label-text-color: var(--bs-success);
+  --mdc-outlined-text-field-focus-label-text-color: var(--bs-success);
+}
+
+/* Warning state (custom class) */
+.mat-mdc-form-field.mat-form-field-appearance-outline.form-field-warning {
+  --mdc-outlined-text-field-outline-color: var(--bs-warning);
+  --mdc-outlined-text-field-hover-outline-color: var(--bs-warning);
+  --mdc-outlined-text-field-focus-outline-color: var(--bs-warning);
+  --mdc-outlined-text-field-label-text-color: var(--bs-warning);
+  --mdc-outlined-text-field-focus-label-text-color: var(--bs-warning);
+}
+
+/* Disabled state */
+.mat-mdc-form-field.mat-form-field-appearance-outline.mat-form-field-disabled {
+  --mdc-outlined-text-field-disabled-outline-color: var(--bs-gray-300);
+  --mdc-outlined-text-field-disabled-label-text-color: var(--bs-gray-400);
+  --mdc-outlined-text-field-disabled-input-text-color: var(--bs-gray-400);
+  opacity: 0.6;
+}
+
+/* Dense appearance (smaller form fields) */
+.mat-mdc-form-field.mat-form-field-appearance-outline.mat-mdc-form-field-subscript-wrapper {
+  --mdc-outlined-text-field-container-height: 48px;
+}
+
+/* Icon styling - ensure no borders */
+mat-icon, .material-symbols-outlined {
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* Prefix/Suffix icon colors */
+.mat-mdc-form-field .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--bs-secondary);
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--bs-primary);
+}
+
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--bs-danger);
+}
+
+.mat-mdc-form-field.form-field-success .mat-mdc-form-field-icon-prefix mat-icon {
+  color: var(--bs-success);
+}
+
+/* Error message styling */
+.mat-mdc-form-field .mat-mdc-form-field-error {
+  color: var(--bs-danger);
+  font-size: 0.875rem;
+}
+
+/* Hint text styling */
+.mat-mdc-form-field .mat-mdc-form-field-hint {
+  color: var(--bs-secondary);
+  font-size: 0.875rem;
+}
+
+/* Required asterisk styling */
+.mat-mdc-form-field .mat-mdc-form-field-required-marker {
+  color: var(--bs-danger);
+}
+
+/* Custom animations for smooth transitions */
+.mat-mdc-form-field.mat-form-field-appearance-outline {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Specific styling for different input types */
+
+/* Select dropdown arrow color */
+.mat-mdc-form-field .mat-mdc-select .mat-mdc-select-arrow {
+  color: var(--bs-secondary);
+}
+
+.mat-mdc-form-field.mat-focused .mat-mdc-select .mat-mdc-select-arrow {
+  color: var(--bs-primary);
+}
+
+/* Input field cursor */
+.mat-mdc-form-field .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control input {
+  cursor: text;
+}
+
+.mat-mdc-form-field.mat-form-field-disabled .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control input {
+  cursor: not-allowed;
+}
+.edit-button {
+  color: #1976d2;
+}
+
+.delete-button {
+  color: #d32f2f;
+}

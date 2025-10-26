@@ -1,0 +1,156 @@
+<div class="seo-admin-container">
+  <h1>SEO Data Management</h1>
+
+  <!-- Message Alert -->
+  @if (message) {
+  <div class="alert" [class.alert-success]="messageType === 'success'" [class.alert-error]="messageType === 'error'">
+    {{ message }}
+  </div>
+  }
+  <!-- Loading Spinner -->
+  @if (loading) {
+  <div class="loading">Loading...</div>
+  }
+  <div class="admin-layout">
+    <!-- Left Sidebar: List of SEO Keys -->
+    <div class="sidebar">
+      <h3>SEO Entries</h3>
+      <button class="btn btn-primary" (click)="startCreate()">+ Create New</button>
+      <button class="btn btn-secondary" (click)="backupSeoData()">💾 Backup</button>
+      <div class="seo-list">
+        @for (key of seoKeys; track key) {
+        <div
+          class="seo-item"
+          [class.active]="selectedKey === key"
+          (click)="selectKey(key)">
+          {{ key }}
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Right Panel: Edit Form -->
+    <div class="main-content">
+      @if (!selectedKey && !isCreating) {
+      <div class="empty-state">
+        <p>Select an entry to edit or create a new one</p>
+      </div>
+      }
+      @if (selectedKey || isCreating) {
+      <div class="edit-panel">
+        <h2>{{ isCreating ? 'Create New Entry' : 'Edit Entry: ' + selectedKey }}</h2>
+
+        <form [formGroup]="seoForm">
+          <!-- Key (only editable when creating) -->
+          <div class="form-group">
+            <label>Key *</label>
+            <input type="text"
+                   formControlName="key"
+                   [disabled]="!isCreating"
+                   placeholder="e.g., home, products, about">
+            <small>Unique identifier for this SEO entry</small>
+          </div>
+
+          <!-- Title -->
+          <div class="form-group">
+            <label>Title *</label>
+            <input type="text"
+                   formControlName="title"
+                   [disabled]="!isEditing && !isCreating"
+                   placeholder="Page Title - Your Brand">
+            <small>Appears in browser tab and search results</small>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea formControlName="description"
+                      [disabled]="!isEditing && !isCreating"
+                      rows="3"
+                      placeholder="A compelling description for search engines"></textarea>
+            <small>150-160 characters recommended</small>
+          </div>
+
+          <!-- Keywords -->
+          <div class="form-group">
+            <label>Keywords *</label>
+            <input type="text"
+                   formControlName="keywords"
+                   [disabled]="!isEditing && !isCreating"
+                   placeholder="keyword1, keyword2, keyword3">
+            <small>Comma-separated list of keywords</small>
+          </div>
+
+          <!-- Image -->
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text"
+                   formControlName="image"
+                   [disabled]="!isEditing && !isCreating"
+                   placeholder="/assets/images/og-image.jpg">
+            <small>For social media sharing (Open Graph)</small>
+          </div>
+
+          <!-- Type -->
+          <div class="form-group">
+            <label>Type</label>
+            <select formControlName="type" [disabled]="!isEditing && !isCreating">
+              <option value="website">Website</option>
+              <option value="product">Product</option>
+              <option value="article">Article</option>
+              <option value="blog">Blog</option>
+            </select>
+          </div>
+
+          <!-- Languages (JSON) -->
+          <div class="form-group">
+            <label>Languages (JSON)</label>
+            <textarea formControlName="languagesJson"
+                      [disabled]="!isEditing && !isCreating"
+                      rows="4"
+                      placeholder='{"en": "/en/page", "es": "/es/pagina"}'></textarea>
+            <small>Multi-language URL mapping in JSON format</small>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            @if (!isEditing && !isCreating && !selectedKey) {
+            <button class="btn btn-primary"
+                    (click)="startEdit()">
+              Edit
+            </button>
+            }
+            @if (!isEditing && !isCreating && selectedKey) {
+            <button class="btn btn-success"
+                    (click)="saveSeoData()"
+                    [disabled]="loading">
+              {{ isCreating ? 'Create' : 'Save' }}
+            </button>
+            }
+            @if (isEditing || isCreating) {
+            <button class="btn btn-secondary"
+                    (click)="cancelEdit()">
+              Cancel
+            </button>
+            }
+            @if (isCreating) {
+            <button class="btn btn-success"
+                    (click)="saveSeoData()"
+                    [disabled]="loading">
+              {{ isCreating ? 'Create' : 'Save' }}
+            </button>
+            }
+            @if (!isEditing && !isCreating && selectedKey) {
+            <button class="btn btn-danger"
+                    (click)="deleteSeoData()">
+              Delete
+            </button>
+            }
+          </div>
+
+        </form>
+      </div>
+      }
+    </div>
+  </div>
+</div>

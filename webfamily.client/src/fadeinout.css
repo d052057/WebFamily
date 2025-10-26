@@ -1,0 +1,30 @@
+.fade-in-out {
+  animation: fadeInAuto .9s ease-in-out;
+}
+
+@keyframes fadeInAuto {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Auto fly-in from left on page load */
+.fly-in-out {
+  animation: flyInAuto 400ms ease-in-out;
+}
+
+@keyframes flyInAuto {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

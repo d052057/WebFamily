@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+<Node Id="IModel" Label="WebFamilyDbContext" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" PropertyAccessMode="PropertyAccessMode.Default" ProductVersion="8.0.10" Annotations="BaseTypeDiscoveryConvention:DerivedTypes: System.Collections.Generic.Dictionary`2[System.Type,System.Collections.Generic.List`1[Microsoft.EntityFrameworkCore.Metadata.IConventionEntityType]]
+Relational:MaxIdentifierLength: 128
+RelationshipDiscoveryConvention:InverseNavigationCandidates: System.Collections.Generic.Dictionary`2[System.Type,System.Collections.Generic.SortedSet`1[System.Type]]
+SqlServer:ValueGenerationStrategy: IdentityColumn" Category="Model" Group="Expanded" />
+<Node Id = "AmericanMusicsDirectoryView" Label="AmericanMusicsDirectoryView" Name="AmericanMusicsDirectoryView" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:ViewDefinitionSql:
+Relational:ViewName: americanMusicsDirectoryView
+Relational:ViewSchema:
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "AmericanMusicsView" Label="AmericanMusicsView" Name="AmericanMusicsView" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:ViewDefinitionSql:
+Relational:ViewName: americanMusicsView
+Relational:ViewSchema:
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "AmericanMusicsDirectoryView.Directory" Label="Directory (string)" Name="Directory" Category="Property Optional" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: directory" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaDirectory" Label="MediaDirectory" Name="MediaDirectory" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: MediaDirectory
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "AmericanMusicsView.Caption" Label="Caption (string)" Name="Caption" Category="Property Optional" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: caption" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Datetime" Label="Datetime (DateTime)" Name="Datetime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: datetime
+Relational:ColumnType: datetime" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Directory" Label="Directory (string)" Name="Directory" Category="Property Optional" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: directory" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Duration" Label="Duration (string)" Name="Duration" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: duration" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Name" Label="Name (string)" Name="Name" Category="Property Optional" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: name" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Title" Label="Title (string)" Name="Title" Category="Property Required" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: title" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "AmericanMusicsView.Type" Label="Type (string)" Name="Type" Category="Property Required" Type="string" MaxLength="(150)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 150
+Relational:ColumnName: type" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMenu" Label="MediaMenu" Name="MediaMenu" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: MediaMenu
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "MediaDirectory.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaDirectory.MediaMetaData" Label="MediaMetaData (*)" Name="MediaMetaData" Category="Navigation Collection" Type="ICollection&lt;MediaMetaDatum&gt;"  Field="" Dependent="MediaMetaDatum" Principal="" Inverse="Directory" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MediaDirectory.Menu" Label="Menu (1)" Name="Menu" Category="Navigation Property" Type="MediaMenu"  Field="" Dependent="" Principal="MediaMenu" Inverse="MediaDirectories" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MediaDirectory.Datetime" Label="Datetime (DateTime)" Name="Datetime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: datetime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaDirectory.Directory" Label="Directory (string)" Name="Directory" Category="Property Required" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: directory" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaDirectory.MenuId" Label="MenuId (Guid)" Name="MenuId" Category="Property Foreign" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: menuId" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMetaDatum" Label="MediaMetaDatum" Name="MediaMetaDatum" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:TableName: MediaMetaData
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "MediaMenu.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaMenu.MediaDirectories" Label="MediaDirectories (*)" Name="MediaDirectories" Category="Navigation Collection" Type="ICollection&lt;MediaDirectory&gt;"  Field="" Dependent="MediaDirectory" Principal="" Inverse="Menu" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MediaMenu.Datetime" Label="Datetime (DateTime)" Name="Datetime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: datetime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaMenu.Menu" Label="Menu (string)" Name="Menu" Category="Property Required" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: menu" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Rpm" Label="Rpm" Name="Rpm" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: Rpm
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "MediaMetaDatum.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaMetaDatum.Directory" Label="Directory (1)" Name="Directory" Category="Navigation Property" Type="MediaDirectory"  Field="" Dependent="" Principal="MediaDirectory" Inverse="MediaMetaData" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "MediaMetaDatum.Caption" Label="Caption (string)" Name="Caption" Category="Property Optional" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: caption" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMetaDatum.Datetime" Label="Datetime (DateTime)" Name="Datetime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: datetime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "MediaMetaDatum.DirectoryId" Label="DirectoryId (Guid)" Name="DirectoryId" Category="Property Foreign" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: directoryId" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMetaDatum.Duration" Label="Duration (string)" Name="Duration" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: duration" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMetaDatum.Title" Label="Title (string)" Name="Title" Category="Property Required" Type="string" MaxLength="(200)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 200
+Relational:ColumnName: title" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "MediaMetaDatum.Type" Label="Type (string)" Name="Type" Category="Property Required" Type="string" MaxLength="(150)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 150
+Relational:ColumnName: type" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "RpmTrack" Label="RpmTrack" Name="RpmTrack" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: RpmTrack
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "Rpm.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Rpm.RpmTracks" Label="RpmTracks (*)" Name="RpmTracks" Category="Navigation Collection" Type="ICollection&lt;RpmTrack&gt;"  Field="" Dependent="RpmTrack" Principal="" Inverse="Rpm" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Rpm.AudioType" Label="AudioType (string)" Name="AudioType" Category="Property Required" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: audioType" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Rpm.DateTime" Label="DateTime (DateTime)" Name="DateTime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dateTime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Rpm.Title" Label="Title (string)" Name="Title" Category="Property Required" Type="string" MaxLength="(250)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 250
+Relational:ColumnName: title" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Rpm.Type" Label="Type (string)" Name="Type" Category="Property Required" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: type" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "TodoList" Label="TodoList" Name="TodoList" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: TodoList
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "RpmTrack.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "RpmTrack.Rpm" Label="Rpm (1)" Name="Rpm" Category="Navigation Property" Type="Rpm"  Field="" Dependent="" Principal="Rpm" Inverse="RpmTracks" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "RpmTrack.DateTime" Label="DateTime (DateTime)" Name="DateTime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dateTime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "RpmTrack.Duration" Label="Duration (string)" Name="Duration" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: duration" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "RpmTrack.RpmId" Label="RpmId (Guid)" Name="RpmId" Category="Property Foreign" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: rpmId" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "RpmTrack.Title" Label="Title (string)" Name="Title" Category="Property Required" Type="string" MaxLength="(250)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 250
+Relational:ColumnName: title" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube" Label="WebTube" Name="WebTube" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:Schema:
+Relational:TableName: WebTube
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "TodoList.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "TodoList.Assigned" Label="Assigned (string)" Name="Assigned" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "TodoList.DateTime" Label="DateTime (DateTime)" Name="DateTime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "TodoList.DueDate" Label="DueDate (DateTime)" Name="DueDate" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnType: datetime" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "TodoList.Note" Label="Note (string)" Name="Note" Category="Property Required" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries" Label="WebTubeSeries" Name="WebTubeSeries" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="Relational:TableName: WebTubeSeries
+RelationshipDiscoveryConvention:NavigationCandidates: System.Collections.Immutable.ImmutableSortedDictionary`2[System.Reflection.PropertyInfo,System.ValueTuple`2[System.Type,System.Nullable`1[System.Boolean]]]" Category="EntityType" Group="Expanded" />
+<Node Id = "WebTube.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "WebTube.WebTubeSeries" Label="WebTubeSeries (*)" Name="WebTubeSeries" Category="Navigation Collection" Type="ICollection&lt;WebTubeSeries&gt;"  Field="" Dependent="WebTubeSeries" Principal="" Inverse="WebTube" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "WebTube.Category" Label="Category (string)" Name="Category" Category="Property Optional" Type="string" MaxLength="(100)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 100
+Relational:ColumnName: category" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube.DateTime" Label="DateTime (DateTime)" Name="DateTime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dateTime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "WebTube.Note" Label="Note (string)" Name="Note" Category="Property Required" Type="string" MaxLength="(500)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 500
+Relational:ColumnName: note" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube.VideoId" Label="VideoId (string)" Name="VideoId" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: videoId" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube.VideoListId" Label="VideoListId (string)" Name="VideoListId" Category="Property Optional" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: videoListId" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube.WebTubeLink" Label="WebTubeLink (string)" Name="WebTubeLink" Category="Property Required" Type="string" MaxLength="(500)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 500
+Relational:ColumnName: webTubeLink" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTube.WebTubeTitle" Label="WebTubeTitle (string)" Name="WebTubeTitle" Category="Property Optional" Type="string" MaxLength="(500)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 500
+Relational:ColumnName: webTubeTitle" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries" Label="WebTubeSeries" Name="WebTubeSeries" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="" Category="EntityType" Group="Expanded" />
+<Node Id = "WebTubeSeries.RecordId" Label="RecordId (Guid)" Name="RecordId" Category="Property Primary" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: recordId
+Relational:DefaultValueSql: (newid())" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "WebTubeSeries.WebTube" Label="WebTube (1)" Name="WebTube" Category="Navigation Property" Type="WebTube"  Field="" Dependent="" Principal="WebTube" Inverse="WebTubeSeries" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "WebTubeSeries.DateTime" Label="DateTime (DateTime)" Name="DateTime" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: dateTime
+Relational:ColumnType: datetime
+Relational:DefaultValueSql: (getdate())" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "WebTubeSeries.HeightDefault" Label="HeightDefault (string)" Name="HeightDefault" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: heightDefault" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.HeightHigh" Label="HeightHigh (string)" Name="HeightHigh" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: heightHigh" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.HeightMedium" Label="HeightMedium (string)" Name="HeightMedium" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: heightMedium" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.SeqNumber" Label="SeqNumber (int)" Name="SeqNumber" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: seqNumber" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.UrlThumbNailDefault" Label="UrlThumbNailDefault (string)" Name="UrlThumbNailDefault" Category="Property Optional" Type="string" MaxLength="(100)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 100
+Relational:ColumnName: urlThumbNailDefault" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.UrlThumbNailHigh" Label="UrlThumbNailHigh (string)" Name="UrlThumbNailHigh" Category="Property Optional" Type="string" MaxLength="(100)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 100
+Relational:ColumnName: urlThumbNailHigh" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.UrlThumbNailMedium" Label="UrlThumbNailMedium (string)" Name="UrlThumbNailMedium" Category="Property Optional" Type="string" MaxLength="(100)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 100
+Relational:ColumnName: urlThumbNailMedium" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.VideoId" Label="VideoId (string)" Name="VideoId" Category="Property Required" Type="string" MaxLength="(50)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:ColumnName: videoId" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.VideoTitle" Label="VideoTitle (string)" Name="VideoTitle" Category="Property Required" Type="string" MaxLength="(500)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 500
+Relational:ColumnName: videoTitle" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.WebTubeId" Label="WebTubeId (Guid)" Name="WebTubeId" Category="Property Foreign" Type="Guid" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:ColumnName: webTubeId" IsPrimaryKey="False" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.WidthDefault" Label="WidthDefault (string)" Name="WidthDefault" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: widthDefault" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.WidthHigh" Label="WidthHigh (string)" Name="WidthHigh" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: widthHigh" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "WebTubeSeries.WidthMedium" Label="WidthMedium (string)" Name="WidthMedium" Category="Property Optional" Type="string" MaxLength="(10)" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 10
+Relational:ColumnName: widthMedium" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+  </Nodes>
+  <Links>
+<Link Source = "IModel" Target="AmericanMusicsDirectoryView" Category="Contains" />
+<Link Source = "IModel" Target="AmericanMusicsView" Category="Contains" />
+<Link Source = "AmericanMusicsDirectoryView" Target="AmericanMusicsDirectoryView.Directory" Category="Contains" />
+<Link Source = "IModel" Target="MediaDirectory" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Caption" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Datetime" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Directory" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Duration" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Name" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Title" Category="Contains" />
+<Link Source = "AmericanMusicsView" Target="AmericanMusicsView.Type" Category="Contains" />
+<Link Source = "IModel" Target="MediaMenu" Category="Contains" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.MediaMetaData" Category="Contains" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.Menu" Category="Contains" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.RecordId" Category="Contains" />
+<Link Source="MediaDirectory" Target="MediaMenu" From="MediaDirectory.MenuId" To="MediaMenu.RecordId" Name="MediaDirectory -> MediaMenu" Annotations="Relational:Name: FK_MediaDirectory_MediaMenu" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.Datetime" Category="Contains" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.Directory" Category="Contains" />
+<Link Source = "MediaDirectory" Target="MediaDirectory.MenuId" Category="Contains" />
+<Link Source = "IModel" Target="MediaMetaDatum" Category="Contains" />
+<Link Source = "MediaMenu" Target="MediaMenu.MediaDirectories" Category="Contains" />
+<Link Source = "MediaMenu" Target="MediaMenu.RecordId" Category="Contains" />
+<Link Source = "MediaMenu" Target="MediaMenu.Datetime" Category="Contains" />
+<Link Source = "MediaMenu" Target="MediaMenu.Menu" Category="Contains" />
+<Link Source = "IModel" Target="Rpm" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Directory" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.RecordId" Category="Contains" />
+<Link Source="MediaMetaDatum" Target="MediaDirectory" From="MediaMetaDatum.DirectoryId" To="MediaDirectory.RecordId" Name="MediaMetaDatum -> MediaDirectory" Annotations="Relational:Name: FK_MediaMetaData_MediaDirectory" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Caption" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Datetime" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.DirectoryId" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Duration" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Title" Category="Contains" />
+<Link Source = "MediaMetaDatum" Target="MediaMetaDatum.Type" Category="Contains" />
+<Link Source = "IModel" Target="RpmTrack" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.RpmTracks" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.RecordId" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.AudioType" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.DateTime" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.Title" Category="Contains" />
+<Link Source = "Rpm" Target="Rpm.Type" Category="Contains" />
+<Link Source = "IModel" Target="TodoList" Category="Contains" />
+<Link Source = "RpmTrack" Target="RpmTrack.Rpm" Category="Contains" />
+<Link Source = "RpmTrack" Target="RpmTrack.RecordId" Category="Contains" />
+<Link Source="RpmTrack" Target="Rpm" From="RpmTrack.RpmId" To="Rpm.RecordId" Name="RpmTrack -> Rpm" Annotations="Relational:Name: FK_RpmTrack_rpm" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "RpmTrack" Target="RpmTrack.DateTime" Category="Contains" />
+<Link Source = "RpmTrack" Target="RpmTrack.Duration" Category="Contains" />
+<Link Source = "RpmTrack" Target="RpmTrack.RpmId" Category="Contains" />
+<Link Source = "RpmTrack" Target="RpmTrack.Title" Category="Contains" />
+<Link Source = "IModel" Target="WebTube" Category="Contains" />
+<Link Source = "TodoList" Target="TodoList.RecordId" Category="Contains" />
+<Link Source = "TodoList" Target="TodoList.Assigned" Category="Contains" />
+<Link Source = "TodoList" Target="TodoList.DateTime" Category="Contains" />
+<Link Source = "TodoList" Target="TodoList.DueDate" Category="Contains" />
+<Link Source = "TodoList" Target="TodoList.Note" Category="Contains" />
+<Link Source = "IModel" Target="WebTubeSeries" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.WebTubeSeries" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.RecordId" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.Category" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.DateTime" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.Note" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.VideoId" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.VideoListId" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.WebTubeLink" Category="Contains" />
+<Link Source = "WebTube" Target="WebTube.WebTubeTitle" Category="Contains" />
+<Link Source = "IModel" Target="WebTubeSeries" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.WebTube" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.RecordId" Category="Contains" />
+<Link Source="WebTubeSeries" Target="WebTube" From="WebTubeSeries.WebTubeId" To="WebTube.RecordId" Name="WebTubeSeries -> WebTube" Annotations="Relational:Name: FK_WebTubeSeries_WebTube" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.DateTime" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.HeightDefault" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.HeightHigh" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.HeightMedium" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.SeqNumber" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.UrlThumbNailDefault" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.UrlThumbNailHigh" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.UrlThumbNailMedium" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.VideoId" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.VideoTitle" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.WebTubeId" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.WidthDefault" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.WidthHigh" Category="Contains" />
+<Link Source = "WebTubeSeries" Target="WebTubeSeries.WidthMedium" Category="Contains" />
+  </Links>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="EntityType" ValueLabel="True">
+      <Condition Expression="HasCategory('EntityType')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Required" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Required')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Property')" />
+      <Setter Property="Background" Value="#FF990000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Collection" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Collection')" />
+      <Setter Property="Background" Value="#FFFF3232" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
+      <Condition Expression="HasCategory('Model')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+  </Styles>
+  <Properties>
+    <Property Id="Name" Group="Model Properties" DataType="System.String" />
+    <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Principal" Description="Principal entity" Group="Model Properties" DataType="System.String" />    
+    <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
+    <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="IsAbstract" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsPrimaryKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsForeignKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsShadow" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsAlternateKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
+    <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="PropertyAccessMode" Group="Property Flags" DataType="System.String" />
+  </Properties>
+</DirectedGraph>

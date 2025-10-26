@@ -1,0 +1,200 @@
+/* author: Yitong Phou */
+#menu {
+     min-width: 360px;
+}
+.jumbotron {
+     padding: 2rem 1rem;
+     margin-bottom: 2rem;
+     background-color: #e9ecef;
+     border-radius: .3rem;
+   }
+.form-control {
+     border-color: rgba(var(--todayColor), var(--alpha300) );
+}
+
+.input-group-text {
+     background-color: rgba(var(--todayColor),var(--alpha300) );
+}
+
+.form-control:focus {
+     border-color: rgba(var(--todayColor),var(--alpha800) );
+     box-shadow: 0 0 0 0.2rem rgba(var(--todayColor),var(--alpha800) );
+}
+
+.p-circle {
+     background-color: rgb(var(--todayColor));
+     color: var(--txtColor);
+     padding: 2px 9px;
+     border-radius: 50%;
+     font-size: 18px;
+     border: 1px solid var(--txtColor) !important;
+}
+
+.jumbotron .card,
+#pCircle .card {
+     border: solid 1px rgba(var(--todayColor),var(--alpha800) );
+}
+
+#pCircle .card {
+     margin-left: 5rem;
+     margin-bottom: 2rem;
+}
+
+.jumbotron .card-header,
+#pCircle .card-header {
+     background-color: rgba(var(--todayColor),var(--alpha800) );
+     font-weight: bold;
+     color: white;
+}
+
+.jumbotron .card-body {
+     color: rgb(var(--todayColor));
+}
+
+.jumbotron .card-footer {
+     background-color: rgba(var(--todayColor),var(--alpha600) );
+     color: white;
+}
+
+.btn {
+     background-color: rgb(var(--todayColor));
+     border-color: transparent;
+     color: var(--txtColor);
+}
+
+     .btn:hover {
+          background-color: rgba(var(--todayColor),var(--alpha800) );
+     }
+
+     .btn:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--todayColor),var(--alpha200) );
+     }
+
+.btn-outline {
+     background-color: white;
+     color: rgb(var(--todayColor));
+}
+
+.viewOnly {
+     pointer-events: none;
+     cursor: not-allowed;
+}
+
+#bsShade .row p {
+     padding: 4px;
+}
+
+select[multiple]:focus option:checked {
+     background: rgb(var(--todayColor)) linear-gradient(0deg, rgb(var(--todayColor)) 0%, rgb(var(--todayColor)) 100%) !important;
+}
+
+.navbar {
+     background-color: rgb(var(--todayColor));
+}
+
+     .navbar .nav-link {
+          color: var(--txtColor);
+     }
+
+.dropdown-menu {
+     border: 1px solid rgba(var(--todayColor), var(--alpha100));
+}
+
+.dropdown-item {
+     color: rgb(var(--todayColor));
+}
+
+
+     .dropdown-item:hover, .dropdown-item:focus {
+          color: var(--txtColor) !important;
+          background-color: rgba(var(--todayColor), var(--alpha800));
+     }
+
+     .dropdown-item.active, .dropdown-item:active {
+          background-color: rgb(var(--todayColor));
+     }
+
+.btn-mon {
+     background-color: rgb(var(--monColor));
+}
+
+     .btn-mon:hover {
+          background-color: rgba(var(--monColor),var(--alpha800) );
+     }
+
+     .btn-mon:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--monColor),var(--alpha200) );
+     }
+
+.btn-tue {
+     background-color: rgb(var(--tueColor));
+}
+
+     .btn-tue:hover {
+          background-color: rgba(var(--tueColor),var(--alpha800) );
+     }
+
+     .btn-tue:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--tueColor),var(--alpha200) );
+     }
+
+.btn-wed {
+     background-color: rgb(var(--wedColor));
+}
+
+     .btn-wed:hover {
+          background-color: rgba(var(--wedColor),var(--alpha800) );
+     }
+
+     .btn-wed:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--wedColor),var(--alpha200) );
+     }
+
+.btn-thu {
+     background-color: rgb(var(--thuColor));
+}
+
+     .btn-thu:hover {
+          background-color: rgba(var(--thuColor),var(--alpha800) );
+     }
+
+     .btn-thu:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--thuColor),var(--alpha200) );
+     }
+
+.btn-fri {
+     background-color: rgb(var(--friColor));
+}
+
+     .btn-fri:hover {
+          background-color: rgba(var(--friColor),var(--alpha800) );
+     }
+
+     .btn-fri:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--friColor),var(--alpha200) );
+     }
+
+.btn-sat {
+     background-color: rgb(var(--satColor));
+}
+
+     .btn-sat:hover {
+          background-color: rgba(var(--satColor),var(--alpha800) );
+     }
+
+     .btn-sat:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--satColor),var(--alpha200) );
+     }
+
+.btn-sun {
+     background-color: rgb(var(--sunColor));
+}
+
+     .btn-sun:hover {
+          background-color: rgba(var(--sunColor),var(--alpha800) );
+     }
+
+     .btn-sun:focus {
+          box-shadow: 0 0 0 0.2rem rgba(var(--sunColor),var(--alpha200) );
+
+     }

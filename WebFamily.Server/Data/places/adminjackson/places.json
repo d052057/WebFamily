@@ -1,0 +1,71 @@
+{
+  "id": "d052057",
+  "name": "Yitong Phou",
+  "email": "d052057@yahoo.com",
+  "picture": "https://via.placeholder.com/40",
+  "savedPlaces": [
+    {
+      "id": "2",
+      "name": "Pike Place Market",
+      "address": "85 Pike St, Seattle, WA 98101",
+      "lat": 47.6089,
+      "lng": -122.3403,
+      "type": "market",
+      "dateAdded": "2025-07-02T07:48:06.716317Z"
+    },
+    {
+      "id": "1751504257517",
+      "name": "CV9X\u002BVWW Angkor Archaeological Park",
+      "address": "CV9X\u002BVWW Angkor Archaeological Park, Krong Siem Reap 17000, Cambodia",
+      "lat": 13.41974,
+      "lng": 103.8998229,
+      "type": "custom",
+      "dateAdded": "2025-07-03T00:57:37.5170789Z"
+    },
+    {
+      "id": "1751582692204",
+      "name": "Phnom Penh",
+      "address": "Phnom Penh, Cambodia",
+      "lat": 11.5563738,
+      "lng": 104.9282099,
+      "type": "custom",
+      "dateAdded": "2025-07-03T22:44:52.2047322Z"
+    },
+    {
+      "id": "1751582759154",
+      "name": "Siem Reap River",
+      "address": "Siem Reap River, Cambodia",
+      "lat": 13.3919168,
+      "lng": 103.8739814,
+      "type": "custom",
+      "dateAdded": "2025-07-03T22:45:59.1540311Z"
+    },
+    {
+      "id": "1751582791492",
+      "name": "Sisophon",
+      "address": "Sisophon, Cambodia",
+      "lat": 13.5836237,
+      "lng": 102.9737739,
+      "type": "custom",
+      "dateAdded": "2025-07-03T22:46:31.4929523Z"
+    },
+    {
+      "id": "1751585588729",
+      "name": "Battambang Province",
+      "address": "Battambang Province, Cambodia",
+      "lat": 13.0286971,
+      "lng": 102.989615,
+      "type": "custom",
+      "dateAdded": "2025-07-03T23:33:08.7295595Z"
+    },
+    {
+      "id": "1751594214876",
+      "name": "Serei Saophoan",
+      "address": "Serei Saophoan, Sisophon, Cambodia",
+      "lat": 13.5836083,
+      "lng": 102.9738255,
+      "type": "custom",
+      "dateAdded": "2025-07-04T01:56:54.8765787Z"
+    }
+  ]
+}

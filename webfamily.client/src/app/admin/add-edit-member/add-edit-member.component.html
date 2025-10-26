@@ -1,0 +1,116 @@
+@if (formInitialized) {
+  <div class="d-flex justify-content-center">
+    <div class="col-12 col-lg-5">
+      <main class="form-signin">
+        <form [formGroup]="memberForm" (ngSubmit)="submit()" autocomplete="off">
+          <div class="text-center mb-4">
+            <h3 class="mb-3 font-weight-normal">
+              @if (addNew) {
+                <span class="text-warning">Add</span>
+              }
+              @if (!addNew) {
+                <span class="text-warning">Update</span>
+              }
+              Member
+            </h3>
+          </div>
+          <div class="form-floating mb-3">
+            <input formControlName="firstName" type="text" placeholder="First Name" class="form-control"
+              [class.is-invalid]="submitted && memberForm.get('firstName')?.errors">
+            <label for="firstName">First name</label>
+            @if (submitted && memberForm.get('firstName')?.hasError('required')) {
+              <span class="text-danger">
+                First name is required
+              </span>
+            }
+          </div>
+          <div class="form-floating mb-3">
+            <input formControlName="lastName" type="text" placeholder="Last Name" class="form-control"
+              [class.is-invalid]="submitted && memberForm.get('lastName')?.errors">
+            <label for="lastName">Last name</label>
+            @if (submitted && memberForm.get('lastName')?.hasError('required')) {
+              <span class="text-danger">
+                Last name is required
+              </span>
+            }
+          </div>
+          <div class="form-floating mb-3">
+            <input formControlName="userName" type="text" placeholder="Username" class="form-control"
+              [class.is-invalid]="submitted && memberForm.get('userName')?.errors">
+            <label for="userName">Username</label>
+            @if (submitted && memberForm.get('userName')?.hasError('required')) {
+              <span class="text-danger">
+                Username is required
+              </span>
+            }
+          </div>
+          <div class="form-floating mb-3">
+            <input formControlName="password" type="text" placeholder="Password" class="form-control"
+              [class.is-invalid]="submitted && memberForm.get('password')?.errors"
+              (change)="passwordOnChange()">
+            <label for="password">Password</label>
+            @if (submitted && memberForm.get('password')?.hasError('required')) {
+              <span class="text-danger">
+                Password is required
+              </span>
+            }
+            @if (submitted &&
+              memberForm.get('password')?.hasError('minlength') || memberForm.get('password')?.hasError('maxlength')) {
+              <span class="text-danger"
+                >
+                Password must be at least 6, and maximum 15 characters
+              </span>
+            }
+            @if (!addNew) {
+              <div>
+                <span class="text-info fw-bold">Note:</span>
+                if you don't intend to change the member password, then leave the password field empty
+              </div>
+            }
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <label for="roles">Roles:</label>
+            </div>
+            <div class="col-10">
+              <div class="btn-group">
+                @for (role of applicationRoles; track role) {
+                  <input type="checkbox" class="btn-check" id="{{role}}" (change)="roleOnChange(role)"
+                    [checked]="existingMemberRoles.includes(role)"
+                    [class.is-invalid]="submitted && memberForm.get('roles')?.errors">
+                  <label class="btn btn-outline-primary" for="{{role}}">{{role}}</label>
+                }
+              </div>
+            </div>
+          </div>
+          @if (submitted && memberForm.get('roles')?.hasError('required')) {
+            <div class="text-danger">
+              Please select at least one role
+            </div>
+          }
+          @if (errorMessages.length > 0) {
+            <div class="form-floatin">
+              <app-validation-messages [errorMessages]="errorMessages"></app-validation-messages>
+            </div>
+          }
+          <div class="row my-4">
+            <div class="col-6">
+              <div class="d-grid">
+                <button class="btn btn-block btn-info" type="submit">
+                  {{addNew ? 'Create' : 'Update'}} Member
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-grid">
+                <button class="btn btn-block btn-danger" type="button" routerLink="/admin">
+                  Back to list
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+}

@@ -1,0 +1,25 @@
+<div class="container pt-5" style="width:100%">
+  <h4>Todo List...</h4>
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Due Date</th>
+          <th>Time</th>
+          <th>Note</th>
+          <th>Assigned To</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(p of todoRecords(); track p){
+        <tr>
+          <td class="text-start">{{p.displayDueDate}}</td>
+          <td class="text-start">{{p.displayTime}}</td>
+          <td class="text-start">{{p.note}}</td>
+          <td class="text-start">{{p.assigned}}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
