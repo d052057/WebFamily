@@ -1,6 +1,6 @@
 import { Injectable, OnInit, inject, resource, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { expand, map, Observable, of, reduce, takeWhile } from 'rxjs';
+import { expand, map, Observable, of, scan, takeWhile } from 'rxjs';
 import { Router } from '@angular/router';
 import { YTSettings, Webtube } from './../models/webtubes.model';
 import { TubeSeries } from './../models/tube-series';
@@ -47,10 +47,19 @@ export class TubeService implements OnInit {
               this.getNextVideoPage(response['nextPageToken'])
             ),
 
+            //takeWhile((response: any) => !!response['nextPageToken'], true),
+            //reduce((all: any, data: any) => all.concat(data.items), []),
+            //map((response: any) => {
+            //  return this.parseYoutubeVideoList(response, seqNum);
+            //})
             takeWhile((response: any) => !!response['nextPageToken'], true),
-            reduce((all: any, data: any) => all.concat(data.items), []),
-            map((response: any) => {
-              return this.parseYoutubeVideoList(response, seqNum);
+            scan((accumulated: any[], response: any) => {
+              // Accumulate items from each page
+              return accumulated.concat(response.items);
+            }, []),
+            map((allItems: any) => {
+              // Parse all accumulated items so far
+              return this.parseYoutubeVideoList(allItems, 0);
             })
           );
       } else {
@@ -64,7 +73,7 @@ export class TubeService implements OnInit {
       if (v.snippet.title !== 'Deleted video') {
         _seqNum++;
         result.push(new TubeSeries(v, _seqNum));
-        console.log(_seqNum);
+      //  console.log(_seqNum);
       }
     }
     return result;
@@ -73,9 +82,16 @@ export class TubeService implements OnInit {
     loader: async () => fetch('/Tube/Gettubes')
       .then(
         (res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
           return res.json() as Promise<any[]>
         }
       )
+      .catch(error => {
+        console.error('Error fetching tubes:', error);
+        throw error;
+      })
   });
   tubeRecordsRS = rxResource<any[], any>({
     stream: () => this.http.get<any[]>('/Tube/Gettubes')

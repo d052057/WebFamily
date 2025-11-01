@@ -6,7 +6,7 @@ import { SnackService } from '../../shared/services/snack.service';
 import { TubeService } from './../services/tube.service';
 import { Webtube } from './../models/webtubes.model';
 import { CommonModule } from '@angular/common';
-import { AddSeriesComponent } from './../add-series/add-series.component';
+//import { AddSeriesComponent } from './../add-series/add-series.component';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 
 @Component({
   selector: 'app-add',
-  imports: [CommonModule, VoiceDirective, MatIconModule, MatSelectModule, FormsModule, ReactiveFormsModule, AddSeriesComponent, MatDialogModule, MatInputModule],
+  imports: [CommonModule, VoiceDirective, MatIconModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatInputModule],
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.scss']
 })
@@ -293,6 +293,18 @@ export class AddComponent implements OnInit {
     }
 
   }
+  isLoadingYoutube = computed(() => {
+    const videoListId = this.f.videoListId.value;
+    if (!videoListId || videoListId.trim().length === 0) {
+      return false;
+    }
+    const status = this.webtubesService.youtube.status();
+    if ((status === 'loading') || (status === 'reloading')) {
+      this.snackService.openSnackBar('Loading Series', status);
+      return true;
+    }
+    return false;
+  });
   getSeries = computed(() => {
     this.f.webTubeSeries.setValue(this.webtubesService.youtube.value());
     return this.webtubesService.youtube.value() ?? [];

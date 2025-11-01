@@ -42,6 +42,7 @@ namespace WebFamily.Server.Services
             return await _context.WebTubes
                 .Include(p => p.WebTubeSeries.OrderBy(s => s.SeqNumber))
                 .OrderBy(s => s.Category)
+                 .AsNoTracking()
                 .ToListAsync();
         }
 

@@ -65,9 +65,16 @@
     "title": "Create Class model",
     "lines": [
       "ng g class <model-name> --type=model --skip-tests",
-      "Create Project from template",
-      "dotnet new --uninstall standaloneangulartemplate.template",
-      "dotnet new --install",
+    ]
+  },
+  {
+    "title": "Create Project from template",
+    "lines": [
+      "note: to uninstall <path/your template",
+      "dotnet new uninstall standaloneangulartemplate",
+      "note: to install new template to a folder of a project - make sure you to type '.' ",
+      "dotnet new install .",
+      "note: to clone a template to new project",
       "dotnet new standalone-angular -o MyNewProject"
     ]
   },

@@ -8,9 +8,9 @@
           <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
         </mat-select-trigger>
         @for (s of langData; track s; let i = $index) {
-          <mat-option [value]="i">
-            <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
-          </mat-option>
+        <mat-option [value]="i">
+          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+        </mat-option>
         }
       </mat-select>
 
@@ -21,14 +21,14 @@
       <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
         <mat-label>Youtube link</mat-label>
         <input type="text" formControlName="webTubeLink" matInput
-          [ngClass]="{ 'is-invalid': submitted && f.webTubeLink.errors }"
-          (change)="parseVideoLink()" [readonly]="isReadOnly">
+               [ngClass]="{ 'is-invalid': submitted && f.webTubeLink.errors }"
+               (change)="parseVideoLink()" [readonly]="isReadOnly">
         @if (submitted && f.webTubeLink.errors) {
-          <div class="invalid-feedback">
-            @if (f.webTubeLink.errors.required) {
-              <div>Youtube link is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.webTubeLink.errors.required) {
+          <div>Youtube link is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -36,13 +36,13 @@
       <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
         <mat-label>Video Id</mat-label>
         <input formControlName="videoId" matInput
-          [ngClass]="{ 'is-invalid': submitted && f.videoId.errors }" [readonly]="isReadOnly" />
+               [ngClass]="{ 'is-invalid': submitted && f.videoId.errors }" [readonly]="isReadOnly" />
         @if (submitted && f.videoId.errors) {
-          <div class="invalid-feedback">
-            @if (f.note.errors.required) {
-              <div>Video ID is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.note.errors.required) {
+          <div>Video ID is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -60,25 +60,25 @@
         </mat-label>
         <div class="textarea-container">
           <textarea formControlName="note" appVoice
-            matInput
-            (voiceInput)="onVoiceInput($event)"
-            [microphone]="isNoteUserSpeaking"
-            [language]="langData[langSelected].code"
-            [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
-          rows="5"></textarea>
+                    matInput
+                    (voiceInput)="onVoiceInput($event)"
+                    [microphone]="isNoteUserSpeaking"
+                    [language]="langData[langSelected].code"
+                    [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+                    rows="5"></textarea>
           @if (!isNoteUserSpeaking) {
-            <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic_off</mat-icon>
+          <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic_off</mat-icon>
           }
           @if (isNoteUserSpeaking) {
-            <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic</mat-icon>
+          <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic</mat-icon>
           }
 
           @if (submitted && f.note.errors) {
-            <div class="invalid-feedback">
-              @if (f.note.errors.required) {
-                <div>Note is required</div>
-              }
-            </div>
+          <div class="invalid-feedback">
+            @if (f.note.errors.required) {
+            <div>Note is required</div>
+            }
+          </div>
           }
         </div>
       </mat-form-field>
@@ -88,26 +88,26 @@
       <mat-form-field appearance="outline">
         <mat-label>Title</mat-label>
         <input type="text" appVoice
-          formControlName="webTubeTitle"
-          matInput
-          (voiceInput)="onVoiceInput($event)"
-          [microphone]="isTitleUserSpeaking"
-          [language]="langData[langSelected].code"
-          [ngClass]="{ 'is-invalid': submitted && f.webTubeTitle.errors }" />
+               formControlName="webTubeTitle"
+               matInput
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isTitleUserSpeaking"
+               [language]="langData[langSelected].code"
+               [ngClass]="{ 'is-invalid': submitted && f.webTubeTitle.errors }" />
         <span matSuffix style="padding-right:1rem">
           @if (!isTitleUserSpeaking) {
-            <mat-icon (click)="checkMic('webTubeTitle')" class="circle">mic_off</mat-icon>
+          <mat-icon (click)="checkMic('webTubeTitle')" class="circle">mic_off</mat-icon>
           }
           @if (isTitleUserSpeaking) {
-            <mat-icon (click)="checkMic('webTubeTitle')" class="circle">mic</mat-icon>
+          <mat-icon (click)="checkMic('webTubeTitle')" class="circle">mic</mat-icon>
           }
         </span>
         @if (submitted && f.webTubeTitle.errors) {
-          <div class="invalid-feedback">
-            @if (f.webTubeTitle.errors.required) {
-              <div>Title is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.webTubeTitle.errors.required) {
+          <div>Title is required</div>
+          }
+        </div>
         }
       </mat-form-field>
 
@@ -117,11 +117,11 @@
         <mat-label>Default Url Image</mat-label>
         <input type="text" formControlName="thumbnailDefaultUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailDefaultUrl.errors }" />
         @if (submitted && f.thumbnailDefaultUrl.errors) {
-          <div class="invalid-feedback">
-            @if (f.thumbnailDefaultUrl.errors.required) {
-              <div>thumbnailDefaultUrl is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.thumbnailDefaultUrl.errors.required) {
+          <div>thumbnailDefaultUrl is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -130,11 +130,11 @@
         <mat-label>Standard Url Image</mat-label>
         <input type="text" formControlName="thumbnailStandardUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailStandardUrl.errors }" />
         @if (submitted && f.thumbnailStandardUrl.errors) {
-          <div class="invalid-feedback">
-            @if (f.thumbnailStandardUrl.errors.required) {
-              <div>thumbnailStandardUrl is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.thumbnailStandardUrl.errors.required) {
+          <div>thumbnailStandardUrl is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -143,11 +143,11 @@
         <mat-label>Medium Url Image</mat-label>
         <input type="text" formControlName="thumbnailMediumUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMediumUrl.errors }" />
         @if (submitted && f.thumbnailMediumUrl.errors) {
-          <div class="invalid-feedback">
-            @if (f.thumbnailMediumUrl.errors.required) {
-              <div>thumbnailMediumUrl is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.thumbnailMediumUrl.errors.required) {
+          <div>thumbnailMediumUrl is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -156,11 +156,11 @@
         <mat-label>High Url Image</mat-label>
         <input type="text" formControlName="thumbnailHighUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailHighUrl.errors }" />
         @if (submitted && f.thumbnailHighUrl.errors) {
-          <div class="invalid-feedback">
-            @if (f.thumbnailHighUrl.errors.required) {
-              <div>thumbnailHighUrl is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.thumbnailHighUrl.errors.required) {
+          <div>thumbnailHighUrl is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -169,11 +169,11 @@
         <mat-label>Max Resolution Url Image</mat-label>
         <input type="text" formControlName="thumbnailMaxresUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMaxresUrl.errors }" />
         @if (submitted && f.thumbnailMaxresUrl.errors) {
-          <div class="invalid-feedback">
-            @if (f.thumbnailMaxresUrl.errors.required) {
-              <div>thumbnailMaxresUrl is required</div>
-            }
-          </div>
+        <div class="invalid-feedback">
+          @if (f.thumbnailMaxresUrl.errors.required) {
+          <div>thumbnailMaxresUrl is required</div>
+          }
+        </div>
         }
       </mat-form-field>
     </div>
@@ -223,9 +223,39 @@
       </button>
     </div>
   </form>
-
-  <app-add-series [series]="getSeries()"></app-add-series>
-
+  <!--@if (isLoadingYoutube()) {
+  <div class="container mt-2">
+    <div class="alert alert-info d-flex align-items-center">
+      <div class="spinner-border spinner-border-sm me-2" role="status">
+        <span [ngClass]="{'visually-hidden': isLoadingYoutube()}">Loading...</span>
+      </div>
+      <span>Pulling data from YouTube... ({{getSeries().length}} videos loaded)</span>
+    </div>
+  </div>
+  }-->
+  @if (getSeries().length > 0) {
+  <div class="container mt-2">
+    <h1>Webtube Series (loading Series {{ getSeries().length }})</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="width:20%">Seq</th>
+          <th style="width:60%">Title</th>
+          <th style="width:20%">Video Id</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of getSeries(); track s) {
+        <tr>
+          <td>{{s.seqNumber}}</td>
+          <td>{{s.videoTitle}}</td>
+          <td>{{s.videoId}}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
 </div>
 <!--<div>
 {{ webtubesService.youtube.value() | json }}
