@@ -2,31 +2,31 @@
   <mat-form-field appearance="outline">
     <mat-label>Search for</mat-label>
     <input type="search" appVoice
-      matInput
-      placeholder="{{ langSearch }}"
-      [ngModel]="searchVal()"
-      (ngModelChange)="onSearch($event)"
-      (voiceInput)="onVoiceInput($event)"
-      [microphone]="isUserSpeaking"
-      [language]="langData[langSelected].code"
-      style="width:100% !important">
+           matInput
+           placeholder="{{ langSearch }}"
+           [ngModel]="searchVal()"
+           (ngModelChange)="onSearch($event)"
+           (voiceInput)="onVoiceInput($event)"
+           [microphone]="isUserSpeaking"
+           [language]="langData[langSelected].code"
+           style="width:100% !important">
     <span matSuffix style="display: flex; padding-right:1rem;">
       <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
         <mat-select-trigger>
           <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
         </mat-select-trigger>
         @for (s of langData; track s; let i = $index) {
-          <mat-option [value]="i">
-            <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
-          </mat-option>
+        <mat-option [value]="i">
+          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+        </mat-option>
         }
       </mat-select>
       <span style="display: flex; padding-left:1rem; ">
         @if (!isUserSpeaking) {
-          <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
+        <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
         }
         @if (isUserSpeaking) {
-          <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
+        <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
         }
       </span>
     </span>
@@ -64,5 +64,18 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [length]="total()"
+                 [pageSize]="pageSize()"
+                 [pageIndex]="pageIndex()"
+                 (page)="onPage($event)"
+                 showFirstLastButtons>
+  </mat-paginator>
+  <!--<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>-->
+  @if(resource.isLoading()) {
+  <div>Loading...</div>
+  }
+  @if(resource.error()) {
+  <div>Error: {{ resource.error() }}</div>
+  }
+
 </div>

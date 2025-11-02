@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild, computed, inject, signal, viewChild } from '@angular/core';
 import { TubeService } from './services/tube.service';
 import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 import { AddComponent } from './add/add.component';
@@ -22,7 +22,7 @@ import { VoiceDirective } from '../../app/shared/directives/voice.directive';
   templateUrl: './tube.component.html',
   styleUrl: './tube.component.scss'
 })
-export class TubeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TubeComponent implements  OnDestroy {
   private service = inject(TubeService);
   private _dialog = inject(MatDialog);
   private snackService = inject(SnackService);
@@ -33,6 +33,11 @@ export class TubeComponent implements OnInit, OnDestroy, AfterViewInit {
   langSelected: number = 0;
   langSearch: string = this.langData[this.langSelected].search;
   searchVal = signal('');
+
+  // Signals
+  pageIndex = signal(0);
+  pageSize = signal(5);
+  total = signal(0);
 
 
   isDelete: boolean = false;
@@ -57,13 +62,7 @@ export class TubeComponent implements OnInit, OnDestroy, AfterViewInit {
   readonly sort = viewChild.required(MatSort);
   @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
   displayedColumns = this.initColumns.map(col => col.name);
-  ngOnInit(): void {
 
-  }
-  ngAfterViewInit() {
-    // Connect paginator to dataSource
-    /* this.tubeRecords().paginator = this.paginator;*/
-  }
 
   resource = this.service.asyncTubeRecordsRS
   tubeRecords = computed(() => {
@@ -125,6 +124,11 @@ export class TubeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   checkMic(): void {
     this.isUserSpeaking = !this.isUserSpeaking;
+  }
+  // Pagination
+  onPage(e: PageEvent) {
+    this.pageIndex.set(e.pageIndex);
+    this.pageSize.set(e.pageSize);
   }
 }
 

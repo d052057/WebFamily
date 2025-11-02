@@ -64,7 +64,7 @@
   {
     "title": "Create Class model",
     "lines": [
-      "ng g class <model-name> --type=model --skip-tests",
+      "ng g class <model-name> --type=model --skip-tests"
     ]
   },
   {

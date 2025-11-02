@@ -223,16 +223,7 @@
       </button>
     </div>
   </form>
-  <!--@if (isLoadingYoutube()) {
-  <div class="container mt-2">
-    <div class="alert alert-info d-flex align-items-center">
-      <div class="spinner-border spinner-border-sm me-2" role="status">
-        <span [ngClass]="{'visually-hidden': isLoadingYoutube()}">Loading...</span>
-      </div>
-      <span>Pulling data from YouTube... ({{getSeries().length}} videos loaded)</span>
-    </div>
-  </div>
-  }-->
+
   @if (getSeries().length > 0) {
   <div class="container mt-2">
     <h1>Webtube Series (loading Series {{ getSeries().length }})</h1>
