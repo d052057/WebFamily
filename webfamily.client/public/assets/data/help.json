@@ -62,6 +62,14 @@
     ]
   },
   {
+    "title": "Robocopy (copy/merge new file to destination drive):",
+    "lines": [
+      "robocopy \"D:\" \"E:\" /E /XC /XN /XO /R:3 /W:5 /MT:16 /LOG:copy_log.txt",
+      "pause",
+      "note: D: source drive, E: is destination drive",
+    ]
+  },
+  {
     "title": "Create Class model",
     "lines": [
       "ng g class <model-name> --type=model --skip-tests"
