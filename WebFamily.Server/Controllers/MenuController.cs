@@ -1,5 +1,4 @@
-﻿// Controllers/MenuController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
@@ -271,71 +270,6 @@ namespace WebFamily.Server.Controllers
                 .SingleAsync(i => i.RecordId == RecordId);
 
         }
-        //[HttpPost("initMediaDatabaseAsync")]
-        //public async Task<IActionResult> InitMediaDatabaseAsync()
-        //{
-        //    string[] menus = ["videos", "musics", "photos", "books", "movies"];
-        //    var allMenus = await _context.MediaMenus.ToListAsync(); // Actually fetch the data
-        //    _context.MediaMenus.RemoveRange(allMenus);              // Now EF tracks each entity for deletion
-        //    await _context.SaveChangesAsync();
-        //    foreach (string menu in menus)
-        //    {
-        //        ClearAllMenuItems(menu);
-        //        var menuRecord = new MediaMenu
-        //        {
-        //            RecordId = Guid.NewGuid(),
-        //            Menu = menu,
-        //            Datetime = DateTime.UtcNow
-        //        };
-        //        _context.MediaMenus.Add(menuRecord);
-        //        await _context.SaveChangesAsync();
-        //        var folderPath = Path.Combine(_mediasDrive, menuRecord.Menu);
-
-        //        // Get only top-level subdirectories (no recursion)
-        //        string[] subfolders = Directory.GetDirectories(folderPath, "*", SearchOption.TopDirectoryOnly);
-
-        //        foreach (string subfolder in subfolders)
-        //        {
-        //            var fileName = Path.GetFileName(subfolder);
-        //            if (fileName != "rpm")
-        //            {
-        //                // Add each subfolder as a MediaDirectory
-        //                var mediaDirectory = new MediaDirectory
-        //                {
-        //                    RecordId = Guid.NewGuid(),
-        //                    MenuId = menuRecord.RecordId,
-        //                    Directory = fileName,
-        //                    Datetime = DateTime.UtcNow
-        //                };
-        //                _context.MediaDirectories.Add(mediaDirectory);
-        //                await _context.SaveChangesAsync();
-        //                if (fileName != "AmericanMusics")
-        //                {
-        //                    var menuItem = new MenuItem
-        //                    {
-        //                        Title = mediaDirectory.Directory,
-        //                        Param = mediaDirectory.Directory,
-        //                    };
-        //                    MenuMemoryStore.AddMenuItem(menu, menuItem);
-        //                }
-        //            }
-        //        }
-        //        _ = await _updateDataBaseServices.UpdateMetaData(menu);
-        //    }
-        //    _ = await _updateDataBaseServices.UpdateMetaData(@"americansongs");
-        //    _ = await _updateDataBaseServices.UpdateMetaData(@"text");
-        //    return Ok(new { message = $"MediaDatabase initialization is Completed." });
-        //}
-        //private static bool ClearAllMenuItems(string menuId)
-        //{
-        //    var menu = MenuMemoryStore.GetMenu(menuId);
-        //    if (menu == null)
-        //        return false;
-
-        //    menu.Items.Clear(); // Remove all items
-        //    MenuMemoryStore.UpdateMenu(menuId, menu);
-        //    return true;
-        //}
         [HttpPost("initMediaDatabaseAsync")]
         public async Task<IActionResult> InitMediaDatabaseAsync()
         {

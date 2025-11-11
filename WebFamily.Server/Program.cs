@@ -221,7 +221,7 @@ namespace WebFamily.Server
             app.UseStaticFiles();
 
             // Configure media files serving
-            var mediaDrive = configuration.GetValue<string>("ApplicationSettings:MediaDrive") ?? @"d:\medias";
+            var mediaDrive = configuration.GetValue<string>("ApplicationSettings:MediaDrive") ?? @"c:\medias";
             app.ConfigureMediaFiles(mediaDrive);
         }
 

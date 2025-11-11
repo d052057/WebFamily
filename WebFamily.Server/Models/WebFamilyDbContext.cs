@@ -52,7 +52,7 @@ public partial class WebFamilyDbContext : DbContext
                 .HasColumnName("datetime");
             entity.Property(e => e.Directory)
                 .IsRequired()
-                .HasMaxLength(50)
+                .HasMaxLength(250)
                 .HasColumnName("directory");
             entity.Property(e => e.MenuId).HasColumnName("menuId");
 
