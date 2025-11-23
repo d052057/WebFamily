@@ -19,15 +19,10 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "forceConsistentCasingInFileNames": true,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "forceConsistentCasingInFileNames": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

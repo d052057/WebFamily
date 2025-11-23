@@ -18,8 +18,8 @@ export class PhotoGallery implements OnInit {
   currentImageIndex = 0;
   visibleImages: boolean[] = [];
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll() {
+  @HostListener('window:scroll')
+  onWindowScroll(event?: Event) {
     this.checkVisibility();
   }
 
