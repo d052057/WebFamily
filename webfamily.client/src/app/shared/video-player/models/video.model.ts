@@ -1,5 +1,5 @@
 import { VideoFile, VideoTrack, AudioTrack, Chapter } from '../interfaces/videoplayer.interface';
-export const Speed_array: number[] = [0.5, 0.75, 1, 1.25, 1.50, 1.75, 2, 2.25, 2.50, 2.75, 3]  
+export const Speed_array: number[] = [0.1,0.25, 0.5, 0.75, 1, 1.25, 1.50, 1.75, 2, 2.25, 2.50, 2.75, 3]  
 
 // Define AudioTrack interface since it's not available in all browsers TypeScript definitions
 
