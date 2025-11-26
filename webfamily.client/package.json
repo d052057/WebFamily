@@ -1,6 +1,6 @@
 {
   "name": "webfamily.client",
-  "version": "20.3.4",
+  "version": "20.3.5",
   "scripts": {
     "ng": "ng",
     "start": "run-script-os",
