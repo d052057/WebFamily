@@ -1,8 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { FacebookService } from './shared/services/facebook.service';
 import { routes } from './app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
-
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
@@ -48,26 +47,26 @@ export function initializeFacebookSdk() {
 }
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes,
-      withPreloading(NoPreloading) // Add this to disable preloading
-    ),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes, withPreloading(NoPreloading)),
+    provideHttpClient(withInterceptorsFromDi()),
     provideAppInitializer((initializeFacebookSdk)()),
     provideAppInitializer(initializeIcons),
-    importProvidersFrom(BrowserModule,
+    importProvidersFrom(
+      BrowserModule,
       SharedModule,
       HomeModule,
       TodoModule,
       NgxSpinnerModule,
       NgxExtendedPdfViewerModule,
-      FormsModule,
+      FormsModule, // Only once
+      ReactiveFormsModule,
       MatDatepickerModule,
       MatNativeDateModule,
       MatFormFieldModule,
       MatInputModule,
       MatTimepickerModule,
-      FormsModule,
-      MatIconModule,
-      ReactiveFormsModule
+      MatIconModule
     ),
     {
       provide: HTTP_INTERCEPTORS,
@@ -79,10 +78,8 @@ export const appConfig: ApplicationConfig = {
       useClass: LoadingInterceptor,
       multi: true
     },
-    provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
     MessageService,
-    MenuService,
-    provideHttpClient()
+    MenuService
   ]
 };
 
