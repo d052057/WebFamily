@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AccountService } from './account/account.service';
 import { SharedService } from './shared/shared.service';
-/*import { NgxSpinnerComponent} from 'ngx-spinner';*/
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { UserHasRoleDirective } from './shared/directives/user-has-role.directive';

@@ -6,11 +6,10 @@ import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { NgClass } from '@angular/common';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-docviewer',
-  imports: [NgxPaginationModule, RouterOutlet, NgClass, NgxSpinnerComponent],
+  imports: [NgxPaginationModule, RouterOutlet, NgClass],
   templateUrl: './docviewer.component.html',
   styleUrl: './docviewer.component.scss'
 })

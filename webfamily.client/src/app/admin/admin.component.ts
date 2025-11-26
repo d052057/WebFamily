@@ -3,6 +3,7 @@ import { AdminService } from './admin.service';
 import { SharedService } from '../shared/shared.service';
 import { MemberView } from '../shared/models/admin/memberView';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { setTheme } from 'ngx-bootstrap/utils';
 import { TitleCasePipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -26,7 +27,9 @@ export class AdminComponent implements OnInit {
       next: members => this.members = members
     });
   }
-
+  constructor() {
+    setTheme('bs5'); // or 'bs4'
+  }
   lockMember(id: string) {
     this.adminService.lockMember(id).subscribe({
       next: _ => {

@@ -5,7 +5,6 @@ import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 
 interface RouteParams {
   menuFolder: string | null;
@@ -16,7 +15,7 @@ interface RouteParams {
 
 @Component({
   selector: 'app-audio-play-album',
-  imports: [AudioPlayerComponent, NgxSpinnerComponent],
+  imports: [AudioPlayerComponent],
   templateUrl: './audio-play-album.component.html',
   styleUrl: './audio-play-album.component.scss'
 })

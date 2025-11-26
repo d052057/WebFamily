@@ -6,8 +6,6 @@ import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
 import { TodoModule } from './todo/todo.module';
-
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -57,7 +55,6 @@ export const appConfig: ApplicationConfig = {
       SharedModule,
       HomeModule,
       TodoModule,
-      NgxSpinnerModule,
       NgxExtendedPdfViewerModule,
       FormsModule, // Only once
       ReactiveFormsModule,

@@ -5,7 +5,6 @@ import { MediaService } from '../shared/services/media.service';
 import { PhotoGallery } from '../shared/photo-gallery/photo-gallery';
 import { map } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 
 export interface Iphoto {
   fileFolder: string,
@@ -14,7 +13,7 @@ export interface Iphoto {
 
 @Component({
   selector: 'app-photo',
-  imports: [PhotoGallery, NgxSpinnerComponent],
+  imports: [PhotoGallery],
   templateUrl: './photo.component.html',
   styleUrl: './photo.component.scss',
 })

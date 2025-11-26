@@ -6,10 +6,9 @@ import { MediaService } from '../shared/services/media.service';
 import { VideoSource } from '../shared/video-player/models/video.model';
 import { ActivatedRoute } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 @Component({
   selector: 'app-play-media',
-  imports: [VideoPlayerComponent, NgxSpinnerComponent],
+  imports: [VideoPlayerComponent],
   templateUrl: './play-media.component.html',
   styleUrl: './play-media.component.scss'
 })

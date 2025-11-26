@@ -5,11 +5,10 @@ import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-play-audio',
-  imports: [AudioPlayerComponent,NgxSpinnerComponent],
+  imports: [AudioPlayerComponent],
   templateUrl: './play-audio.component.html',
   styleUrls: ['./play-audio.component.scss', 'playlist.scss']
 })
