@@ -21,7 +21,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Due Date</mat-label>
         <input matInput [matDatepicker]="datepicker" class="form-control" formControlName="dueDate"
-          [ngClass]="{ 'is-invalid': submitted && f.dueDate.errors }">
+          [class.is-invalid]="submitted && f.dueDate.errors">
         <span matSuffix style="padding-right:1rem">
           <mat-datepicker #datepicker></mat-datepicker>
           <mat-datepicker-toggle [for]="datepicker"></mat-datepicker-toggle>
@@ -51,7 +51,7 @@
         <div class="textarea-container">
           <textarea appVoice formControlName="note"
             matInput
-            [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+            [class.is-invalid]="submitted && f.note.errors"
             (voiceInput)="onVoiceInput($event)"
             [microphone]="isNoteUserSpeaking"
             [language]="langData[langSelected].code"
@@ -84,7 +84,7 @@
           (voiceInput)="onVoiceInput($event)"
           [microphone]="isAssignedUserSpeaking"
           [language]="langData[langSelected].code"
-          [ngClass]="{ 'is-invalid': submitted && f.assigned.errors }" />
+          [class.is-invalid]="submitted && f.assigned.errors" />
         <span matSuffix style="padding-right:1rem">
           @if (!isAssignedUserSpeaking) {
             <mat-icon (click)="checkMic('assigned')" class="circle">mic_off</mat-icon>

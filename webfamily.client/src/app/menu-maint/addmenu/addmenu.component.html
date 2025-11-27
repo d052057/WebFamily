@@ -22,7 +22,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Menu Param (folder name)</mat-label>
           <input matInput formControlName="param" required placeholder="Enter folder/directory name"
-            [ngClass]="{ 'is-invalid': f.param.errors  && f.param.touched}" />
+            [class.is-invalid]="f.param.errors  && f.param.touched" />
           <span matPrefix class="material-icons-outlined" style="margin-left:1rem">
             folder
           </span>
@@ -51,7 +51,7 @@
             [language]="langData[langSelected].code"
             required
             placeholder="{{ langPlaceHolder }}"
-            [ngClass]="{ 'is-invalid': submitted && f.menuTitle.touched && f.menuTitle.errors}" />
+            [class.is-invalid]="submitted && f.menuTitle.touched && f.menuTitle.errors" />
           <span matSuffix style="display: flex; padding-right:1rem;">
             <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
               <mat-select-trigger>

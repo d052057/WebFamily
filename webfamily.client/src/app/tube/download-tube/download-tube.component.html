@@ -7,7 +7,7 @@
         <input type="url" formControlName="tubeUrl"
           (change)="parseVideoLink()"
           matInput
-          [ngClass]="{ 'is-invalid': submitted && f.tubeUrl.errors }"
+          [class.is-invalid]="submitted && f.tubeUrl.errors"
           required />
         <mat-hint>copy Youtube Url and paste it here...</mat-hint>
         @if (submitted && f.tubeUrl.errors) {
@@ -22,7 +22,7 @@
     <div class="row form-group">
       <mat-form-field appearance="outline">
         <mat-label>Designated Path</mat-label>
-        <input type="text" formControlName="updatePath" matInput [ngClass]="{ 'is-invalid': submitted && f.updatePath.errors }" required />
+        <input type="text" formControlName="updatePath" matInput [class.is-invalid]="submitted && f.updatePath.errors" required />
         <mat-hint>Directory in Medias such as videos\test..., movies\test..., musics\test...</mat-hint>
         @if (submitted && f.updatePath.errors) {
           <div class="invalid-feedback">

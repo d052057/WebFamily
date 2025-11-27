@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MenuService } from '../../shared/services/menu.service';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { languages } from '../../../app/models/languages';
@@ -14,7 +14,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 
 @Component({
   selector: 'app-rename-media',
-  imports: [CommonModule, VoiceDirective, FormsModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatInputModule, MatSelectModule],
+  imports: [VoiceDirective, FormsModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatInputModule, MatSelectModule],
   templateUrl: './rename-media.component.html',
   styleUrls: ['./rename-media.component.scss']
 })

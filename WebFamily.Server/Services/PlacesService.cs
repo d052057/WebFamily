@@ -1,6 +1,6 @@
 ﻿// Services/IPlacesService.cs
-using WebFamily.Server.Models;
 using System.Text.Json;
+using WebFamily.Server.Models;
 
 namespace WebFamily.Server.Services
 {

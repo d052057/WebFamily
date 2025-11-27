@@ -21,7 +21,7 @@
       <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
         <mat-label>Youtube link</mat-label>
         <input type="text" formControlName="webTubeLink" matInput
-               [ngClass]="{ 'is-invalid': submitted && f.webTubeLink.errors }"
+               [class.is-invalid]="submitted && f.webTubeLink.errors"
                (change)="parseVideoLink()" [readonly]="isReadOnly">
         @if (submitted && f.webTubeLink.errors) {
         <div class="invalid-feedback">
@@ -36,7 +36,7 @@
       <mat-form-field [appearance]="isReadOnly? 'fill':'outline'">
         <mat-label>Video Id</mat-label>
         <input formControlName="videoId" matInput
-               [ngClass]="{ 'is-invalid': submitted && f.videoId.errors }" [readonly]="isReadOnly" />
+               [class.is-invalid]="submitted && f.videoId.errors" [readonly]="isReadOnly" />
         @if (submitted && f.videoId.errors) {
         <div class="invalid-feedback">
           @if (f.note.errors.required) {
@@ -64,7 +64,7 @@
                     (voiceInput)="onVoiceInput($event)"
                     [microphone]="isNoteUserSpeaking"
                     [language]="langData[langSelected].code"
-                    [ngClass]="{ 'is-invalid': submitted && f.note.errors }"
+                    [class.is-invalid]="submitted && f.note.errors"
                     rows="5"></textarea>
           @if (!isNoteUserSpeaking) {
           <mat-icon (click)="checkMic('note')" class="top-corner-icon circle">mic_off</mat-icon>
@@ -93,7 +93,7 @@
                (voiceInput)="onVoiceInput($event)"
                [microphone]="isTitleUserSpeaking"
                [language]="langData[langSelected].code"
-               [ngClass]="{ 'is-invalid': submitted && f.webTubeTitle.errors }" />
+               [class.is-invalid]="submitted && f.webTubeTitle.errors" />
         <span matSuffix style="padding-right:1rem">
           @if (!isTitleUserSpeaking) {
           <mat-icon (click)="checkMic('webTubeTitle')" class="circle">mic_off</mat-icon>
@@ -115,7 +115,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Default Url Image</mat-label>
-        <input type="text" formControlName="thumbnailDefaultUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailDefaultUrl.errors }" />
+        <input type="text" formControlName="thumbnailDefaultUrl" matInput [class.is-invalid]="submitted && f.thumbnailDefaultUrl.errors" />
         @if (submitted && f.thumbnailDefaultUrl.errors) {
         <div class="invalid-feedback">
           @if (f.thumbnailDefaultUrl.errors.required) {
@@ -128,7 +128,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Standard Url Image</mat-label>
-        <input type="text" formControlName="thumbnailStandardUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailStandardUrl.errors }" />
+        <input type="text" formControlName="thumbnailStandardUrl" matInput [class.is-invalid]="submitted && f.thumbnailStandardUrl.errors" />
         @if (submitted && f.thumbnailStandardUrl.errors) {
         <div class="invalid-feedback">
           @if (f.thumbnailStandardUrl.errors.required) {
@@ -141,7 +141,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Medium Url Image</mat-label>
-        <input type="text" formControlName="thumbnailMediumUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMediumUrl.errors }" />
+        <input type="text" formControlName="thumbnailMediumUrl" matInput [class.is-invalid]="submitted && f.thumbnailMediumUrl.errors" />
         @if (submitted && f.thumbnailMediumUrl.errors) {
         <div class="invalid-feedback">
           @if (f.thumbnailMediumUrl.errors.required) {
@@ -154,7 +154,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>High Url Image</mat-label>
-        <input type="text" formControlName="thumbnailHighUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailHighUrl.errors }" />
+        <input type="text" formControlName="thumbnailHighUrl" matInput [class.is-invalid]="submitted && f.thumbnailHighUrl.errors" />
         @if (submitted && f.thumbnailHighUrl.errors) {
         <div class="invalid-feedback">
           @if (f.thumbnailHighUrl.errors.required) {
@@ -167,7 +167,7 @@
     <div class="row">
       <mat-form-field appearance="outline">
         <mat-label>Max Resolution Url Image</mat-label>
-        <input type="text" formControlName="thumbnailMaxresUrl" matInput [ngClass]="{ 'is-invalid': submitted && f.thumbnailMaxresUrl.errors }" />
+        <input type="text" formControlName="thumbnailMaxresUrl" matInput [class.is-invalid]="submitted && f.thumbnailMaxresUrl.errors" />
         @if (submitted && f.thumbnailMaxresUrl.errors) {
         <div class="invalid-feedback">
           @if (f.thumbnailMaxresUrl.errors.required) {

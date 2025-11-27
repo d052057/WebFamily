@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebFamily.Server.Models
+﻿namespace WebFamily.Server.Models
 {
     public class menuType
     {

@@ -16,7 +16,7 @@
           (voiceInput)="onVoiceInput($event)"
           [microphone]="isUserSpeaking"
           [language]="langData[langSelected].code"
-          [ngClass]="{ 'is-invalid': submitted && f.assigned.errors }" />
+          [class.is-invalid]="submitted && f.assigned.errors" />
         <span matSuffix style="display: flex; padding-right:1rem;">
           <mat-select [(value)]="langSelected">
             <mat-select-trigger>

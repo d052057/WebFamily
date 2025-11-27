@@ -5,7 +5,7 @@ import { finalize, map } from 'rxjs/operators';
 import { SnackService } from '../../shared/services/snack.service';
 import { TubeService } from './../services/tube.service';
 import { Webtube } from './../models/webtubes.model';
-import { CommonModule } from '@angular/common';
+
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 
 @Component({
   selector: 'app-add',
-  imports: [CommonModule, VoiceDirective, MatIconModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatInputModule],
+  imports: [VoiceDirective, MatIconModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatInputModule],
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.scss']
 })

@@ -5,11 +5,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { NgClass } from '@angular/common';
+
 
 @Component({
   selector: 'app-docviewer',
-  imports: [NgxPaginationModule, RouterOutlet, NgClass],
+  imports: [NgxPaginationModule, RouterOutlet],
   templateUrl: './docviewer.component.html',
   styleUrl: './docviewer.component.scss'
 })

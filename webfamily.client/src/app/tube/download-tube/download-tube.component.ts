@@ -1,14 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TubeService } from '../services/tube.service'
 import { FormControl, FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { CommonModule, NgClass } from '@angular/common';
+
 import { MatInputModule } from '@angular/material/input';
 import urlParser, { YouTubeParseResult } from "js-video-url-parser";
 import { SnackService } from '../../shared/services/snack.service';
 
 @Component({
   selector: 'app-download-tube',
-  imports: [NgClass, CommonModule, ReactiveFormsModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatInputModule],
   templateUrl: './download-tube.component.html',
   styleUrl: './download-tube.component.scss'
 })

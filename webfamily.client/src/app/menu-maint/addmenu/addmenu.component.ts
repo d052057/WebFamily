@@ -4,7 +4,7 @@ import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
 import { AccountService } from '../../account/account.service';
 import { MenuService } from '../../shared/services/menu.service';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
@@ -15,7 +15,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
 
 @Component({
   selector: 'app-addmenu',
-  imports: [CommonModule, VoiceDirective, FormsModule, ReactiveFormsModule, MatSelectModule, MatInputModule, MatIconModule],
+  imports: [VoiceDirective, FormsModule, ReactiveFormsModule, MatSelectModule, MatInputModule, MatIconModule],
   templateUrl: './addmenu.component.html',
   styleUrls: ['./addmenu.component.scss'],
   encapsulation: ViewEncapsulation.None

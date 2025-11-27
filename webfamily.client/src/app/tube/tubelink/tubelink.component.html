@@ -11,7 +11,7 @@
       <div class="card" style="max-width: 100%;">
         <div class="card-header">
           @if (isPlaying) {
-            <marquee behavior="scroll" direction="left" [ngClass]="'text-primary'">
+            <marquee behavior="scroll" direction="left" [class]="'text-primary'">
               {{ currentVideo }}
             </marquee>
           }
@@ -20,7 +20,7 @@
           <ul class="list-group list-group-flush">
             @for (t of dataSource() | paginate: config; track t; let i = $index) {
               <li class="list-group-item d-flex justify-content-between align-items-start"
-                (click)="selectedRow(t, dataSource().indexOf(t))" [ngClass]="{ 'text-bg-primary': i === videoIndex }">{{ dataSource().indexOf(t) + 1}} {{ t.webTubeTitle }}<span>{{ t.note }}</span></li>
+                (click)="selectedRow(t, dataSource().indexOf(t))" [class.text-bg-primary]="i === videoIndex">{{ dataSource().indexOf(t) + 1}} {{ t.webTubeTitle }}<span>{{ t.note }}</span></li>
               }
             </ul>
           </div>

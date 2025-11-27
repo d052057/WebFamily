@@ -1,11 +1,7 @@
-﻿namespace WebFamily.Server.Services;
-using WebFamily.Server.Models;
-using System.Threading.Tasks;
+﻿
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+using WebFamily.Server.Models;
+namespace WebFamily.Server.Services;
 public interface IMediaServices
 {
     Task<MediaDirectory> GetFilesByFolder(string folder, string menu);

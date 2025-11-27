@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebFamily.Server.Models;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
+using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 namespace WebFamily.Server.Controllers
 {

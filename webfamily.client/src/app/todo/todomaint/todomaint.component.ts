@@ -3,7 +3,7 @@ import { AbstractControlOptions, FormsModule, ReactiveFormsModule, UntypedFormBu
 import { first } from 'rxjs/operators';
 import { SnackService } from '../../shared/services/snack.service';
 import { TodoService } from '../services/todo.service';
-import { CommonModule, formatDate } from '@angular/common';
+import { formatDate } from '@angular/common';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +20,7 @@ import { VoiceDirective } from '../../shared/directives/voice.directive';
 @Component({
   selector: 'app-todo-maint',
   providers: [provideNativeDateAdapter()],
-  imports: [CommonModule,
+  imports: [
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
@@ -31,8 +31,7 @@ import { VoiceDirective } from '../../shared/directives/voice.directive';
     MatTimepickerModule,
     MatNativeDateModule,
     VoiceDirective,
-    MatFormFieldModule
-  ],
+    MatFormFieldModule],
   templateUrl: './todomaint.component.html',
   styleUrls: ['./todomaint.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
