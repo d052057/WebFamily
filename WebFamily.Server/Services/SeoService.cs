@@ -6,7 +6,9 @@ namespace WebFamily.Server.Services
     public interface ISeoService
     {
         Task<Dictionary<string, SeoData>> GetAllSeoDataAsync();
+#pragma warning disable CS8632
         Task<SeoData?> GetSeoDataByKeyAsync(string key);
+#pragma warning restore CS8632
         Task<bool> CreateSeoDataAsync(string key, SeoData data);
         Task<bool> UpdateSeoDataAsync(string key, SeoData data);
         Task<bool> DeleteSeoDataAsync(string key);
@@ -57,7 +59,9 @@ namespace WebFamily.Server.Services
             }
         }
 
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         public async Task<SeoData?> GetSeoDataByKeyAsync(string key)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             var allData = await GetAllSeoDataAsync();
             return allData.ContainsKey(key) ? allData[key] : null;

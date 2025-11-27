@@ -12,7 +12,9 @@
     {
         public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
+#pragma warning disable CS8632
         public T? Data { get; set; }
+#pragma warning restore CS8632
     }
 }
 
