@@ -101,6 +101,12 @@
     ]
   },
   {
+    "title": "Download ffmpeg without dependencies",
+    "lines": [
+      "https://github.com/Tyrrrz/FFmpegBin"
+    ]
+  },
+  {
     "title": "Setting Static Ip address on IIS - run from cmd",
     "lines": [
       "netsh interface ip set address \"Ethernet 2\" static 192.168.1.158 255.255.255.0 192.168.1.1",

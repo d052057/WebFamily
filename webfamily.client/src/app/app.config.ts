@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MessageService } from './shared/services/message.service';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
-import { LoadingInterceptor } from './shared/core/loading.interceptor';
+import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';

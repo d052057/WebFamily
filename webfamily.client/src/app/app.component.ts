@@ -6,16 +6,18 @@ import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { UserHasRoleDirective } from './shared/directives/user-has-role.directive';
 import { MatIconModule } from '@angular/material/icon';
 import { MenuService } from './shared/services/menu.service';
-
+import { LoadingService } from './shared/services/loading.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [ MatIconModule , RouterOutlet, RouterLink, UserHasRoleDirective, AsyncPipe, TitleCasePipe]
+  imports: [MatProgressSpinnerModule , MatIconModule , RouterOutlet, RouterLink, UserHasRoleDirective, AsyncPipe, TitleCasePipe]
 })
 export class AppComponent implements OnInit {
   accountService = inject(AccountService);
   menuService = inject(MenuService);
+  loadingService = inject(LoadingService);
   private sharedService = inject(SharedService);
   Admin: string = 'admin';
 
