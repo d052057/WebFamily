@@ -4,18 +4,18 @@
       <div id="sidebar" class="collapse collapse-horizontal show border-end">
         <div id="sidebar-nav" class="list-group border-0 rounded-0 text-sm-start min-vh-100">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                (click)="showDel()">Delete Menu</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                  routerLink="delmenu">Delete Menu</li>
 
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                (click)="showAdd()">Add Menu</li>
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                (click)="showRenameFile()">Rename File</li>
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                (click)="showUpdateMenu()">Update Menu (SQL)</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                  routerLink="addmenu">Add Menu</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                  routerLink="renamefile">Rename File</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                  routerLink="updatemenu">Update Menu (SQL)</li>
             @for (m of menus; track m) {
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                (click)="showUpdateVideoDuration(m)">{{ m }} - Update Duration</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                  [routerLink]="[m]">{{ m }} - Update Duration</li>
             }
           </ul>
         </div>

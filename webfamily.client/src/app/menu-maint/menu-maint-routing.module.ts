@@ -33,7 +33,7 @@ const routes: Routes = [
             .then(mod => mod.UpdatemenuComponent)
         },
         {
-          path: 'updatevideosduration/:menu',
+          path: ':menu',
           loadComponent: () => import('./update-video-duration/update-video-duration.component')
             .then(mod => mod.UpdateVideoDurationComponent)
         }
