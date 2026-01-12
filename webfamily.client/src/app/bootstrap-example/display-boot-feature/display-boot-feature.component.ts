@@ -70,7 +70,7 @@ export class DisplayBootFeatureComponent implements OnInit {
           this.folder = '';
           this.item = params.get('item');
 
-          this.folder = 'assets/bootstrap-5.3.3/' + this.item + '/index.html';
+          this.folder = 'assets/bootstrap-5.3.8/' + this.item + '/index.html';
 
           this.http.get(this.folder, { responseType: 'text' })
             .subscribe(response => {
@@ -82,7 +82,7 @@ export class DisplayBootFeatureComponent implements OnInit {
       );
   }
   loadStylesheet(feature: string) {
-    const url = 'assets/bootstrap-5.3.3/' + feature + '/' + feature + '.css'
+    const url = 'assets/bootstrap-5.3.8/' + feature + '/' + feature + '.css'
     const cssFile = feature + '.css';
     for (const c of this.css) {
       if (c === cssFile) {
@@ -100,7 +100,7 @@ export class DisplayBootFeatureComponent implements OnInit {
     } else {
       jsFile = feature + '.js';
     }
-    const scriptSrc = 'assets/bootstrap-5.3.3/' + feature + '/' + jsFile;
+    const scriptSrc = 'assets/bootstrap-5.3.8/' + feature + '/' + jsFile;
     for (const c of this.js) {
       if (c === jsFile) {
         const script = this.document.createElement('script');

@@ -73,17 +73,17 @@ export const routes: Routes = [
     path: 'bootstrap',
     loadComponent: () => import('./bootstrap-example/bootstrap-example.component')
       .then(mod => mod.BootstrapExampleComponent),
-    children: [{
-      path: 'bootstrap/:item',
+    children: [
+      {
+        path: 'bootstrap-icons',
+        loadComponent: () => import('./bootstrap-example/bootstrap-icons/bootstrap-icons.component')
+          .then(mod => mod.BootstrapIconsComponent)
+      },
+      {
+      path: ':item',
       loadComponent: () => import('./bootstrap-example/display-boot-feature/display-boot-feature.component')
         .then(mod => mod.DisplayBootFeatureComponent)
-    },
-    {
-      path: 'bootstrap-icons',
-      loadComponent: () => import('./bootstrap-example/bootstrap-icons/bootstrap-icons.component')
-        .then(mod => mod.BootstrapIconsComponent)
     }
-
     ]
   },
   {

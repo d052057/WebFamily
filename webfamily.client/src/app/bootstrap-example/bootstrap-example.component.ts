@@ -1,10 +1,10 @@
 
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-bootstrap-example',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './bootstrap-example.component.html',
   styleUrl: './bootstrap-example.component.scss',
 })
@@ -57,16 +57,16 @@ export class BootstrapExampleComponent {
   ]
   
   constructor() { }
-  showBootStrap(item: string) {
-    this.router.navigate(['./bootstrap', item],
-      {
-        relativeTo: this.activatedRoute
-      })
-  }
-  showBootStrapIcons() {
-    this.router.navigate(['./bootstrap-icons'],
-      {
-        relativeTo: this.activatedRoute
-      })
-  }
+  //showBootStrap(item: string) {
+  //  this.router.navigate(['./bootstrap', item],
+  //    {
+  //      relativeTo: this.activatedRoute
+  //    })
+  //}
+  //showBootStrapIcons() {
+  //  this.router.navigate(['./bootstrap-icons'],
+  //    {
+  //      relativeTo: this.activatedRoute
+  //    })
+  //}
 }

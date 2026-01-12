@@ -6,9 +6,9 @@
           <ul class="list-group list-group-flush">
             @for (item of items; track item) {
               <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-              (click)="showBootStrap(item)">{{ item }}</li>
+                  [routerLink]="[item]">{{ item }}</li>
             }
-            <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar" (click)="showBootStrapIcons()">Bootstrap Icons</li>
+              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar" routerLink='./bootstrap-icons'>Bootstrap Icons</li>
           </ul>
         </div>
       </div>
