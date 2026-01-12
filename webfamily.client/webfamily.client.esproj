@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties />
+      <UserProperties angular_1json__JsonSchema="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
