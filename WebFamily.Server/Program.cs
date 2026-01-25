@@ -1,3 +1,4 @@
+using AngleSharp.Io;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.StaticFiles;
@@ -280,6 +281,7 @@ namespace WebFamily.Server
             mimeProvider.Mappings[".flv"] = "video/x-flv";
             mimeProvider.Mappings[".mkv"] = "video/mp4";
             mimeProvider.Mappings[".mov"] = "video/mp4";
+            mimeProvider.Mappings[".iso"] = "application/octet-stream";
             return mimeProvider;
         }
 
