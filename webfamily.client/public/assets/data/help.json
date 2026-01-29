@@ -129,7 +129,7 @@
       "This will create install.wim file in D: drive. Now you need to update windows iso file.",
       "Download windows iso file from microsoft website (make sure it is the same version to the current installed windows version.",
       "Open Anyburn software and open downloaded windows iso file.",
-      "Remove install.wim in the current iso file and add install.wim file to the iso file."
+      "Remove install.wim in the current iso file and add install.wim file to the iso file.",
       "Go on the process, next, next and on.",
       "at last, click save to create the new iso file",
       "Done!"
