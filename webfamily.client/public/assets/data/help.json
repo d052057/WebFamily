@@ -116,5 +116,23 @@
       "or",
       "netsh interface ip set address \"Ethernet 2\" static 192.168.1.158 255.255.255.0 192.168.1.1 && netsh interface ip set dns \"Ethernet 2\" static 192.168.1.1 && netsh interface ip add dns \"Ethernet 2\" 8.8.8.8 index=2"
     ]
+  },
+  {
+    "title": "Backup Windows to ISO file via cmd",
+    "lines": [
+      "SoftwareNeed (to modifiy iso file): Anyburn",
+      "Restart windows to boot to safe mode: from Power, hold on shilft and restart - this will restart windows and then get in to cmd mode",
+      "You will get into c:\\windows\\system32",
+      "type or run notepad by entering notepad. Open this pc to find out with drive is the drive Windows installed and a backup drive that you want windows backtup to.",
+      "let windows is located in c: drive and backup disk is d: drive. Get out from notepad and enter:",
+      "dism /Capture-image /Image-file:c:\\install.wim /Capturedir:d:\\ /Name: \"Windows Backup\" /Compress:max",
+      "This will create install.wim file in D: drive. Now you need to update windows iso file.",
+      "Download windows iso file from microsoft website (make sure it is the same version to the current installed windows version.",
+      "Open Anyburn software and open downloaded windows iso file.",
+      "Remove install.wim in the current iso file and add install.wim file to the iso file."
+      "Go on the process, next, next and on.",
+      "at last, click save to create the new iso file",
+      "Done!"
+    ]
   }
 ]
