@@ -187,7 +187,8 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
       { event: 'pause', handler: this.onPause },
       { event: 'volumechange', handler: this.onVolChange },
       { event: 'loadedmetadata', handler: this.onLoadedMetadata },
-      { event: 'ended', handler: this.onEnded }
+      { event: 'ended', handler: this.onEnded },
+      { event: 'visibilitychange', handler: this.onVisibilityChange }
     ];
 
     eventMappings.forEach(({ event, handler }) => {
@@ -293,6 +294,14 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     requestAnimationFrame(() => {
       this.playNextVideo();
     });
+  };
+  private onVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      // Resume if it should be playing but got suspended
+      if (!this.player.paused && this.player.readyState >= 3) {
+        this.player.play();
+      }
+    }
   };
 
   private onFullscreenChange = (): void => {

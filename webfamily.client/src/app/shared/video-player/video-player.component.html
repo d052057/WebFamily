@@ -1,28 +1,28 @@
 <div class="row">
   <div class="col-md-8">
     <figure #figure class="video-container">
-      <video #videoPlayer preload="metadata" crossorigin="anonymous">
-        <!-- Use trackBy for better performance with captions -->
-        @for (caption of currentVideo()?.captions; track trackByCaption($index, caption)) {
-        <track [src]="caption.src"
-               kind="subtitles"
-               [label]="caption.label"
-               [attr.default]="caption.default ? '' : null">
-        }
+        <video #videoPlayer preload="metadata" crossorigin="anonymous" playsinline>
+            <!-- Use trackBy for better performance with captions -->
+            @for (caption of currentVideo()?.captions; track trackByCaption($index, caption)) {
+            <track [src]="caption.src"
+                   kind="subtitles"
+                   [label]="caption.label"
+                   [attr.default]="caption.default ? '' : null">
+            }
 
-        <!-- Audio tracks with trackBy -->
-        @if (currentVideo()?.hasAudioTracks) {
-        @for (track of currentVideo()?.audioTracks; track trackByAudioTrack($index, track)) {
-        <track [src]="track.src"
-               [kind]="track.kind"
-               [srclang]="track.language"
-               [label]="track.label"
-               [default]="track.default">
-        }
-        }
+            <!-- Audio tracks with trackBy -->
+            @if (currentVideo()?.hasAudioTracks) {
+            @for (track of currentVideo()?.audioTracks; track trackByAudioTrack($index, track)) {
+            <track [src]="track.src"
+                   [kind]="track.kind"
+                   [srclang]="track.language"
+                   [label]="track.label"
+                   [default]="track.default">
+            }
+            }
 
-        <p>Your browser doesn't support HTML5 video.</p>
-      </video>
+            <p>Your browser doesn't support HTML5 video.</p>
+        </video>
 
       <audio #externalAudio hidden></audio>
 
