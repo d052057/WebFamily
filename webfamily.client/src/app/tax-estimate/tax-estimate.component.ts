@@ -36,6 +36,7 @@ export class TaxEstimateComponent {
   yearConfig = computed<TaxYearConfig>(() => TAX_YEAR_CONFIGS[this.selectedYear()]);
 
   // ── Income Data Signal ────────────────────────────────────────────────────
+  // socialSecurityBenefits is line 6a on 1040, but we calculate taxability in the component based on provisional income, so we store the raw amount here and compute taxable portion separately.
   taxData = signal<TaxEstimateModel>({
     line1_wages: 0,
     line2b_taxable_interest: 0,
