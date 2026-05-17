@@ -1,0 +1,429 @@
+<div class="container py-4">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+
+            <!-- ── HEADER ROW: Title + Year Selector ── -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                <h2 class="mb-0">Tax Estimate / NIIT Planner</h2>
+                <div class="d-flex align-items-center gap-2">
+                    <label class="form-label mb-0 fw-semibold">Tax Year:</label>
+                    <select class="form-select form-select-sm w-auto"
+                            [ngModel]="selectedYear()"
+                            (ngModelChange)="onYearChange($event)">
+                        <option *ngFor="let yr of availableYears" [value]="yr">{{ yr }}</option>
+                    </select>
+                </div>
+            </div>
+            <p class="text-muted mb-3">Filing Status: <strong>Married Filing Jointly</strong></p>
+
+            <!-- ── YEAR BANNER ── -->
+            <div class="alert alert-warning py-2 mb-4" *ngIf="yearConfig().isEstimated">
+                ⚠ <strong>{{ yearConfig().year }} brackets are estimated.</strong>
+                {{ yearConfig().note }}
+            </div>
+            <div class="alert alert-success py-2 mb-4" *ngIf="!yearConfig().isEstimated">
+                ✔ <strong>{{ yearConfig().year }} — Official IRS figures.</strong>
+                {{ yearConfig().note }}
+            </div>
+
+            <!-- ── INCOME INPUTS ── -->
+            <h5 class="section-title">Federal Income Inputs</h5>
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">Form 1040 Line 1 – Wages (Spouse W-2)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().line1_wages"
+                               (ngModelChange)="updateField('line1_wages', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Form 1040 Line 2b – Taxable Interest</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().line2b_taxable_interest"
+                               (ngModelChange)="updateField('line2b_taxable_interest', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Form 1040 Line 3b – Ordinary Dividends</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().line3b_ordinary_dividends"
+                               (ngModelChange)="updateField('line3b_ordinary_dividends', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Form 1040 Line 4b – Roth Conversion (Taxable IRA)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().line4b_taxable_ira"
+                               (ngModelChange)="updateField('line4b_taxable_ira', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Short-Term Capital Gain</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().shortTermCapitalGain"
+                               (ngModelChange)="updateField('shortTermCapitalGain', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Long-Term Capital Gain</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().longTermCapitalGain"
+                               (ngModelChange)="updateField('longTermCapitalGain', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Social Security Benefits Received</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().socialSecurityBenefits"
+                               (ngModelChange)="updateField('socialSecurityBenefits', $event)" />
+                    </div>
+                    <div class="form-text">Up to 85% may be taxable depending on MAGI.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Qualified Education Expenses (Tuition, Fees, Books)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().educationExpenses"
+                               (ngModelChange)="updateField('educationExpenses', $event)" />
+                    </div>
+                    <div class="form-text">For dependent child attending university.</div>
+                </div>
+
+            </div>
+
+            <!-- ── EDUCATION CREDIT SELECTOR ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">Education Credit Selection</h5>
+
+            <div class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="eduCredit" id="creditAOTC"
+                               [checked]="taxData().educationCredit === 'AOTC'"
+                               (change)="updateField('educationCredit', 'AOTC')" />
+                        <label class="form-check-label" for="creditAOTC">
+                            <strong>AOTC</strong> – American Opportunity Tax Credit
+                        </label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="eduCredit" id="creditLLC"
+                               [checked]="taxData().educationCredit === 'LLC'"
+                               (change)="updateField('educationCredit', 'LLC')" />
+                        <label class="form-check-label" for="creditLLC">
+                            <strong>LLC</strong> – Lifetime Learning Credit
+                        </label>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="eduCredit" id="creditNone"
+                               [checked]="taxData().educationCredit === 'NONE'"
+                               (change)="updateField('educationCredit', 'NONE')" />
+                        <label class="form-check-label" for="creditNone">None</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1" *ngIf="taxData().educationCredit !== 'NONE'">
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <div *ngIf="taxData().educationCredit === 'AOTC'">
+                            <strong>AOTC:</strong> Up to $2,500/yr (first 4 years of college).
+                            40% refundable (up to $1,000). Phases out $160K–$180K MAGI (MFJ).
+                        </div>
+                        <div *ngIf="taxData().educationCredit === 'LLC'">
+                            <strong>LLC:</strong> Up to $2,000/yr (20% of first $10,000 expenses).
+                            Non-refundable. No year limit. Phases out $160K–$180K MAGI (MFJ).
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="summary-box" [class.phased-out]="educationCreditAmount() === 0">
+                        <div class="summary-label">
+                            {{ taxData().educationCredit }} Credit Estimate
+                        </div>
+                        <div class="summary-value text-success">
+                            {{ educationCreditAmount() | currency }}
+                        </div>
+                        <div class="form-text" *ngIf="educationPhaseoutNote()">
+                            {{ educationPhaseoutNote() }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── WITHHOLDING ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">Withholding &amp; Estimated Payments</h5>
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">Federal Tax Already Withheld (W-2 + 1099)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().federalWithheld"
+                               (ngModelChange)="updateField('federalWithheld', $event)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Quarterly Estimated Payments Made (Federal)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" class="form-control"
+                               [ngModel]="taxData().estimatedPayments"
+                               (ngModelChange)="updateField('estimatedPayments', $event)" />
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── INCOME SUMMARY ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">Income Summary</h5>
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <div class="summary-box">
+                        <div class="summary-label">Ordinary Income</div>
+                        <div class="summary-value">{{ ordinaryIncome() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-box">
+                        <div class="summary-label">Taxable SS Income</div>
+                        <div class="summary-value">{{ taxableSocialSecurity() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-box">
+                        <div class="summary-label">MAGI Estimate</div>
+                        <div class="summary-value">{{ magi() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-box">
+                        <div class="summary-label">Taxable Income (after std. deduction)</div>
+                        <div class="summary-value">{{ taxableIncome() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="summary-box">
+                        <div class="summary-label">LTCG Tax Bracket</div>
+                        <div class="summary-value">{{ capitalGainRate() }}</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── ORDINARY INCOME TAX BRACKET BREAKDOWN ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">Ordinary Income Tax Bracket Breakdown</h5>
+            <p class="text-muted small mb-2">
+                Based on ordinary taxable income of <strong>{{ ordinaryTaxableIncome() | currency }}</strong>
+                (taxable income minus LTCG, after $29,200 standard deduction).
+                Wages, interest, dividends, Roth conversion, short-term gains, and taxable SS income.
+            </p>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm bracket-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Bracket</th>
+                            <th>Rate</th>
+                            <th>Income Range</th>
+                            <th>Taxable in Bracket</th>
+                            <th>Tax in Bracket</th>
+                            <th>Active</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of bracketBreakdown()"
+                            [class.table-primary]="row.isActive"
+                            [class.text-muted]="!row.isActive">
+                            <td>{{ row.name }}</td>
+                            <td><strong>{{ row.rate }}</strong></td>
+                            <td>{{ row.range }}</td>
+                            <td>{{ row.taxableAmount | currency }}</td>
+                            <td>{{ row.taxAmount | currency }}</td>
+                            <td>
+                                <span *ngIf="row.isActive" class="badge bg-primary">▶ Your Bracket</span>
+                                <span *ngIf="row.isFilled && !row.isActive" class="badge bg-secondary">Filled</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="4"><strong>Total Ordinary Income Tax</strong></td>
+                            <td><strong>{{ ordinaryIncomeTax() | currency }}</strong></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- ── FEDERAL TAX ESTIMATE ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">① Federal Tax Estimate</h5>
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">Ordinary Income Tax</div>
+                        <div class="summary-value">{{ ordinaryIncomeTax() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">LTCG Tax</div>
+                        <div class="summary-value">{{ ltcgTax() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">NIIT (3.8%)</div>
+                        <div class="summary-value">{{ niitTax() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">Education Credit</div>
+                        <div class="summary-value text-success">– {{ educationCreditAmount() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">Gross Federal Tax</div>
+                        <div class="summary-value">{{ grossFederalTax() | currency }}</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box highlight">
+                        <div class="summary-label">Federal Tax Owed / (Refund)</div>
+                        <div class="summary-value" [class.text-danger]="federalTaxOwed() > 0" [class.text-success]="federalTaxOwed() <= 0">
+                            {{ federalTaxOwed() | currency }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- NIIT Alert -->
+            <div class="alert mt-3"
+                 [class.alert-success]="niitExposure() === 0"
+                 [class.alert-warning]="niitExposure() > 0">
+                <div *ngIf="niitExposure() === 0">✔ No NIIT Exposure — MAGI is below $250,000 threshold.</div>
+                <div *ngIf="niitExposure() > 0">
+                    ⚠ NIIT Exposure: {{ niitExposure() | currency }} above $250,000 threshold.<br />
+                    Estimated NIIT: {{ niitTax() | currency }}
+                    <br /><small>Remaining room before NIIT: <strong>{{ remainingRoom() | currency }}</strong></small>
+                </div>
+            </div>
+
+            <!-- ── WA STATE EXCISE TAX ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">② Washington State Capital Gains Excise Tax</h5>
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <div class="summary-box">
+                        <div class="summary-label">WA Taxable LTCG</div>
+                        <div class="summary-value">{{ waExcisableLTCG() | currency }}</div>
+                        <div class="form-text">LTCG above $270,000 WA exemption</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="summary-box highlight">
+                        <div class="summary-label">WA Excise Tax (7%)</div>
+                        <div class="summary-value" [class.text-danger]="waExciseTax() > 0">
+                            {{ waExciseTax() | currency }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="alert mt-3"
+                 [class.alert-success]="waExciseTax() === 0"
+                 [class.alert-warning]="waExciseTax() > 0">
+                <div *ngIf="waExciseTax() === 0">✔ No WA Capital Gains Excise Tax — LTCG is below $270,000 exemption.</div>
+                <div *ngIf="waExciseTax() > 0">
+                    ⚠ WA 7% Capital Gains Excise Tax applies: {{ waExciseTax() | currency }}
+                </div>
+            </div>
+
+            <!-- ── FLAGS & WARNINGS ── -->
+            <hr class="my-4" />
+            <h5 class="section-title">⚑ Flags &amp; Warnings</h5>
+
+            <div class="alert alert-info" *ngIf="amtFlagMessage()">
+                <strong>AMT Flag:</strong> {{ amtFlagMessage() }}
+            </div>
+
+            <div class="alert alert-info" *ngIf="iirmaFlagMessage()">
+                <strong>IRMAA Awareness:</strong> {{ iirmaFlagMessage() }}
+            </div>
+
+            <div class="alert alert-success" *ngIf="!amtFlagMessage() && !iirmaFlagMessage()">
+                ✔ No AMT or IRMAA flags at current income levels.
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="mt-3 text-muted small">
+        <p>
+            <strong>MAGI</strong> = Modified Adjusted Gross Income &nbsp;|&nbsp;
+            <strong>LTCG</strong> = Long-Term Capital Gain &nbsp;|&nbsp;
+            <strong>NIIT</strong> = Net Investment Income Tax ({{ niitValue * 100 }}% — fixed by statute) &nbsp;|&nbsp;
+            <strong>MFJ Standard Deduction {{ yearConfig().year }}</strong>: {{ yearConfig().standardDeductionMFJ | currency:'USD':'symbol':'1.0-0' }}
+        </p>
+        <p>
+            LTCG brackets (MFJ {{ yearConfig().year }}):
+            0% ≤ {{ yearConfig().ltcgBrackets[0].ceiling | currency:'USD':'symbol':'1.0-0' }} &nbsp;|&nbsp;
+            15% up to {{ yearConfig().ltcgBrackets[1].ceiling | currency:'USD':'symbol':'1.0-0' }} &nbsp;|&nbsp;
+            20% above<br />
+            WA Capital Gains Excise: {{ yearConfig().waExciseRate * 100 }}% on LTCG above {{ yearConfig().waExemption | currency:'USD':'symbol':'1.0-0' }}<br />
+            IRMAA threshold (MFJ {{ yearConfig().year }}): surcharges begin at MAGI &gt; {{ yearConfig().irmaaThresholdMFJ | currency:'USD':'symbol':'1.0-0' }}<br />
+            NIIT threshold (MFJ): $250,000 MAGI — fixed by statute, does not adjust for inflation<br />
+            AOTC/LLC phaseout (MFJ): $160,000–$180,000 MAGI — fixed by statute
+        </p>
+    </div>
+</div>

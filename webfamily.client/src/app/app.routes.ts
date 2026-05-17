@@ -109,6 +109,11 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'tax-estimate',
+    loadComponent: () => import('./tax-estimate/tax-estimate.component')
+      .then(mod => mod.TaxEstimateComponent)
+  },
+  {
     path: 'help',
     loadComponent: () => import('./help-reminder/help-reminder')
       .then(mod => mod.HelpReminder)

@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.summary-box {
+  border-radius: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  height: 100%;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+input.form-control {
+  border-radius: 0.75rem;
+}
