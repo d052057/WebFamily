@@ -23,4 +23,11 @@ export interface TaxEstimateModel {
   // ── Filing Info ───────────────────────────────────────────────────────────
   filingStatus: 'MFJ' | 'Single' | 'HOH';
   dependents: number;
+
+  // ── Roth Conversion Planner ───────────────────────────────────────────────
+  yourYearBorn: number;                 // Your birth year (e.g. 1955)
+  spouseYearBorn: number;               // Spouse birth year (e.g. 1971)
+  traditionalIraBalance: number;        // Current pre-tax IRA/401k balance
+  spouseRetirementAge: number;          // Age spouse plans to retire (default 65)
+  iraGrowthRate: number;                // Expected annual IRA growth rate (default 0.07)
 }

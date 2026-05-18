@@ -39,6 +39,11 @@
               },
               {
                 "glob": "**/*",
+                "input": "src/app/tax-estimate/assets",
+                "output": "tax-estimate/assets"
+              },
+              {
+                "glob": "**/*",
                 "input": "public",
                 "output": "/"
               }
