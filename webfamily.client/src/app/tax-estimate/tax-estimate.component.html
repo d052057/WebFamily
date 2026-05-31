@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">Form 1040 Line 6a - Social Security Benefits</label>
+                    <label class="form-label">Social Security Benefits Received</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
                         <input type="number" class="form-control"
@@ -199,130 +199,6 @@
                         <input type="number" class="form-control"
                                [ngModel]="taxData().estimatedPayments"
                                (ngModelChange)="updateField('estimatedPayments', $event)" />
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ── ROTH CONVERSION PLANNER INPUTS ── -->
-            <hr class="my-4" />
-            <h5 class="section-title">Roth Conversion Planner</h5>
-            <div class="row g-3">
-
-                <div class="col-md-4">
-                    <label class="form-label">Your Year Born</label>
-                    <input type="number" class="form-control"
-                           [ngModel]="taxData().yourYearBorn"
-                           (ngModelChange)="updateField('yourYearBorn', $event)" />
-                    <div class="form-text">Your current age: <strong>{{ yourAge() }}</strong> &nbsp;|&nbsp; Years to RMD (age 73): <strong>{{ yearsToRmd() }}</strong></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Spouse Year Born</label>
-                    <input type="number" class="form-control"
-                           [ngModel]="taxData().spouseYearBorn"
-                           (ngModelChange)="updateField('spouseYearBorn', $event)" />
-                    <div class="form-text">Spouse current age: <strong>{{ spouseAge() }}</strong> &nbsp;|&nbsp; Years to retirement: <strong>{{ yearsToSpouseRetirement() }}</strong></div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Spouse Retirement Age</label>
-                    <input type="number" class="form-control"
-                           [ngModel]="taxData().spouseRetirementAge"
-                           (ngModelChange)="updateField('spouseRetirementAge', $event)" />
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Traditional IRA / 401k Balance (Pre-Tax)</label>
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" class="form-control"
-                               [ngModel]="taxData().traditionalIraBalance"
-                               (ngModelChange)="updateField('traditionalIraBalance', $event)" />
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Expected IRA Growth Rate</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" step="0.01"
-                               [ngModel]="taxData().iraGrowthRate"
-                               (ngModelChange)="updateField('iraGrowthRate', $event)" />
-                        <span class="input-group-text">%</span>
-                    </div>
-                    <div class="form-text">e.g. enter 0.07 for 7%</div>
-                </div>
-
-            </div>
-
-            <!-- ── ROTH PLANNER RESULTS ── -->
-            <div class="row g-3 mt-2">
-
-                <div class="col-md-3">
-                    <div class="summary-box">
-                        <div class="summary-label">Projected IRA at Age 73</div>
-                        <div class="summary-value">{{ projectedIraAtRmd() | currency }}</div>
-                        <div class="form-text">After {{ yearsToRmd() }} years growth</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="summary-box">
-                        <div class="summary-label">Estimated First RMD</div>
-                        <div class="summary-value">{{ estimatedRmd() | currency }}</div>
-                        <div class="form-text">IRS Uniform Lifetime Table (age 73 ÷ 26.5)</div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="summary-box">
-                        <div class="summary-label">Est. Income at Age 73</div>
-                        <div class="summary-value">{{ incomeAtRmd() | currency }}</div>
-                        <div class="form-text">
-                            RMD + SS + investment income
-                            <span *ngIf="yearsToSpouseRetirement() > yearsToRmd()"> + spouse wages</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <div class="summary-box" [class.highlight]="true">
-                        <div class="summary-label">Projected Bracket at RMD</div>
-                        <div class="summary-value"
-                             [class.text-danger]="bracketAtRmd() !== (currentBracketRate() * 100).toFixed(0) + '%'"
-                             [class.text-success]="bracketAtRmd() === (currentBracketRate() * 100).toFixed(0) + '%'">
-                            {{ bracketAtRmd() }}
-                        </div>
-                        <div class="form-text">vs. today's {{ (currentBracketRate() * 100).toFixed(0) }}%</div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="summary-box">
-                        <div class="summary-label">Roth Conversion Room (Stay in Current Bracket)</div>
-                        <div class="summary-value text-primary">{{ rothConversionRoom() | currency }}</div>
-                        <div class="form-text">Max you can convert this year without hitting next bracket</div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="summary-box">
-                        <div class="summary-label">Tax Cost to Convert Full Room Now</div>
-                        <div class="summary-value">{{ rothConversionTaxNow() | currency }}</div>
-                        <div class="form-text">At current {{ (currentBracketRate() * 100).toFixed(0) }}% rate</div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="summary-box highlight">
-                        <div class="summary-label">Roth Conversion Recommendation</div>
-                        <div class="summary-value" [class.text-success]="rothRecommended()" [class.text-warning]="!rothRecommended()">
-                            {{ rothRecommended() ? '✔ Convert Now' : '⚠ Evaluate Carefully' }}
-                        </div>
-                        <div class="form-text">
-                            <span *ngIf="rothRecommended()">Today's {{ (currentBracketRate() * 100).toFixed(0) }}% &lt; projected {{ bracketAtRmd() }} at RMD — converting now saves tax.</span>
-                            <span *ngIf="!rothRecommended()">Today's rate ≥ projected RMD rate — conversion benefit is limited. Consider waiting.</span>
-                        </div>
                     </div>
                 </div>
 
@@ -538,9 +414,6 @@
             <strong>LTCG</strong> = Long-Term Capital Gain &nbsp;|&nbsp;
             <strong>NIIT</strong> = Net Investment Income Tax ({{ niitValue * 100 }}% — fixed by statute) &nbsp;|&nbsp;
             <strong>MFJ Standard Deduction {{ yearConfig().year }}</strong>: {{ yearConfig().standardDeductionMFJ | currency:'USD':'symbol':'1.0-0' }}
-        </p>
-        <p>
-            <strong>IRMMA</strong> = Income-Related Monthly Adjustment Amount. Surcharges on Medicare Part B and D premiums for high-income earners. &nbsp;| Spouse insurance convered the Part B and D in my case.
         </p>
         <p>
             LTCG brackets (MFJ {{ yearConfig().year }}):

@@ -6,10 +6,5 @@
   "line4b_taxable_ira": 0,
   "socialSecurityBenefits": 32352,
   "filingStatus": "MFJ",
-  "dependents": 1,
-  "yourYearBorn": 1957,
-  "spouseYearBorn": 1973,
-  "traditionalIraBalance": 0,
-  "spouseRetirementAge": 65,
-  "iraGrowthRate": 0.07
+  "dependents": 1
 }

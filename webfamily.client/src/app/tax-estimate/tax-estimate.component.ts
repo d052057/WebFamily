@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaxDataService } from './services/tax-data.service';
-import { TaxEstimateModel } from './models/tax-estimate.model';
+import { TaxEstimateModel } from '../models/tax-estimate.model';
 import {
   TAX_YEAR_CONFIGS,
   AVAILABLE_TAX_YEARS,
@@ -51,12 +51,7 @@ export class TaxEstimateComponent {
     federalWithheld: 0,
     estimatedPayments: 0,
     filingStatus: 'MFJ',
-    dependents: 1,
-    yourYearBorn: 1955,
-    spouseYearBorn: 1971,
-    traditionalIraBalance: 0,
-    spouseRetirementAge: 65,
-    iraGrowthRate: 0.07
+    dependents: 1
   });
 
   constructor() {
@@ -74,11 +69,6 @@ export class TaxEstimateComponent {
         educationCredit: data.educationCredit ?? 'AOTC',
         federalWithheld: data.federalWithheld ?? 0,
         estimatedPayments: data.estimatedPayments ?? 0,
-        yourYearBorn: data.yourYearBorn ?? 1955,
-        spouseYearBorn: data.spouseYearBorn ?? 1971,
-        traditionalIraBalance: data.traditionalIraBalance ?? 0,
-        spouseRetirementAge: data.spouseRetirementAge ?? 65,
-        iraGrowthRate: data.iraGrowthRate ?? 0.07,
       });
     });
   }
@@ -313,132 +303,6 @@ export class TaxEstimateComponent {
         `Consider Roth conversion timing carefully.`;
     }
     return '';
-  });
-
-  // ── Roth Conversion Planner ───────────────────────────────────────────────
-  readonly currentYear = new Date().getFullYear();
-
-  yourAge = computed(() => this.currentYear - this.taxData().yourYearBorn);
-  spouseAge = computed(() => this.currentYear - this.taxData().spouseYearBorn);
-
-  yearsToRmd = computed(() => Math.max(73 - this.yourAge(), 0));
-
-  yearsToSpouseRetirement = computed(() => {
-    const data = this.taxData();
-    return Math.max(data.spouseRetirementAge - this.spouseAge(), 0);
-  });
-
-  // Project IRA balance at your RMD age (73) using compound growth
-  projectedIraAtRmd = computed(() => {
-    const data = this.taxData();
-    const balance = data.traditionalIraBalance ?? 0;
-    const rate = data.iraGrowthRate ?? 0.07;
-    const years = this.yearsToRmd();
-    return balance * Math.pow(1 + rate, years);
-  });
-
-  // IRS Uniform Lifetime Table divisor at age 73
-  // Full table simplified: key ages near retirement
-  private rmdDivisor(age: number): number {
-    const table: Record<number, number> = {
-      72: 27.4, 73: 26.5, 74: 25.5, 75: 24.6, 76: 23.7,
-      77: 22.9, 78: 22.0, 79: 21.1, 80: 20.2, 81: 19.4,
-      82: 18.5, 83: 17.7, 84: 16.8, 85: 16.0
-    };
-    return table[age] ?? 26.5;
-  }
-
-  // Estimated first RMD amount at age 73
-  estimatedRmd = computed(() => {
-    const balance = this.projectedIraAtRmd();
-    return balance / this.rmdDivisor(73);
-  });
-
-  // What bracket would you be in AT age 73 with RMD + spouse wages + SS?
-  // Spouse still working at your age 73 if yearsToSpouseRetirement > yearsToRmd
-  incomeAtRmd = computed(() => {
-    const data = this.taxData();
-    const spouseStillWorking = this.yearsToSpouseRetirement() > this.yearsToRmd();
-    const spouseWages = spouseStillWorking ? data.line1_wages : 0;
-    const ss = data.socialSecurityBenefits ?? 0;
-    // SS taxability at RMD income level — simplified: assume 85% taxable (likely at that income)
-    const taxableSS = ss * 0.85;
-    const interest = data.line2b_taxable_interest;
-    const dividends = data.line3b_ordinary_dividends;
-    const rmd = this.estimatedRmd();
-    return spouseWages + taxableSS + interest + dividends + rmd;
-  });
-
-  taxableIncomeAtRmd = computed(() => {
-    // Use selected year config for bracket reference (best estimate)
-    const cfg = this.yearConfig();
-    return Math.max(this.incomeAtRmd() - cfg.standardDeductionMFJ, 0);
-  });
-
-  bracketAtRmd = computed(() => {
-    const cfg = this.yearConfig();
-    const income = this.taxableIncomeAtRmd();
-    const b = cfg.ordinaryBrackets;
-    let prev = 0;
-    for (const bracket of b) {
-      if (income > prev && income <= bracket.ceiling) {
-        return `${(bracket.rate * 100).toFixed(0)}%`;
-      }
-      prev = bracket.ceiling;
-    }
-    return '37%';
-  });
-
-  // How much Roth conversion room remains in CURRENT bracket before hitting next bracket?
-  rothConversionRoom = computed(() => {
-    const cfg = this.yearConfig();
-    const ordTaxable = this.ordinaryTaxableIncome();
-    // Find current bracket ceiling
-    let prev = 0;
-    for (const bracket of cfg.ordinaryBrackets) {
-      if (ordTaxable > prev && ordTaxable <= bracket.ceiling) {
-        return Math.max(bracket.ceiling - ordTaxable, 0);
-      }
-      prev = bracket.ceiling;
-    }
-    return 0;
-  });
-
-  // Current bracket rate
-  currentBracketRate = computed(() => {
-    const cfg = this.yearConfig();
-    const income = this.ordinaryTaxableIncome();
-    let prev = 0;
-    for (const bracket of cfg.ordinaryBrackets) {
-      if (income > prev && income <= bracket.ceiling) {
-        return bracket.rate;
-      }
-      prev = bracket.ceiling;
-    }
-    return 0.37;
-  });
-
-  // Tax cost of converting the full room amount NOW
-  rothConversionTaxNow = computed(() => {
-    return this.rothConversionRoom() * this.currentBracketRate();
-  });
-
-  // Is Roth conversion recommended?
-  // Recommended if current bracket < projected bracket at RMD
-  rothRecommended = computed(() => {
-    const currentRate = this.currentBracketRate();
-    const cfg = this.yearConfig();
-    const rmdIncome = this.taxableIncomeAtRmd();
-    let prev = 0;
-    let rmdRate = 0.37;
-    for (const bracket of cfg.ordinaryBrackets) {
-      if (rmdIncome > prev && rmdIncome <= bracket.ceiling) {
-        rmdRate = bracket.rate;
-        break;
-      }
-      prev = bracket.ceiling;
-    }
-    return currentRate < rmdRate;
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
