@@ -10,7 +10,6 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { UserHasRoleDirective } from './directives/user-has-role.directive';
 import { SocialMediaComponent } from './components/social-media/social-media.component';
 
-
 @NgModule({
     exports: [
         RouterModule,
