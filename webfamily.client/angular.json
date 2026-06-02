@@ -30,6 +30,10 @@
             "polyfills": [
               "zone.js"
             ],
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "js-video-url-parser"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {

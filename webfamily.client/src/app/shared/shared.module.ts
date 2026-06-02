@@ -23,7 +23,7 @@ import { SocialMediaComponent } from './components/social-media/social-media.com
         CommonModule,
         RouterModule,
         ReactiveFormsModule,
-        ModalModule.forRoot(),
+        ModalModule,
         NotFoundComponent,
         ValidationMessagesComponent,
         NotificationComponent,
