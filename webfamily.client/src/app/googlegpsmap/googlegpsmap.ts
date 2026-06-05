@@ -1,6 +1,6 @@
 // Enhanced GPSMapComponent with Google Maps, Search Feature, and Profile Integration
 
-import { Component, OnInit, AfterViewInit, inject, signal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { GoogleGPSDistanceService} from './services/googlegpsdistance';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
@@ -25,6 +25,7 @@ declare var google: any;
   selector: 'app-googlegpsmap',
   imports: [MatSelectModule, MatFormFieldModule, MatInputModule, VoiceDirective, MatIconModule, FormsModule, GoogleMapsModule, DecimalPipe, TitleCasePipe, DatePipe],
   templateUrl: './googlegpsmap.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './googlegpsmap.scss'
 })
 export class Googlegpsmap implements OnInit, AfterViewInit {

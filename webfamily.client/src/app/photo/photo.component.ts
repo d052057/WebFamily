@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { MediaService } from '../shared/services/media.service';
@@ -15,6 +15,7 @@ export interface Iphoto {
   selector: 'app-photo',
   imports: [PhotoGallery],
   templateUrl: './photo.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './photo.component.scss',
 })
 export class PhotoComponent {

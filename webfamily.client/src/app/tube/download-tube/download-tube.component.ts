@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TubeService } from '../services/tube.service'
 import { FormControl, FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 
@@ -10,6 +10,7 @@ import { SnackService } from '../../shared/services/snack.service';
   selector: 'app-download-tube',
   imports: [ReactiveFormsModule, MatInputModule],
   templateUrl: './download-tube.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './download-tube.component.scss'
 })
 export class DownloadTubeComponent implements OnInit {

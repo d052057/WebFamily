@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControlOptions, FormControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import urlParser, { YouTubeParseResult } from "js-video-url-parser";
 import { finalize, map } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
   selector: 'app-add',
   imports: [VoiceDirective, MatIconModule, MatSelectModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatInputModule],
   templateUrl: './add.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./add.component.scss']
 })
 export class AddComponent implements OnInit {

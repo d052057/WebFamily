@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, effect, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
@@ -20,6 +20,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
   selector: 'app-rename-file-media-list',
   imports: [VoiceDirective, FormsModule, MatSelectModule, MatPaginator, MatInputModule, MatIconModule, MatFormFieldModule, ReactiveFormsModule, MatTableModule, MatInputModule],
   templateUrl: './rename-file-media-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./rename-file-media-list.component.scss']
 })
 export class RenameFileMediaListComponent implements OnInit, OnDestroy, AfterViewInit {

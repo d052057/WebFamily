@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -17,6 +17,7 @@ interface RouteParams {
   selector: 'app-audio-play-album',
   imports: [AudioPlayerComponent],
   templateUrl: './audio-play-album.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './audio-play-album.component.scss'
 })
 export class AudioPlayAlbumComponent {

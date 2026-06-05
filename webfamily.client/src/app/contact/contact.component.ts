@@ -1,10 +1,11 @@
-import { Component, VERSION } from '@angular/core';
+import { Component, VERSION, ChangeDetectionStrategy } from '@angular/core';
 import * as packageJson from '../../../package.json';
 import { SocialMediaComponent } from '../shared/components/social-media/social-media.component';
 @Component({
     selector: 'app-contact',
     templateUrl: './contact.component.html',
     styleUrls: ['./contact.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [SocialMediaComponent]
 })
 export class ContactComponent {

@@ -1,11 +1,12 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-bootstrap-example',
   imports: [RouterOutlet, RouterLink],
   templateUrl: './bootstrap-example.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bootstrap-example.component.scss',
 })
 export class BootstrapExampleComponent {

@@ -1,5 +1,5 @@
 // scrolling-gallery.component.ts
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ElementRef, ViewChild, AfterViewInit, input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ElementRef, ViewChild, AfterViewInit, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { RpmCoverItem } from '../interfaces/rpm.interface'; // Adjust the import path as necessary
 
@@ -8,6 +8,7 @@ import { RpmCoverItem } from '../interfaces/rpm.interface'; // Adjust the import
   standalone: true,
   imports: [],
   templateUrl: './scrolling-gallery.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './scrolling-gallery.component.scss'
 })
 export class ScrollingGalleryComponent implements OnInit, AfterViewInit, OnDestroy {

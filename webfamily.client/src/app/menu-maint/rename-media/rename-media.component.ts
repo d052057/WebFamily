@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MenuService } from '../../shared/services/menu.service';
@@ -16,6 +16,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
   selector: 'app-rename-media',
   imports: [VoiceDirective, FormsModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatInputModule, MatSelectModule],
   templateUrl: './rename-media.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./rename-media.component.scss']
 })
 export class RenameMediaComponent implements OnInit, OnDestroy {

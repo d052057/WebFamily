@@ -2,7 +2,8 @@ import {
   Component,
   computed,
   inject,
-  signal
+  signal,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './tax-estimate.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./tax-estimate.component.scss']
 })
 export class TaxEstimateComponent {

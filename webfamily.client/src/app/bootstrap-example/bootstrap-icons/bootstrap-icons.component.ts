@@ -1,10 +1,11 @@
 
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 @Component({
   selector: 'app-bootstrap-icons',
   imports: [],
   templateUrl: './bootstrap-icons.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bootstrap-icons.component.scss'
 })
 export class BootstrapIconsComponent implements OnInit {

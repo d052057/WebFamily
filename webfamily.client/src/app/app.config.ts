@@ -1,7 +1,7 @@
 import { ApplicationConfig, importProvidersFrom, inject, provideAppInitializer, provideZoneChangeDetection, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { FacebookService } from './shared/services/facebook.service';
 import { routes } from './app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { SharedModule } from './shared/shared.module';
 import { HomeModule } from './home/home.module';
@@ -49,7 +49,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withPreloading(NoPreloading)),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     provideAppInitializer((initializeFacebookSdk)()),
     provideAppInitializer(initializeIcons),
     importProvidersFrom(

@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 
 
 @Component({
     selector: 'app-notification',
     templateUrl: './notification.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./notification.component.css'],
     
 })

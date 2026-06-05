@@ -16,17 +16,17 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.2.15",
+    "@angular/animations": "^22.0.0",
     "@angular/cdk": "^21.2.13",
-    "@angular/common": "^21.2.15",
-    "@angular/compiler": "^21.2.15",
-    "@angular/core": "^21.2.15",
-    "@angular/forms": "^21.2.15",
+    "@angular/common": "^22.0.0",
+    "@angular/compiler": "^22.0.0",
+    "@angular/core": "^22.0.0",
+    "@angular/forms": "^22.0.0",
     "@angular/google-maps": "^21.2.13",
     "@angular/material": "^21.2.13",
-    "@angular/platform-browser": "^21.2.15",
-    "@angular/platform-browser-dynamic": "^21.2.15",
-    "@angular/router": "^21.2.15",
+    "@angular/platform-browser": "^22.0.0",
+    "@angular/platform-browser-dynamic": "^22.0.0",
+    "@angular/router": "^22.0.0",
     "@popperjs/core": "^2.11.8",
     "@types/google-one-tap": "^1.2.7",
     "@types/leaflet": "^1.9.21",
@@ -48,17 +48,18 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.13",
-    "@angular/cli": "^21.2.14",
-    "@angular/compiler-cli": "^21.2.15",
+    "@angular/build": "^22.0.0",
+    "@angular/cli": "^22.0.0",
+    "@angular/compiler-cli": "^22.0.0",
     "@types/jasmine": "~6.0.0",
     "baseline-browser-mapping": "^2.10.33",
+    "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~6.2.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.2.0",
-    "typescript": "~5.9.3"
+    "typescript": "~6.0.3"
   }
 }

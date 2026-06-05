@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { PlayService } from './play.service';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
     selector: 'app-play',
     templateUrl: './play.component.html',
     styleUrls: ['./play.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconModule]
 })
 export class PlayComponent implements OnInit{

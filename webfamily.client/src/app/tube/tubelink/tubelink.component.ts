@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgxPaginationModule, PaginationInstance } from 'ngx-pagination';
 //import { GridVideoComponent } from '../../shared/grid-video/grid-video.component';
 import { VideoSeries } from '../../shared/video-series/video-series'; 
@@ -11,6 +11,7 @@ import { SafePipe } from '../../shared/pipes/safe.pipe';
     selector: 'app-tubelink',
   imports: [CommonModule, SafePipe, NgxPaginationModule, VideoSeries],
     templateUrl: './tubelink.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './tubelink.component.scss'
 })
 export class TubelinkComponent implements OnInit {

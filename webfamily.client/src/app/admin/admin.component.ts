@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, inject } from '@angular/core';
+import { Component, OnInit, TemplateRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AdminService } from './admin.service';
 import { SharedService } from '../shared/shared.service';
 import { MemberView } from '../shared/models/admin/memberView';
@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
     selector: 'app-admin',
     templateUrl: './admin.component.html',
     styleUrls: ['./admin.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, TitleCasePipe, DatePipe]
 })
 export class AdminComponent implements OnInit {

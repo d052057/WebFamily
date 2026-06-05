@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AccountService } from './account/account.service';
 import { SharedService } from './shared/shared.service';
 import { RouterOutlet, RouterLink } from '@angular/router';
@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatProgressSpinnerModule , MatIconModule , RouterOutlet, RouterLink, UserHasRoleDirective, AsyncPipe, TitleCasePipe]
 })
 export class AppComponent implements OnInit {

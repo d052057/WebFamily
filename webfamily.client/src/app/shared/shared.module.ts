@@ -4,7 +4,7 @@ import { NotFoundComponent } from './components/errors/not-found/not-found.compo
 import { ValidationMessagesComponent } from './components/errors/validation-messages/validation-messages.component';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NotificationComponent } from './components/modals/notification/notification.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { UserHasRoleDirective } from './directives/user-has-role.directive';
@@ -28,6 +28,6 @@ import { SocialMediaComponent } from './components/social-media/social-media.com
         NotificationComponent,
         UserHasRoleDirective,
         SocialMediaComponent
-    ], providers: [provideHttpClient(withInterceptorsFromDi())]
+    ], providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())]
 })
 export class SharedModule { }

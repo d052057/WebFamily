@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 interface Command {
   title: string;
@@ -10,6 +10,7 @@ type CommandData = Command[];
   selector: 'app-help-reminder',
   imports: [],
   templateUrl: './help-reminder.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './help-reminder.scss'
 })
 export class HelpReminder implements OnInit {

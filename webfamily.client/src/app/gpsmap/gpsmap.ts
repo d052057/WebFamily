@@ -1,6 +1,6 @@
 // Enhanced GPSMapComponent with Search Feature and Zoom Controls
 
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import * as L from 'leaflet';
 import { GPSDistanceService, GPSCoordinate, TriangleResult } from './services/gpsdistance';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +29,7 @@ interface LocationPhoto {
   selector: 'app-gps-map',
   imports: [FormsModule],
   templateUrl: './gpsmap.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './gpsmap.scss'
 })
 export class GPSMapComponent implements OnInit, AfterViewInit {

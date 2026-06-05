@@ -1,10 +1,11 @@
 import { VideoSource } from './../models/video.model';
-import { Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-video-viewer',
   imports: [],
   templateUrl: './video-viewer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './video-viewer.component.scss'
 })
 export class VideoViewerComponent implements OnInit, OnChanges {

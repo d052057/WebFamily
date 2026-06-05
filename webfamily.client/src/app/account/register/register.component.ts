@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, inject, viewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, inject, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AccountService } from '../account.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedService } from '../../shared/shared.service';
@@ -16,6 +16,7 @@ declare const FB: any;
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ReactiveFormsModule, ValidationMessagesComponent, RouterLink]
 })
 export class RegisterComponent implements OnInit {

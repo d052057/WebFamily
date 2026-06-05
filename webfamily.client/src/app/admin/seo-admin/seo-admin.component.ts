@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeoAdminService, SeoData } from '../../shared/services/seo-admin';
 
@@ -6,6 +6,7 @@ import { SeoAdminService, SeoData } from '../../shared/services/seo-admin';
   selector: 'app-seo-admin',
   templateUrl: './seo-admin.component.html',
   styleUrls: ['./seo-admin.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule]
 })
 export class SeoAdminComponent implements OnInit {

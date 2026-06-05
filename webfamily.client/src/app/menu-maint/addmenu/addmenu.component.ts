@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 import { MediaService } from '../../shared/services/media.service';
@@ -18,6 +18,7 @@ import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
   imports: [VoiceDirective, FormsModule, ReactiveFormsModule, MatSelectModule, MatInputModule, MatIconModule],
   templateUrl: './addmenu.component.html',
   styleUrls: ['./addmenu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class AddmenuComponent implements OnInit, OnDestroy {

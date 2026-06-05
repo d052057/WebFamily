@@ -1,11 +1,12 @@
 import { JsonPipe } from '@angular/common';
-import { Component, HostListener, Input, OnInit, effect, signal, input, output } from '@angular/core';
+import { Component, HostListener, Input, OnInit, effect, signal, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-video-series',
   imports: [],
   templateUrl: './video-series.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './video-series.scss',
 })
 export class VideoSeries implements OnInit {

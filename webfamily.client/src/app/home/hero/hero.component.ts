@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TodoListComponent } from '../../todo/todo-list/todo-list.component';
 //import { fadeInOut } from '../../shared/services/animations';
 
@@ -7,6 +7,7 @@ import { TodoListComponent } from '../../todo/todo-list/todo-list.component';
   templateUrl: './hero.component.html',
   styleUrls: ['./hero.component.scss'],
   //animations: [fadeInOut],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TodoListComponent]
 })
 export class HeroComponent implements OnInit {

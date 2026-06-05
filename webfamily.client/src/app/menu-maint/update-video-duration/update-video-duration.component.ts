@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { VideoDuration } from './services/video-duration';
 import { finalize } from 'rxjs';
 
@@ -9,6 +9,7 @@ import { TimeConversionPipe } from '../../shared/pipes/time-conversion.pipe';
     imports: [TimeConversionPipe],
     providers: [TimeConversionPipe],
     templateUrl: './update-video-duration.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './update-video-duration.component.scss'
 })
 export class UpdateVideoDurationComponent implements OnInit {

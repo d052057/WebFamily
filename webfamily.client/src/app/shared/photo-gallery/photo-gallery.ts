@@ -1,10 +1,11 @@
-import { Component, HostListener, Input, OnInit, effect, signal } from '@angular/core';
+import { Component, HostListener, Input, OnInit, effect, signal, ChangeDetectionStrategy } from '@angular/core';
 import { SafePipe } from '../../shared/pipes/safe.pipe';
 
 @Component({
   selector: 'app-photo-gallery',
   imports: [SafePipe],
   templateUrl: './photo-gallery.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './photo-gallery.scss',
 })
 export class PhotoGallery implements OnInit {

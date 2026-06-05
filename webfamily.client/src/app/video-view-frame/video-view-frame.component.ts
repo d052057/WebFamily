@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoViewerComponent } from './video-viewer/video-viewer.component';
 import { VideoSource } from './models/video.model';
 
@@ -18,6 +18,7 @@ export interface videoInterface {
   selector: 'app-video-view-frame',
   imports: [VideoViewerComponent],
   templateUrl: './video-view-frame.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './video-view-frame.component.scss'
 })
 export class VideoViewFrameComponent {
