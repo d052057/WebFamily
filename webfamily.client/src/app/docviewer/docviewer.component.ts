@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MediaService } from '../shared/services/media.service';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -11,7 +11,7 @@ import { map } from 'rxjs';
   selector: 'app-docviewer',
   imports: [NgxPaginationModule, RouterOutlet],
   templateUrl: './docviewer.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './docviewer.component.scss'
 })
 export class DocViewerComponent {

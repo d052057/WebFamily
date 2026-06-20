@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
@@ -9,7 +9,7 @@ import { MediaService } from '../../shared/services/media.service';
   selector: 'app-pdfviewer',
   imports: [NgxExtendedPdfViewerModule],
   templateUrl: './pdfviewer.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './pdfviewer.component.scss'
 })
 export class PdfViewerComponent {

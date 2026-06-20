@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AccountService } from '../account.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { ValidationMessagesComponent } from '../../shared/components/errors/vali
     selector: 'app-register-with-third-party',
     templateUrl: './register-with-third-party.component.html',
     styleUrls: ['./register-with-third-party.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, ValidationMessagesComponent, TitleCasePipe]
 })
 export class RegisterWithThirdPartyComponent implements OnInit {

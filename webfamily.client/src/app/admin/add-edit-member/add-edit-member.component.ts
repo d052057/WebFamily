@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AdminService } from '../admin.service';
 import { SharedService } from '../../shared/shared.service';
@@ -11,7 +11,7 @@ import { ValidationMessagesComponent } from '../../shared/components/errors/vali
     selector: 'app-add-edit-member',
     templateUrl: './add-edit-member.component.html',
     styleUrls: ['./add-edit-member.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, ValidationMessagesComponent, RouterLink]
 })
 export class AddEditMemberComponent implements OnInit {

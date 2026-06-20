@@ -1,4 +1,4 @@
-
+﻿
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 
@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/route
   selector: 'app-bootstrap-example',
   imports: [RouterOutlet, RouterLink],
   templateUrl: './bootstrap-example.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './bootstrap-example.component.scss',
 })
 export class BootstrapExampleComponent {

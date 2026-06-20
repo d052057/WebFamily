@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AccountService } from '../account.service';
 import { SharedService } from '../../shared/shared.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { ValidationMessagesComponent } from '../../shared/components/errors/vali
     selector: 'app-send-email',
     templateUrl: './send-email.component.html',
     styleUrls: ['./send-email.component.css'],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [ReactiveFormsModule, ValidationMessagesComponent]
 })
 export class SendEmailComponent implements OnInit {

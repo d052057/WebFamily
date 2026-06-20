@@ -1,4 +1,4 @@
-
+﻿
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit, inject, Renderer2, ChangeDetectionStrategy } from "@angular/core";
 import { SafeHtml, DomSanitizer } from "@angular/platform-browser";
@@ -9,7 +9,7 @@ import { DOCUMENT } from '@angular/common';
   selector: 'app-display-boot-feature',
   imports: [],
   templateUrl: './display-boot-feature.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./display-boot-feature.component.scss']
 })
 export class DisplayBootFeatureComponent implements OnInit {

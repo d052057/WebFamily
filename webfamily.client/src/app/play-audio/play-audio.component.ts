@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -10,7 +10,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
   selector: 'app-play-audio',
   imports: [AudioPlayerComponent],
   templateUrl: './play-audio.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./play-audio.component.scss', 'playlist.scss']
 })
 export class PlayAudioComponent {

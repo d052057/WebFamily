@@ -1,123 +1,124 @@
-  <!-- Form Section -->
+<!-- Form Section -->
 <div class="container" style="margin-bottom: 1rem; display:flex">
 
-  <!-- Menu Select -->
-  <mat-form-field appearance="outline" class="input-25">
-    <mat-label>Choose Menu</mat-label>
-    <mat-icon matPrefix class="material-symbols-outlined">folder</mat-icon>
-    <mat-select (selectionChange)="onMenuSelected()" [(value)]="menuSelectedIndex">
-      @for (s of menuData; track s; let i = $index) {
-      <mat-option [value]="i">
-        {{ s }}
-      </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+    <!-- Menu Select -->
+    <mat-form-field appearance="outline" class="input-25">
+        <mat-label>Choose Menu</mat-label>
+        <mat-icon matPrefix class="material-symbols-outlined">folder</mat-icon>
+        <mat-select (selectionChange)="onMenuSelected()" [(value)]="menuSelectedIndex">
+            @for (s of menuData; track s; let i = $index) {
+            <mat-option [value]="i">
+                {{ s }}
+            </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 
-  <!-- Menu Item Select (Conditional) -->
-  @if (menuSelectedIndex >= 0) {
+    <!-- Menu Item Select (Conditional) -->
+    @if (menuSelectedIndex >= 0) {
+    <mat-form-field appearance="outline" class="input-25">
+        <mat-label>Choose Menu Item/ Folder</mat-label>
+        <mat-icon matPrefix class="material-symbols-outlined">folder</mat-icon>
+        <mat-select (selectionChange)="onSelectedTitle()" [(value)]="menuItemSelectedIndex">
+            @for (s of titleData; track s; let i = $index) {
+            <mat-option [value]="i">
+                {{ s.title || s.param }}
+            </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    }
 
-  <mat-form-field appearance="outline" class="input-25">
-    <mat-label>Choose Menu Item/ Folder</mat-label>
-    <mat-icon matPrefix class="material-symbols-outlined">folder</mat-icon>
-    <mat-select (selectionChange)="onSelectedTitle()" [(value)]="menuItemSelectedIndex">
-      @for (s of titleData; track s; let i = $index) {
-      <mat-option [value]="i">
-        {{ s.title || s.param }}
-      </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-  }
+    <!-- Search Field (Conditional) -->
+    @if (menuItemSelectedIndex >= 0) {
+    <mat-form-field appearance="outline" class="input-50">
+        <mat-label>Search for</mat-label>
+        <input type="search"
+               matInput
+               appVoice
+               placeholder="{{ langSearch }}"
+               [ngModel]="searchVal()"
+               (ngModelChange)="onSearch($event)"
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isUserSpeaking"
+               [language]="langData[langSelected].code">
 
-  <!-- Search Field (Conditional) -->
-  @if (menuItemSelectedIndex >= 0) {
-  <mat-form-field appearance="outline" class="input-50">
-    <mat-label>Search for</mat-label>
-    <input type="search"
-           matInput
-           appVoice
-           placeholder="{{ langSearch }}"
-           [ngModel]="searchVal()"
-           (ngModelChange)="onSearch($event)"
-           (voiceInput)="onVoiceInput($event)"
-           [microphone]="isUserSpeaking"
-           [language]="langData[langSelected].code">
+        <div matSuffix class="suffix-container">
+            <!-- Language Select -->
+            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+                <mat-select-trigger>
+                    <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon>
+                    {{ langData[langSelected].display }}
+                </mat-select-trigger>
+                @for (s of langData; track s; let i = $index) {
+                <mat-option [value]="i">
+                    <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+                </mat-option>
+                }
+            </mat-select>
 
-    <div matSuffix class="suffix-container">
-      <!-- Language Select -->
-      <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
-        <mat-select-trigger>
-          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon>
-          {{ langData[langSelected].display }}
-        </mat-select-trigger>
-        @for (s of langData; track s; let i = $index) {
-        <mat-option [value]="i">
-          <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
-        </mat-option>
-        }
-      </mat-select>
-
-      <!-- Microphone Toggle -->
-      <div class="mic-container">
-        @if (!isUserSpeaking) {
-        <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
-        }
-        @if (isUserSpeaking) {
-        <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
-        }
-      </div>
-    </div>
-  </mat-form-field>
-  }
+            <!-- Microphone Toggle -->
+            <div class="mic-container">
+                @if (!isUserSpeaking) {
+                <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
+                }
+                @if (isUserSpeaking) {
+                <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
+                }
+            </div>
+        </div>
+    </mat-form-field>
+    }
 </div>
-
 
 <!-- Table Section (Conditional) -->
-  @if (menuItemSelectedIndex >= 0) {
+@if (menuItemSelectedIndex >= 0) {
 <div class="container">
-  <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+    <mat-table #table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-    <!-- Title Column -->
-    <ng-container matColumnDef="title">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> File Name </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.title }} </mat-cell>
-    </ng-container>
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> File Name </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.title }} </mat-cell>
+        </ng-container>
 
-    <!-- Type Column -->
-    <ng-container matColumnDef="type">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> MimeType </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.type }} </mat-cell>
-    </ng-container>
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> MimeType </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{ row.type }} </mat-cell>
+        </ng-container>
 
-    <!-- Action Column -->
-    <ng-container matColumnDef="action">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
-      <mat-cell *matCellDef="let row; let i=index;">
-        <div class="action-buttons">
-          <span class="action-button edit-button" (click)="openRename(row)">
-            <mat-icon>edit</mat-icon>
-            Edit
-          </span>
-          <span class="action-button delete-button" (click)="deleteMediaFile(row)">
-            <mat-icon>delete</mat-icon>
-            Delete
-          </span>
-        </div>
-      </mat-cell>
-    </ng-container>
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Actions </mat-header-cell>
+            <mat-cell *matCellDef="let row; let i=index;">
+                <div class="action-buttons">
+                    <span class="action-button edit-button" (click)="openRename(row)">
+                        <mat-icon>edit</mat-icon>
+                        Edit
+                    </span>
+                    <span class="action-button delete-button" (click)="deleteMediaFile(row)">
+                        <mat-icon>delete</mat-icon>
+                        Delete
+                    </span>
+                </div>
+            </mat-cell>
+        </ng-container>
 
-    <!-- Table Rows -->
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        <!-- Table Rows -->
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-    <!-- No Data Row -->
-    <mat-row *matNoDataRow>
-      <mat-cell colspan="3">No data matching the filter "{{ searchVal() }}"</mat-cell>
-    </mat-row>
-  </mat-table>
+        <!-- No Data Row -->
+        <tr mat-no-data-row>
+            <td colspan="3" style="padding: 1rem;">
+                No data matching the filter "{{ searchVal() }}"
+            </td>
+        </tr>
 
-  <!-- Paginator -->
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-table>
+
+    <!-- Paginator -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>
-  }
+}

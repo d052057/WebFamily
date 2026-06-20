@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   computed,
   inject,
@@ -21,7 +21,7 @@ import {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './tax-estimate.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./tax-estimate.component.scss']
 })
 export class TaxEstimateComponent {

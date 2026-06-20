@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControlOptions, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { SnackService } from '../../shared/services/snack.service';
 //import { MediaService } from '../../shared/services/media.service';
@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-delmenu',
   imports: [FormsModule, ReactiveFormsModule, MatInputModule, MatSelectModule, MatIconModule],
   templateUrl: './delmenu.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./delmenu.component.scss']
 })
 

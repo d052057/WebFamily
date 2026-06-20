@@ -1,4 +1,4 @@
-import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ScrollingGalleryComponent } from './scrolling-gallery/scrolling-gallery.component';
 import { RpmCoverItem } from './interfaces/rpm.interface';
@@ -9,7 +9,7 @@ import { AudioPlayerComponent} from '../shared/audio-player/audio-player.compone
   selector: 'app-rpm',
   imports: [ScrollingGalleryComponent, AudioPlayerComponent],
   templateUrl: './rpm.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './rpm.component.scss'
 })
 export class RpmComponent {

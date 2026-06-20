@@ -1,4 +1,4 @@
-import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoPlayerComponent } from '../shared/video-player/video-player.component';
 import { map } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -10,7 +10,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
   selector: 'app-play-media',
   imports: [VideoPlayerComponent],
   templateUrl: './play-media.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './play-media.component.scss'
 })
 export class PlayMediaComponent {

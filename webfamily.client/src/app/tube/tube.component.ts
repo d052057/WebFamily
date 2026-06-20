@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild, computed, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnDestroy, ViewChild, computed, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { TubeService } from './services/tube.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -20,7 +20,7 @@ import { VoiceDirective } from '../../app/shared/directives/voice.directive';
   selector: 'app-tube',
   imports: [MatFormFieldModule, MatIconModule, MatTableModule, ReactiveFormsModule, MatPaginator, MatSelectModule, MatInputModule, VoiceDirective, FormsModule],
   templateUrl: './tube.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './tube.component.scss'
 })
 export class TubeComponent implements  OnDestroy {

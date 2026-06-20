@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MediaService } from '../../shared/services/media.service';
 import { finalize, first } from 'rxjs';
 import { MenuService } from '../../shared/services/menu.service';
@@ -8,7 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './updatemenu.component.html',
   styleUrls: ['./updatemenu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
 export class UpdatemenuComponent {

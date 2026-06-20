@@ -1,4 +1,4 @@
-import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Subject, from } from 'rxjs';
 import { AudioItem, AutoplayCapability } from './models/audio.model';
 import { TimeConversionPipe } from './../pipes/time-conversion.pipe';
@@ -22,7 +22,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   templateUrl: './audio-player.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './audio-player.component.scss'
 })
 export class AudioPlayerComponent {
