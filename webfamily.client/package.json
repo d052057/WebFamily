@@ -40,7 +40,7 @@
     "material-icons": "^1.13.14",
     "moment": "^2.30.1",
     "ngx-bootstrap": "^21.2.0",
-    "ngx-extended-pdf-viewer": "^25.6.4",
+    "ngx-extended-pdf-viewer": "^28.0.3",
     "ngx-pagination": "^6.0.3",
     "run-script-os": "*",
     "rxjs": "~7.8.2",
