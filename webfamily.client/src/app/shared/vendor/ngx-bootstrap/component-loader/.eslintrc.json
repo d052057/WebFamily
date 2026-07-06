@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "../../.eslintrc.json"
+  ],
+  "ignorePatterns": [
+    "!**/*"
+  ],
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": [
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "parserOptions": {
+        "project": [
+          "src/component-loader/tsconfig.*?.json"
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@nx/angular-template"
+      ],
+      "rules": {}
+    }
+  ]
+}
