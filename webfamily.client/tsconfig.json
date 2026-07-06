@@ -3,7 +3,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -24,7 +23,8 @@
     "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "ngx-bootstrap/*": [ "src/app/shared/vendor/ngx-bootstrap/*" ]
+      "src/*": [ "./src/*" ],
+      "ngx-bootstrap/*": [ "./src/app/shared/vendor/ngx-bootstrap/*" ]
     }
   },
   "angularCompilerOptions": {

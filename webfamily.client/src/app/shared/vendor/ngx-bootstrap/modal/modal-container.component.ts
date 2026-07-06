@@ -4,7 +4,8 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  Renderer2
+  Renderer2,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {
   CLASS_NAME,
@@ -37,6 +38,7 @@ import { FocusTrapDirective } from 'ngx-bootstrap/focus-trap';
     },
     standalone: true,
     imports: [FocusTrapDirective],
+    changeDetection: ChangeDetectionStrategy.Eager,
     providers: [BsModalService]
 })
 export class ModalContainerComponent implements OnInit, OnDestroy {
