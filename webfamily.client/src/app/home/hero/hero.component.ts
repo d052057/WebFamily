@@ -1,5 +1,6 @@
-﻿import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, signal } from '@angular/core';
 import { TodoListComponent } from '../../todo/todo-list/todo-list.component';
+import { TimezoneDatePipe } from '../../shared/pipes/timezone-date-pipe-pipe';
 //import { fadeInOut } from '../../shared/services/animations';
 
 @Component({
@@ -8,9 +9,9 @@ import { TodoListComponent } from '../../todo/todo-list/todo-list.component';
   styleUrls: ['./hero.component.scss'],
   //animations: [fadeInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TodoListComponent]
+  imports: [TodoListComponent, TimezoneDatePipe]
 })
-export class HeroComponent implements OnInit {
+export class HeroComponent implements OnInit, OnDestroy {
 
   dayName!: string;
   dayNumber!: string;
@@ -25,11 +26,18 @@ export class HeroComponent implements OnInit {
     '/images/family/calida.jpg'
   ]
   constructor() { }
-
+  now = signal(new Date());
+  localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  private intervalId: any;
   ngOnInit(): void {
     this.setupCalendar();
+    this.intervalId = setInterval(() => {
+      this.now.set(new Date());
+    }, 1000); // updates every second
   }
-
+  ngOnDestroy() {
+    clearInterval(this.intervalId); // important: prevents memory leaks
+  }
   setupCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
