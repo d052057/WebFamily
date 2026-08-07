@@ -7,24 +7,34 @@
         <div class="calendar card bg-light">
             <div class="card-header">{{ now() | timezoneDate:localTimeZone:{ weekday: 'long' } }}</div>
             <div class="card-body text-primary">
-                <div id="dayNumber" style="font-size:30px">
+                <div id="dayNumber" style="font-size:15px">
                     {{ now() | timezoneDate:localTimeZone:{ day: 'numeric' }:true }}
+                </div>
+                <div id="time" style="font-size:15px; display:inline-block">
+                    {{ now() | timezoneDate:localTimeZone:{ hour: '2-digit', minute: '2-digit', second: '2-digit' } }}
                 </div>
             </div>
             <div class="card-footer">{{ now() | timezoneDate:localTimeZone:{ month: 'long' } }}</div>
         </div>
 
-        <div class="calendar card bg-light">
-            <div class="card-header">ថ្ងៃ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ weekday: 'long' }:false:'km-KH'  }}</div>
+        <div class="calendar card bg-light" style="font-family: Moulpali;">
+            <div class="card-header calendar-header">
+                <span class="header-icon">
+                    <mat-icon [svgIcon]="langData[langSelected].icon"></mat-icon>
+                </span>
+                <span class="header-text">
+                    ថ្ងៃ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ weekday: 'long' }:false:'km-KH' }}
+                </span>
+            </div>
             <div class="card-body text-primary">
-                <div id="dayNumber" style="font-size:30px">
-                    ទី {{ now() | timezoneDate:'Asia/Phnom_Penh':{ day: 'numeric' }:false:'km-KH-u-nu-khmr' }}
+                <div id="dayNumber" style="font-size:15px">
+                    ទី {{ now() | timezoneDate:'Asia/Phnom_Penh':{ day: 'numeric' }:false:'km-KH' }}
                 </div>
-                <div id="time" style="font-size:30px">
+                <div id="time" style="font-size:15px; display:inline-block">
                     ម៉ោង {{ now() | timezoneDate:'Asia/Phnom_Penh':{ hour: '2-digit', minute: '2-digit', second: '2-digit' }:false:'km-KH' }}
                 </div>
             </div>
-            <div class="card-footer">ខែ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ month: 'long' }:false:'km-KH'  }}</div>
+            <div class="card-footer">ខែ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ month: 'long' }:false:'km-KH' }}</div>
         </div>
     </div>
 </div>

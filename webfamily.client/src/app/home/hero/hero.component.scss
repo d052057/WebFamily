@@ -89,6 +89,40 @@ html, body {
   display: flex;
   gap: 1rem;
 }
+
+/*---------------------------*/
+.calendar-header {
+  position: relative;
+  text-align: center;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
+  display: flex; /* lets the icon inside stretch/center within this box */
+  align-items: center;
+}
+
+.header-icon mat-icon {
+  height: 100%; /* fills the space between top:2px and bottom:2px */
+  width: auto; /* keeps aspect ratio instead of distorting */
+  display: inline-flex;
+}
+
+.header-icon mat-icon svg {
+  height: 100%;
+  width: auto;
+}
+.header-text {
+  display: inline-block;
+}
+/*---------------------------*/
 .calendar.card {
   height: auto;
   text-align: center;

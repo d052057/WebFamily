@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, signal } from '@angular/core';
 import { TodoListComponent } from '../../todo/todo-list/todo-list.component';
 import { TimezoneDatePipe } from '../../shared/pipes/timezone-date-pipe-pipe';
+import { languages } from '../../../app/models/languages';
+import { MatIconModule } from '@angular/material/icon';
 //import { fadeInOut } from '../../shared/services/animations';
 
 @Component({
@@ -9,7 +11,7 @@ import { TimezoneDatePipe } from '../../shared/pipes/timezone-date-pipe-pipe';
   styleUrls: ['./hero.component.scss'],
   //animations: [fadeInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TodoListComponent, TimezoneDatePipe]
+  imports: [TodoListComponent, TimezoneDatePipe, MatIconModule]
 })
 export class HeroComponent implements OnInit, OnDestroy {
 
@@ -17,7 +19,8 @@ export class HeroComponent implements OnInit, OnDestroy {
   dayNumber!: string;
   monthName!: string;
   order!: string;
-
+  langSelected: number = 0;
+  langData = languages;
   items: any[] = ['/images/family/yitong.jpg',
     '/images/family/sotheary.jpg',
     '/images/family/keith.jpg',
