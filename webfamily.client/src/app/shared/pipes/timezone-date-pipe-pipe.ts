@@ -63,7 +63,9 @@ export class TimezoneDatePipe implements PipeTransform {
       })
       .join('');
   }
-
+  private toKhmerDigits(str: string): string {
+    return str.split('').map(d => this.khmerDigits[+d]).join('');
+  }
   private formatKhmer(
     date: Date,
     timeZone: string,
@@ -109,12 +111,24 @@ export class TimezoneDatePipe implements PipeTransform {
 
     // Time is built separately and joined with colons, then appended
     const timeParts: string[] = [];
-    if (opts.hour) timeParts.push(this.toKhmerNumber(parseInt(hour, 10)));
-    if (opts.minute) timeParts.push(this.toKhmerNumber(parseInt(minute, 10)));
-    if (opts.second) timeParts.push(this.toKhmerNumber(parseInt(second, 10)));
-    if (timeParts.length) segments.push(timeParts.join(':'));
+    if (opts.hour) timeParts.push(this.toKhmerDigits(hour));
+    if (opts.minute) timeParts.push(this.toKhmerDigits(minute));
+    if (opts.second) timeParts.push(this.toKhmerDigits(second));
+
+
+    if (timeParts.length) {
+      const hour24 = parseInt(hour, 10);
+      segments.push(`${timeParts.join(':')} ${this.getKhmerPeriod(hour24)}`);
+    }
 
     return segments.join(' ');
+  }
+  private getKhmerPeriod(hour24: number): string {
+    if (hour24 >= 5 && hour24 < 11) return 'ព្រឹក';
+    if (hour24 >= 11 && hour24 < 13) return 'ថ្ងៃត្រង់';
+    if (hour24 >= 13 && hour24 < 18) return 'រសៀល';
+    if (hour24 >= 18 && hour24 < 21) return 'ល្ងាច';
+    return 'យប់';
   }
 
   private toKhmerNumber(n: number): string {
