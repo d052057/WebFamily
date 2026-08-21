@@ -101,7 +101,7 @@ namespace WebFamily.Server.Controllers
             {
                 try
                 {
-                    if (!FacebookValidatedAsync(model.AccessToken, model.UserId).GetAwaiter().GetResult())
+                    if (!await FacebookValidatedAsync(model.AccessToken, model.UserId))
                     {
                         return Unauthorized("Unable to login with facebook");
                     }
@@ -115,7 +115,7 @@ namespace WebFamily.Server.Controllers
             {
                 try
                 {
-                    if (!GoogleValidatedAsync(model.AccessToken, model.UserId).GetAwaiter().GetResult())
+                    if (!await GoogleValidatedAsync(model.AccessToken, model.UserId))
                     {
                         return Unauthorized("Unable to login with google");
                     }
@@ -180,7 +180,7 @@ namespace WebFamily.Server.Controllers
             {
                 try
                 {
-                    if (!FacebookValidatedAsync(model.AccessToken, model.UserId).GetAwaiter().GetResult())
+                    if (!await FacebookValidatedAsync(model.AccessToken, model.UserId))
                     {
                         return Unauthorized("Unable to register with facebook");
                     }
@@ -194,7 +194,7 @@ namespace WebFamily.Server.Controllers
             {
                 try
                 {
-                    if (!GoogleValidatedAsync(model.AccessToken, model.UserId).GetAwaiter().GetResult())
+                    if (!await GoogleValidatedAsync(model.AccessToken, model.UserId))
                     {
                         return Unauthorized("Unable to register with google");
                     }

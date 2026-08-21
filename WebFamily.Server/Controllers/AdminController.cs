@@ -115,7 +115,7 @@ namespace WebFamily.Server.Controllers
                     }
                 }
 
-                if (IsAdminUserId(model.Id))
+                if (await IsAdminUserId(model.Id))
                 {
                     return BadRequest(SD.SuperAdminChangeNotAllowed);
                 }
@@ -161,7 +161,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (IsAdminUserId(id))
+            if (await IsAdminUserId(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -176,7 +176,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (IsAdminUserId(id))
+            if (await IsAdminUserId(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -191,7 +191,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (IsAdminUserId(id))
+            if (await IsAdminUserId(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -206,9 +206,10 @@ namespace WebFamily.Server.Controllers
             return Ok(await _roleManager.Roles.Select(x => x.Name).ToListAsync());
         }
 
-        private bool IsAdminUserId(string userId)
+        private async Task<bool> IsAdminUserId(string userId)
         {
-            return _userManager.FindByIdAsync(userId).GetAwaiter().GetResult().UserName.Equals(SD.AdminUserName);
+            var user = await _userManager.FindByIdAsync(userId);
+            return user != null && user.UserName.Equals(SD.AdminUserName);
         }
     }
 
