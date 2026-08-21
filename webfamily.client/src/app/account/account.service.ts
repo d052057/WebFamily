@@ -31,7 +31,7 @@ export class AccountService {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', 'Bearer ' + jwt);
 
-    return this.http.get<User>("/api/account/refresh-user-token", {headers}).pipe(
+    return this.http.get<User>("/api/account/refresh-user-token", { headers }).pipe(
       map((user: User) => {
         if (user) {
           this.setUser(user);
@@ -42,13 +42,13 @@ export class AccountService {
 
   login(model: Login) {
     return this.http.post<User>("/api/account/login", model)
-    .pipe(
-      map((user: User) => {
-        if (user) {
-          this.setUser(user);
-        }
-      })
-    );
+      .pipe(
+        map((user: User) => {
+          if (user) {
+            this.setUser(user);
+          }
+        })
+      );
   }
 
   loginWithThirdParty(model: LoginWithExternal) {
@@ -86,11 +86,11 @@ export class AccountService {
   }
 
   resendEmailConfirmationLink(email: string) {
-    return this.http.post("/api/account/resend-email-confirmation-link/${email}", {});
+    return this.http.post(`/api/account/resend-email-confirmation-link/${email}`, {});
   }
 
   forgotUsernameOrPassword(email: string) {
-    return this.http.post("/api/account/forgot-username-or-password/${email}", {});
+    return this.http.post(`/api/account/forgot-username-or-password/${email}`, {});
   }
 
   resetPassword(model: ResetPassword) {

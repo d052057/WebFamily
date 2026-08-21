@@ -1,0 +1,579 @@
+commit 93fbeecf805e434d950eb32648e72d522acdc675
+Author: Admin <Admin@YPHP>
+Date:   Thu Aug 20 22:10:57 2026 -0700
+
+    fix home button
+
+ webfamily.client/src/app/account/account.service.ts                 | 6 ++++--
+ webfamily.client/src/app/app.component.html                         | 2 +-
+ .../src/app/shared/directives/user-has-role.directive.ts            | 6 ++++--
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+commit 290391eac616867bfb268a650abe072130f42d1e
+Author: Admin <Admin@YPHP>
+Date:   Thu Aug 20 10:53:08 2026 -0700
+
+    fixed reload tube after delete item
+
+ webfamily.client/src/app/tube/tube.component.ts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit 798734429c5f24b5a001474d6e1f3d54789edcce
+Author: Admin <Admin@YPHP>
+Date:   Wed Aug 19 23:28:48 2026 -0700
+
+    fix sync and async mode
+
+ WebFamily.Server/Controllers/AccountsController.cs | 31 ++++++++-----
+ WebFamily.Server/Controllers/AdminController.cs    | 15 ++++---
+ WebFamily.Server/Controllers/MenuController.cs     |  5 +++
+ WebFamily.Server/Controllers/PdfController.cs      | 19 +++++++-
+ WebFamily.Server/Services/ContextSeedService.cs    |  4 +-
+ WebFamily.Server/Services/EmailService.cs          |  2 +-
+ WebFamily.Server/Services/MediaServices.cs         |  6 +--
+ WebFamily.Server/Services/TodoServices.cs          | 52 +++++++++++-----------
+ WebFamily.Server/Services/TubeServices.cs          | 25 +++++++----
+ webfamily.client/package-lock.json                 | 14 +++---
+ webfamily.client/package.json                      |  2 +-
+ webfamily.client/public/assets/data/help.json      |  1 +
+ .../src/app/account/account.service.ts             |  4 +-
+ .../src/app/shared/guards/admin.guard.ts           | 13 ++++--
+ .../src/app/shared/interceptors/jwt.interceptor.ts |  5 ++-
+ .../app/shared/interceptors/loading.interceptor.ts |  4 +-
+ .../src/environments/environment.development.ts    |  2 +-
+ 17 files changed, 128 insertions(+), 76 deletions(-)
+
+commit c10af73d79a35648ebcf19cf51ed8ea6c377c54f
+Author: Admin <Admin@YPHP>
+Date:   Fri Aug 14 21:26:33 2026 -0700
+
+    update angular/material
+
+ webfamily.client/package-lock.json | 18 +++++++++---------
+ webfamily.client/package.json      |  4 ++--
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+commit a089cd05db64b91a4789f8a321aa3bbed9a465e8
+Author: Admin <Admin@YPHP>
+Date:   Fri Aug 14 21:25:01 2026 -0700
+
+    update angular/google-maps
+
+ webfamily.client/package-lock.json | 8 ++++----
+ webfamily.client/package.json      | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 6e923afa56fa77e03df723ca12eb38c2f6ee8a08
+Author: Admin <Admin@YPHP>
+Date:   Fri Aug 14 21:23:01 2026 -0700
+
+    update angular
+
+ webfamily.client/package-lock.json | 460 ++++++++++++++++++-------------------
+ webfamily.client/package.json      |  22 +-
+ 2 files changed, 231 insertions(+), 251 deletions(-)
+
+commit 0c7fb838248f82f342c1dcc48456131446c06d68
+Author: Admin <Admin@YPHP>
+Date:   Sun Aug 9 01:18:41 2026 -0700
+
+    update notnet
+
+ WebFamily.Server/WebFamily.Server.csproj | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit a7bc40fdcdeeb2ec2756ac22abddf045bf102ae8
+Author: Admin <Admin@YPHP>
+Date:   Fri Aug 7 22:29:20 2026 -0700
+
+    fix khmer clock
+
+ .../src/app/home/hero/hero.component.html          |  2 +-
+ .../app/shared/pipes/timezone-date-pipe-pipe.ts    | 24 +++++++++++++++++-----
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+
+commit 3e5244a7de58b251ab9a52e0ec1bef5e4931e4c3
+Author: Admin <Admin@YPHP>
+Date:   Fri Aug 7 16:39:22 2026 -0700
+
+    update calendar
+
+ .../src/app/home/hero/hero.component.html          | 24 ++++++++++-----
+ .../src/app/home/hero/hero.component.scss          | 34 ++++++++++++++++++++++
+ .../src/app/home/hero/hero.component.ts            |  7 +++--
+ 3 files changed, 56 insertions(+), 9 deletions(-)
+
+commit a24e129feb0f5d66920209a66194c78122d71e52
+Author: Admin <Admin@YPHP>
+Date:   Thu Aug 6 14:24:32 2026 -0700
+
+    add khmer calendar
+
+ webfamily.client/package-lock.json                 | 5938 ++++++++++----------
+ webfamily.client/package.json                      |    4 +-
+ .../src/app/home/hero/hero.component.html          |   76 +-
+ .../src/app/home/hero/hero.component.scss          |    4 +-
+ .../src/app/home/hero/hero.component.ts            |   18 +-
+ .../shared/pipes/timezone-date-pipe-pipe.spec.ts   |    8 +
+ .../app/shared/pipes/timezone-date-pipe-pipe.ts    |  133 +
+ webfamily.client/src/styles.scss                   |   14 +-
+ 8 files changed, 3072 insertions(+), 3123 deletions(-)
+
+commit fe6c0a538d4828fac96f01b5998804867da4c60c
+Author: Admin <Admin@YPHP>
+Date:   Fri Jul 31 20:34:52 2026 -0700
+
+    update angular 22.1
+
+ WebFamily.Server/WebFamily.Server.csproj           |   4 +-
+ webfamily.client/package-lock.json                 |   4 +-
+ webfamily.client/package.json                      |  38 +-
+ .../vendor/ngx-bootstrap/buttons/.eslintrc.json    |  33 -
+ .../shared/vendor/ngx-bootstrap/buttons/README.md  |   7 -
+ .../vendor/ngx-bootstrap/buttons/jest.config.ts    |  24 -
+ .../vendor/ngx-bootstrap/buttons/ng-package.json   |   7 -
+ .../vendor/ngx-bootstrap/buttons/package.json      |   6 -
+ .../vendor/ngx-bootstrap/buttons/project.json      |  33 -
+ .../buttons/testing/button.directive.spec.ts       | 986 ---------------------
+ .../ngx-bootstrap/buttons/testing/test-setup.ts    |   3 -
+ .../vendor/ngx-bootstrap/buttons/tsconfig.json     |  30 -
+ .../vendor/ngx-bootstrap/buttons/tsconfig.lib.json |  20 -
+ .../ngx-bootstrap/buttons/tsconfig.lib.prod.json   |  14 -
+ .../ngx-bootstrap/buttons/tsconfig.spec.json       |  13 -
+ .../ngx-bootstrap/component-loader/.eslintrc.json  |  30 -
+ .../ngx-bootstrap/component-loader/README.md       |   7 -
+ .../ngx-bootstrap/component-loader/jest.config.ts  |  24 -
+ .../ngx-bootstrap/component-loader/ng-package.json |   7 -
+ .../ngx-bootstrap/component-loader/package.json    |   6 -
+ .../ngx-bootstrap/component-loader/project.json    |  39 -
+ .../component-loader/testing/test-setup.ts         |   3 -
+ .../ngx-bootstrap/component-loader/tsconfig.json   |  30 -
+ .../component-loader/tsconfig.lib.json             |  20 -
+ .../component-loader/tsconfig.lib.prod.json        |  14 -
+ .../component-loader/tsconfig.spec.json            |  13 -
+ .../vendor/ngx-bootstrap/focus-trap/.eslintrc.json |  35 -
+ .../vendor/ngx-bootstrap/focus-trap/README.md      |   7 -
+ .../vendor/ngx-bootstrap/focus-trap/jest.config.ts |  24 -
+ .../ngx-bootstrap/focus-trap/ng-package.json       |   7 -
+ .../vendor/ngx-bootstrap/focus-trap/package.json   |   6 -
+ .../vendor/ngx-bootstrap/focus-trap/project.json   |  33 -
+ .../ngx-bootstrap/focus-trap/testing/test-setup.ts |   3 -
+ .../vendor/ngx-bootstrap/focus-trap/tsconfig.json  |  30 -
+ .../ngx-bootstrap/focus-trap/tsconfig.lib.json     |  20 -
+ .../focus-trap/tsconfig.lib.prod.json              |  14 -
+ .../ngx-bootstrap/focus-trap/tsconfig.spec.json    |  12 -
+ .../vendor/ngx-bootstrap/modal/.eslintrc.json      |  35 -
+ .../shared/vendor/ngx-bootstrap/modal/README.md    |   7 -
+ .../vendor/ngx-bootstrap/modal/jest.config.ts      |  24 -
+ .../vendor/ngx-bootstrap/modal/ng-package.json     |   7 -
+ .../shared/vendor/ngx-bootstrap/modal/package.json |   6 -
+ .../shared/vendor/ngx-bootstrap/modal/project.json |  39 -
+ .../modal/testing/bs-modal.service.spec.ts         |  99 ---
+ .../modal/testing/modal-backdrop.component.spec.ts |  31 -
+ .../modal/testing/modal.default-setting.spec.ts    |  52 --
+ .../modal/testing/modal.service.spec.ts            | 135 ---
+ .../ngx-bootstrap/modal/testing/test-setup.ts      |   3 -
+ .../vendor/ngx-bootstrap/modal/tsconfig.json       |  30 -
+ .../vendor/ngx-bootstrap/modal/tsconfig.lib.json   |  20 -
+ .../ngx-bootstrap/modal/tsconfig.lib.prod.json     |  14 -
+ .../vendor/ngx-bootstrap/modal/tsconfig.spec.json  |  12 -
+ .../ngx-bootstrap/positioning/.eslintrc.json       |  33 -
+ .../vendor/ngx-bootstrap/positioning/README.md     |   7 -
+ .../ngx-bootstrap/positioning/jest.config.ts       |  24 -
+ .../ngx-bootstrap/positioning/ng-package.json      |   7 -
+ .../vendor/ngx-bootstrap/positioning/package.json  |   6 -
+ .../vendor/ngx-bootstrap/positioning/project.json  |  39 -
+ .../testing/computeAutoPlacement.spec.ts           | 135 ---
+ .../testing/getBoundingClientRect.spec.ts          |  71 --
+ .../positioning/testing/preventOverflow.spec.ts    |  85 --
+ .../positioning/testing/test-setup.ts              |   3 -
+ .../vendor/ngx-bootstrap/positioning/tsconfig.json |  30 -
+ .../ngx-bootstrap/positioning/tsconfig.lib.json    |  20 -
+ .../positioning/tsconfig.lib.prod.json             |  14 -
+ .../ngx-bootstrap/positioning/tsconfig.spec.json   |  12 -
+ .../vendor/ngx-bootstrap/utils/.eslintrc.json      |  33 -
+ .../shared/vendor/ngx-bootstrap/utils/README.md    |   7 -
+ .../vendor/ngx-bootstrap/utils/jest.config.ts      |  24 -
+ .../vendor/ngx-bootstrap/utils/ng-package.json     |   7 -
+ .../shared/vendor/ngx-bootstrap/utils/package.json |   6 -
+ .../shared/vendor/ngx-bootstrap/utils/project.json |  33 -
+ .../ngx-bootstrap/utils/testing/linkedlist.spec.ts | 164 ----
+ .../ngx-bootstrap/utils/testing/test-setup.ts      |   3 -
+ .../utils/testing/transition-animation.spec.ts     | 229 -----
+ .../vendor/ngx-bootstrap/utils/tsconfig.json       |  30 -
+ .../vendor/ngx-bootstrap/utils/tsconfig.lib.json   |  20 -
+ .../ngx-bootstrap/utils/tsconfig.lib.prod.json     |  14 -
+ .../vendor/ngx-bootstrap/utils/tsconfig.spec.json  |  12 -
+ 79 files changed, 23 insertions(+), 3165 deletions(-)
+
+commit 0d65353e72ba1f8722386307b9fc8b78bf2c7f98
+Author: Admin <Admin@YPHP>
+Date:   Mon Jul 6 02:28:17 2026 -0700
+
+    Upgrade to Angular 22.0.5
+
+ webfamily.client/package-lock.json                 | 2459 +++++++-------------
+ webfamily.client/package.json                      |   32 +-
+ webfamily.client/src/app/app.config.ts             |    4 +-
+ webfamily.client/src/app/shared/shared.module.ts   |    4 +-
+ .../buttons/testing/button.directive.spec.ts       |    1 +
+ .../modal/modal-backdrop.component.ts              |    3 +-
+ .../modal/modal-container.component.ts             |    4 +-
+ .../modal/testing/modal.default-setting.spec.ts    |    6 +-
+ .../modal/testing/modal.service.spec.ts            |    6 +-
+ .../testing/computeAutoPlacement.spec.ts           |    3 +-
+ .../testing/getBoundingClientRect.spec.ts          |    3 +-
+ webfamily.client/src/styles.scss                   |    2 +-
+ webfamily.client/tsconfig.json                     |    4 +-
+ 13 files changed, 946 insertions(+), 1585 deletions(-)
+
+commit 7042a01f2b55b88b129a882cc92e9aafb5566b67
+Author: Admin <Admin@YPHP>
+Date:   Mon Jul 6 01:17:47 2026 -0700
+
+    remove ngx-boostrap and add features to local.
+
+ webfamily.client/package-lock.json                 |  17 -
+ webfamily.client/package.json                      |   1 -
+ .../vendor/ngx-bootstrap/buttons/.eslintrc.json    |  33 +
+ .../shared/vendor/ngx-bootstrap/buttons/README.md  |   7 +
+ .../buttons/button-checkbox.directive.ts           |  98 ++
+ .../buttons/button-radio-group.directive.ts        | 178 ++++
+ .../buttons/button-radio.directive.ts              | 218 +++++
+ .../vendor/ngx-bootstrap/buttons/buttons.module.ts |  11 +
+ .../shared/vendor/ngx-bootstrap/buttons/index.ts   |   1 +
+ .../vendor/ngx-bootstrap/buttons/jest.config.ts    |  24 +
+ .../vendor/ngx-bootstrap/buttons/ng-package.json   |   7 +
+ .../vendor/ngx-bootstrap/buttons/package.json      |   6 +
+ .../vendor/ngx-bootstrap/buttons/project.json      |  33 +
+ .../vendor/ngx-bootstrap/buttons/public_api.ts     |   4 +
+ .../buttons/testing/button.directive.spec.ts       | 985 +++++++++++++++++++++
+ .../ngx-bootstrap/buttons/testing/test-setup.ts    |   3 +
+ .../vendor/ngx-bootstrap/buttons/tsconfig.json     |  30 +
+ .../vendor/ngx-bootstrap/buttons/tsconfig.lib.json |  20 +
+ .../ngx-bootstrap/buttons/tsconfig.lib.prod.json   |  14 +
+ .../ngx-bootstrap/buttons/tsconfig.spec.json       |  13 +
+ .../ngx-bootstrap/component-loader/.eslintrc.json  |  30 +
+ .../ngx-bootstrap/component-loader/README.md       |   7 +
+ .../component-loader/bs-component-ref.class.ts     |   6 +
+ .../component-loader/component-loader.class.ts     | 461 ++++++++++
+ .../component-loader/component-loader.factory.ts   |  39 +
+ .../component-loader/content-ref.class.ts          |  26 +
+ .../vendor/ngx-bootstrap/component-loader/index.ts |   1 +
+ .../ngx-bootstrap/component-loader/jest.config.ts  |  24 +
+ .../component-loader/listen-options.model.ts       |  13 +
+ .../ngx-bootstrap/component-loader/ng-package.json |   7 +
+ .../ngx-bootstrap/component-loader/package.json    |   6 +
+ .../ngx-bootstrap/component-loader/project.json    |  39 +
+ .../ngx-bootstrap/component-loader/public_api.ts   |   4 +
+ .../component-loader/testing/test-setup.ts         |   3 +
+ .../ngx-bootstrap/component-loader/tsconfig.json   |  30 +
+ .../component-loader/tsconfig.lib.json             |  20 +
+ .../component-loader/tsconfig.lib.prod.json        |  14 +
+ .../component-loader/tsconfig.spec.json            |  13 +
+ .../vendor/ngx-bootstrap/focus-trap/.eslintrc.json |  35 +
+ .../vendor/ngx-bootstrap/focus-trap/README.md      |   7 +
+ .../ngx-bootstrap/focus-trap/boolean-property.ts   |  20 +
+ .../focus-trap/configurable-focus-trap-config.ts   |  22 +
+ .../focus-trap/configurable-focus-trap-factory.ts  |  70 ++
+ .../focus-trap/configurable-focus-trap.ts          |  68 ++
+ .../focus-trap/event-listener-inert-strategy.ts    |  69 ++
+ .../focus-trap/focus-trap-inert-strategy.ts        |  29 +
+ .../ngx-bootstrap/focus-trap/focus-trap-manager.ts |  65 ++
+ .../ngx-bootstrap/focus-trap/focus-trap.module.ts  |  10 +
+ .../vendor/ngx-bootstrap/focus-trap/focus-trap.ts  | 480 ++++++++++
+ .../vendor/ngx-bootstrap/focus-trap/index.ts       |   1 +
+ .../focus-trap/interactivity-checker.ts            | 269 ++++++
+ .../vendor/ngx-bootstrap/focus-trap/jest.config.ts |  24 +
+ .../ngx-bootstrap/focus-trap/ng-package.json       |   7 +
+ .../vendor/ngx-bootstrap/focus-trap/package.json   |   6 +
+ .../vendor/ngx-bootstrap/focus-trap/platform.ts    |  82 ++
+ .../vendor/ngx-bootstrap/focus-trap/polyfill.ts    |  42 +
+ .../vendor/ngx-bootstrap/focus-trap/project.json   |  33 +
+ .../vendor/ngx-bootstrap/focus-trap/public_api.ts  |   3 +
+ .../ngx-bootstrap/focus-trap/testing/test-setup.ts |   3 +
+ .../vendor/ngx-bootstrap/focus-trap/tsconfig.json  |  30 +
+ .../ngx-bootstrap/focus-trap/tsconfig.lib.json     |  20 +
+ .../focus-trap/tsconfig.lib.prod.json              |  14 +
+ .../ngx-bootstrap/focus-trap/tsconfig.spec.json    |  12 +
+ .../vendor/ngx-bootstrap/modal/.eslintrc.json      |  35 +
+ .../shared/vendor/ngx-bootstrap/modal/README.md    |   7 +
+ .../ngx-bootstrap/modal/bs-modal-ref.service.ts    |  32 +
+ .../vendor/ngx-bootstrap/modal/bs-modal.service.ts | 286 ++++++
+ .../app/shared/vendor/ngx-bootstrap/modal/index.ts |   1 +
+ .../vendor/ngx-bootstrap/modal/jest.config.ts      |  24 +
+ .../modal/modal-backdrop.component.ts              |  63 ++
+ .../ngx-bootstrap/modal/modal-backdrop.options.ts  |   7 +
+ .../modal/modal-container.component.ts             | 196 ++++
+ .../ngx-bootstrap/modal/modal-options.class.ts     |  99 +++
+ .../vendor/ngx-bootstrap/modal/modal.directive.ts  | 490 ++++++++++
+ .../vendor/ngx-bootstrap/modal/modal.module.ts     |  18 +
+ .../vendor/ngx-bootstrap/modal/models/index.ts     |  28 +
+ .../vendor/ngx-bootstrap/modal/ng-package.json     |   7 +
+ .../shared/vendor/ngx-bootstrap/modal/package.json |   6 +
+ .../shared/vendor/ngx-bootstrap/modal/project.json |  39 +
+ .../vendor/ngx-bootstrap/modal/public_api.ts       |   9 +
+ .../modal/testing/bs-modal.service.spec.ts         |  99 +++
+ .../modal/testing/modal-backdrop.component.spec.ts |  31 +
+ .../modal/testing/modal.default-setting.spec.ts    |  50 ++
+ .../modal/testing/modal.service.spec.ts            | 133 +++
+ .../ngx-bootstrap/modal/testing/test-setup.ts      |   3 +
+ .../vendor/ngx-bootstrap/modal/tsconfig.json       |  30 +
+ .../vendor/ngx-bootstrap/modal/tsconfig.lib.json   |  20 +
+ .../ngx-bootstrap/modal/tsconfig.lib.prod.json     |  14 +
+ .../vendor/ngx-bootstrap/modal/tsconfig.spec.json  |  12 +
+ .../ngx-bootstrap/positioning/.eslintrc.json       |  33 +
+ .../vendor/ngx-bootstrap/positioning/README.md     |   7 +
+ .../vendor/ngx-bootstrap/positioning/index.ts      |   1 +
+ .../ngx-bootstrap/positioning/jest.config.ts       |  24 +
+ .../ngx-bootstrap/positioning/models/index.ts      | 111 +++
+ .../ngx-bootstrap/positioning/modifiers/arrow.ts   |  67 ++
+ .../ngx-bootstrap/positioning/modifiers/flip.ts    | 106 +++
+ .../ngx-bootstrap/positioning/modifiers/index.ts   |   5 +
+ .../positioning/modifiers/initData.ts              |  68 ++
+ .../positioning/modifiers/preventOverflow.ts       |  73 ++
+ .../ngx-bootstrap/positioning/modifiers/shift.ts   |  29 +
+ .../ngx-bootstrap/positioning/ng-package.json      |   7 +
+ .../ngx-bootstrap/positioning/ng-positioning.ts    |  80 ++
+ .../vendor/ngx-bootstrap/positioning/package.json  |   6 +
+ .../positioning/positioning.service.ts             | 132 +++
+ .../vendor/ngx-bootstrap/positioning/project.json  |  39 +
+ .../vendor/ngx-bootstrap/positioning/public_api.ts |  10 +
+ .../testing/computeAutoPlacement.spec.ts           | 134 +++
+ .../testing/getBoundingClientRect.spec.ts          |  70 ++
+ .../positioning/testing/preventOverflow.spec.ts    |  85 ++
+ .../positioning/testing/test-setup.ts              |   3 +
+ .../vendor/ngx-bootstrap/positioning/tsconfig.json |  30 +
+ .../ngx-bootstrap/positioning/tsconfig.lib.json    |  20 +
+ .../positioning/tsconfig.lib.prod.json             |  14 +
+ .../ngx-bootstrap/positioning/tsconfig.spec.json   |  12 +
+ .../ngx-bootstrap/positioning/utils/checkMargin.ts |  44 +
+ .../positioning/utils/computeAutoPlacement.ts      |  78 ++
+ .../positioning/utils/findCommonOffsetParent.ts    |  48 +
+ .../positioning/utils/getBordersSize.ts            |  13 +
+ .../positioning/utils/getBoundaries.ts             |  86 ++
+ .../positioning/utils/getBoundingClientRect.ts     |  65 ++
+ .../positioning/utils/getClientRect.ts             |  12 +
+ .../utils/getFixedPositionOffsetParent.ts          |  20 +
+ .../positioning/utils/getOffsetParent.ts           |  44 +
+ .../utils/getOffsetRectRelativeToArbitraryNode.ts  |  63 ++
+ .../ngx-bootstrap/positioning/utils/getOffsets.ts  |  12 +
+ .../positioning/utils/getOppositePlacement.ts      |   8 +
+ .../positioning/utils/getOppositeVariation.ts      |  12 +
+ .../positioning/utils/getOuterSizes.ts             |  17 +
+ .../positioning/utils/getParentNode.ts             |  12 +
+ .../positioning/utils/getReferenceOffsets.ts       |  19 +
+ .../ngx-bootstrap/positioning/utils/getRoot.ts     |  10 +
+ .../ngx-bootstrap/positioning/utils/getScroll.ts   |  16 +
+ .../positioning/utils/getScrollParent.ts           |  31 +
+ .../positioning/utils/getStyleComputedProperty.ts  |  17 +
+ .../positioning/utils/getTargetOffsets.ts          |  41 +
+ ...etViewportOffsetRectRelativeToArtbitraryNode.ts |  23 +
+ .../positioning/utils/getWindowSizes.ts            |  23 +
+ .../positioning/utils/includeScroll.ts             |  27 +
+ .../ngx-bootstrap/positioning/utils/index.ts       |  23 +
+ .../ngx-bootstrap/positioning/utils/isBrowser.ts   |   1 +
+ .../ngx-bootstrap/positioning/utils/isFixed.ts     |  17 +
+ .../positioning/utils/isModifierEnabled.ts         |   8 +
+ .../ngx-bootstrap/positioning/utils/isNumeric.ts   |  10 +
+ .../positioning/utils/isOffsetContainer.ts         |  14 +
+ .../ngx-bootstrap/positioning/utils/setStyles.ts   |  29 +
+ .../positioning/utils/updateContainerClass.ts      |  44 +
+ .../vendor/ngx-bootstrap/utils/.eslintrc.json      |  33 +
+ .../shared/vendor/ngx-bootstrap/utils/README.md    |   7 +
+ .../vendor/ngx-bootstrap/utils/facade/browser.ts   |  27 +
+ .../app/shared/vendor/ngx-bootstrap/utils/index.ts |   1 +
+ .../vendor/ngx-bootstrap/utils/jest.config.ts      |  24 +
+ .../vendor/ngx-bootstrap/utils/ng-package.json     |   7 +
+ .../shared/vendor/ngx-bootstrap/utils/package.json |   6 +
+ .../shared/vendor/ngx-bootstrap/utils/project.json |  33 +
+ .../vendor/ngx-bootstrap/utils/public_api.ts       |  33 +
+ .../ngx-bootstrap/utils/testing/linkedlist.spec.ts | 164 ++++
+ .../ngx-bootstrap/utils/testing/test-setup.ts      |   3 +
+ .../utils/testing/transition-animation.spec.ts     | 229 +++++
+ .../vendor/ngx-bootstrap/utils/theme-provider.ts   |  69 ++
+ .../vendor/ngx-bootstrap/utils/trigger.class.ts    |  18 +
+ .../shared/vendor/ngx-bootstrap/utils/triggers.ts  | 179 ++++
+ .../vendor/ngx-bootstrap/utils/tsconfig.json       |  30 +
+ .../vendor/ngx-bootstrap/utils/tsconfig.lib.json   |  20 +
+ .../ngx-bootstrap/utils/tsconfig.lib.prod.json     |  14 +
+ .../vendor/ngx-bootstrap/utils/tsconfig.spec.json  |  12 +
+ .../vendor/ngx-bootstrap/utils/utils.class.ts      |  34 +
+ webfamily.client/tsconfig.json                     |   5 +-
+ 167 files changed, 8588 insertions(+), 19 deletions(-)
+
+commit 26ca826f137cf1e48247af7f656fe35d7ceac712
+Author: Admin <Admin@YPHP>
+Date:   Fri Jul 3 20:01:24 2026 -0700
+
+    update ngx-extended-pdf-viewer
+
+ webfamily.client/package-lock.json | 49 +++++++++++++++++++++++++++++++++-----
+ webfamily.client/package.json      |  2 +-
+ 2 files changed, 44 insertions(+), 7 deletions(-)
+
+commit 53ef786b2e50caac225ce55a67cbc1f1b96c2c30
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 19 17:18:39 2026 -0700
+
+    fix angular version and voice input
+
+ webfamily.client/package-lock.json                 | 2687 ++++++++++++--------
+ webfamily.client/package.json                      |   28 +-
+ .../confirm-email/confirm-email.component.ts       |    4 +-
+ .../src/app/account/login/login.component.ts       |    4 +-
+ .../register-with-third-party.component.ts         |    4 +-
+ .../src/app/account/register/register.component.ts |    4 +-
+ .../reset-password/reset-password.component.ts     |    4 +-
+ .../app/account/send-email/send-email.component.ts |    4 +-
+ .../add-edit-member/add-edit-member.component.ts   |    4 +-
+ webfamily.client/src/app/admin/admin.component.ts  |    4 +-
+ .../src/app/admin/seo-admin/seo-admin.component.ts |    4 +-
+ webfamily.client/src/app/app.component.ts          |    4 +-
+ webfamily.client/src/app/app.config.ts             |    4 +-
+ .../audio-play-album/audio-play-album.component.ts |    4 +-
+ .../bootstrap-example.component.ts                 |    4 +-
+ .../bootstrap-icons/bootstrap-icons.component.ts   |    4 +-
+ .../display-boot-feature.component.ts              |    4 +-
+ .../src/app/contact/contact.component.ts           |    4 +-
+ .../src/app/docviewer/docviewer.component.ts       |    4 +-
+ .../app/docviewer/pdfviewer/pdfviewer.component.ts |    4 +-
+ .../src/app/home/hero/hero.component.ts            |    4 +-
+ webfamily.client/src/app/home/home.component.ts    |    4 +-
+ .../app/menu-maint/addmenu/addmenu.component.ts    |    4 +-
+ .../app/menu-maint/delmenu/delmenu.component.ts    |    4 +-
+ .../src/app/menu-maint/menu-maint.component.ts     |    4 +-
+ .../rename-file-media-list.component.html          |  213 +-
+ .../rename-file-media-list.component.ts            |   81 +-
+ .../rename-media/rename-media.component.html       |  129 +-
+ .../rename-media/rename-media.component.ts         |   59 +-
+ .../update-video-duration.component.ts             |    4 +-
+ .../menu-maint/updatemenu/updatemenu.component.ts  |    4 +-
+ webfamily.client/src/app/photo/photo.component.ts  |    4 +-
+ .../src/app/play-audio/play-audio.component.ts     |    4 +-
+ .../src/app/play-media/play-media.component.ts     |    4 +-
+ webfamily.client/src/app/play/play.component.ts    |    4 +-
+ webfamily.client/src/app/rpm/rpm.component.ts      |    4 +-
+ .../scrolling-gallery.component.ts                 |    4 +-
+ .../shared/audio-player/audio-player.component.ts  |    4 +-
+ .../errors/not-found/not-found.component.ts        |    4 +-
+ .../validation-messages.component.ts               |    4 +-
+ .../modals/notification/notification.component.ts  |    4 +-
+ .../social-media/social-media.component.ts         |    4 +-
+ .../app/shared/countdown/countdown.component.ts    |    4 +-
+ .../src/app/shared/notifier/notifier.component.ts  |    4 +-
+ webfamily.client/src/app/shared/shared.module.ts   |    4 +-
+ .../src/app/tax-estimate/tax-estimate.component.ts |    4 +-
+ .../src/app/todo/todo-list/todo-list.component.ts  |    4 +-
+ webfamily.client/src/app/tube/add/add.component.ts |    4 +-
+ .../tube/download-tube/download-tube.component.ts  |    4 +-
+ webfamily.client/src/app/tube/tube.component.ts    |    4 +-
+ .../src/app/tube/tubelink/tubelink.component.ts    |    4 +-
+ .../video-view-frame/video-view-frame.component.ts |    4 +-
+ .../video-viewer/video-viewer.component.ts         |    4 +-
+ webfamily.client/tsconfig.json                     |    1 -
+ 54 files changed, 2079 insertions(+), 1307 deletions(-)
+
+commit b37c32e6cd849c01d9709c74377dfee3f025f0dd
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 5 14:31:33 2026 -0700
+
+    Final update to angular v22
+
+ webfamily.client/tsconfig.json | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit efceaad52062561121dea803c591ad2c2b540e8d
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 5 14:14:33 2026 -0700
+
+    updaet v22
+
+ webfamily.client/package-lock.json | 32 ++++++++++++++++----------------
+ webfamily.client/package.json      |  4 ++--
+ 2 files changed, 18 insertions(+), 18 deletions(-)
+
+commit 9e02c9a7c4b151b333a631273d5e931498adc04f
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 5 14:08:25 2026 -0700
+
+    update angular v22
+
+ webfamily.client/package-lock.json                 | 2673 ++++++++++----------
+ webfamily.client/package.json                      |   27 +-
+ .../confirm-email/confirm-email.component.ts       |    3 +-
+ .../src/app/account/login/login.component.ts       |    3 +-
+ .../register-with-third-party.component.ts         |    3 +-
+ .../src/app/account/register/register.component.ts |    3 +-
+ .../reset-password/reset-password.component.ts     |    3 +-
+ .../app/account/send-email/send-email.component.ts |    3 +-
+ .../add-edit-member/add-edit-member.component.ts   |    3 +-
+ webfamily.client/src/app/admin/admin.component.ts  |    3 +-
+ .../src/app/admin/seo-admin/seo-admin.component.ts |    3 +-
+ webfamily.client/src/app/app.component.ts          |    3 +-
+ webfamily.client/src/app/app.config.ts             |    4 +-
+ .../audio-play-album/audio-play-album.component.ts |    3 +-
+ .../bootstrap-example.component.ts                 |    3 +-
+ .../bootstrap-icons/bootstrap-icons.component.ts   |    3 +-
+ .../display-boot-feature.component.ts              |    3 +-
+ .../src/app/contact/contact.component.ts           |    3 +-
+ .../src/app/docviewer/docviewer.component.ts       |    3 +-
+ .../app/docviewer/pdfviewer/pdfviewer.component.ts |    3 +-
+ .../src/app/googlegpsmap/googlegpsmap.ts           |    3 +-
+ webfamily.client/src/app/gpsmap/gpsmap.ts          |    3 +-
+ .../src/app/help-reminder/help-reminder.ts         |    3 +-
+ .../src/app/home/hero/hero.component.ts            |    3 +-
+ webfamily.client/src/app/home/home.component.ts    |    3 +-
+ .../app/menu-maint/addmenu/addmenu.component.ts    |    3 +-
+ .../app/menu-maint/delmenu/delmenu.component.ts    |    3 +-
+ .../src/app/menu-maint/menu-maint.component.ts     |    3 +-
+ .../rename-file-media-list.component.ts            |    3 +-
+ .../rename-media/rename-media.component.ts         |    3 +-
+ .../update-video-duration.component.ts             |    3 +-
+ .../menu-maint/updatemenu/updatemenu.component.ts  |    3 +-
+ webfamily.client/src/app/photo/photo.component.ts  |    3 +-
+ .../src/app/play-audio/play-audio.component.ts     |    3 +-
+ .../src/app/play-media/play-media.component.ts     |    3 +-
+ webfamily.client/src/app/play/play.component.ts    |    3 +-
+ webfamily.client/src/app/rpm/rpm.component.ts      |    3 +-
+ .../scrolling-gallery.component.ts                 |    3 +-
+ .../shared/audio-player/audio-player.component.ts  |    3 +-
+ .../errors/not-found/not-found.component.ts        |    3 +-
+ .../validation-messages.component.ts               |    3 +-
+ .../modals/notification/notification.component.ts  |    3 +-
+ .../social-media/social-media.component.ts         |    3 +-
+ .../app/shared/countdown/countdown.component.ts    |    3 +-
+ .../src/app/shared/notifier/notifier.component.ts  |    3 +-
+ .../src/app/shared/photo-gallery/photo-gallery.ts  |    3 +-
+ webfamily.client/src/app/shared/shared.module.ts   |    4 +-
+ .../src/app/shared/video-series/video-series.ts    |    3 +-
+ .../src/app/tax-estimate/tax-estimate.component.ts |    4 +-
+ .../src/app/todo/todo-list/todo-list.component.ts  |    3 +-
+ webfamily.client/src/app/tube/add/add.component.ts |    3 +-
+ .../tube/download-tube/download-tube.component.ts  |    3 +-
+ webfamily.client/src/app/tube/tube.component.ts    |    3 +-
+ .../src/app/tube/tubelink/tubelink.component.ts    |    3 +-
+ .../video-view-frame/video-view-frame.component.ts |    3 +-
+ .../video-viewer/video-viewer.component.ts         |    3 +-
+ webfamily.client/tsconfig.app.json                 |   10 +-
+ webfamily.client/tsconfig.spec.json                |   10 +-
+ 58 files changed, 1539 insertions(+), 1346 deletions(-)
+
+commit 9176cf29add73c2715ff86732b60c0ff11096889
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 5 14:03:27 2026 -0700
+
+    updae angular v22
+
+ webfamily.client/package-lock.json | 3112 ++++++++++++++++++++++++++++++++++--
+ webfamily.client/package.json      |    1 +
+ 2 files changed, 2940 insertions(+), 173 deletions(-)
+
+commit b64558b53b76ebf497aabb3f18c07f46099deff4
+Author: Admin <Admin@YPHP>
+Date:   Fri Jun 5 13:47:36 2026 -0700
+
+    update angular v22
+
+ webfamily.client/package-lock.json | 387 ++++++++++++++++++++-----------------
+ 1 file changed, 206 insertions(+), 181 deletions(-)
