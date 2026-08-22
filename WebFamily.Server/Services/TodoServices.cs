@@ -25,7 +25,6 @@ namespace WebFamily.Server.Services
 
         public async Task<TodoList> AddTodo(TodoList todo)
         {
-
             TodoList record = new()
             {
                 RecordId = Guid.NewGuid(),
@@ -38,20 +37,17 @@ namespace WebFamily.Server.Services
             {
                 _context.TodoLists.Add(record);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception e)
             {
-                throw new ApplicationException(e.Message);
+                throw new ApplicationException("Failed to add todo item.", e);
             }
-            return await _context.TodoLists
-                .Where(i => i.RecordId == record.RecordId)
-                .SingleAsync();
+            // record already reflects the saved state; no need for a second round-trip
+            return record;
         }
         public async Task<Boolean> DeleteTodo(Guid id)
         {
-            //Guid id = new Guid("5a88a3e1-5051-449d-90ee-28fd535275b5");
-            TodoList record = new();
+            TodoList record;
             try
             {
                 record = await _context.TodoLists
@@ -60,43 +56,47 @@ namespace WebFamily.Server.Services
             }
             catch (Exception e)
             {
-                throw new ApplicationException(e.Message);
+                throw new ApplicationException("Failed to find todo item to delete.", e);
             }
-            _context.TodoLists.Remove(record);
-            _context.SaveChanges();
+
+            try
+            {
+                _context.TodoLists.Remove(record);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("Failed to delete todo item.", e);
+            }
 
             return true;
         }
         public async Task<TodoList> UpdateTodo(TodoList todoRecord)
         {
-            TodoList Record = new();
+            TodoList record;
             try
             {
-
-                Record = _context.TodoLists
-                .Where(i => i.RecordId == todoRecord.RecordId)
-                .Single();
+                record = await _context.TodoLists
+                    .Where(i => i.RecordId == todoRecord.RecordId)
+                    .SingleAsync();
             }
             catch (Exception e)
             {
-                throw new ApplicationException(e.Message);
+                throw new ApplicationException("Failed to find todo item to update.", e);
             }
 
-            Record.Note = todoRecord.Note;
-            Record.DueDate = todoRecord.DueDate;
-            Record.Assigned = todoRecord.Assigned;
+            record.Note = todoRecord.Note;
+            record.DueDate = todoRecord.DueDate;
+            record.Assigned = todoRecord.Assigned;
             try
             {
-                _context.Entry(Record).State = EntityState.Modified;
-                _context.TodoLists.Update(Record);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new ApplicationException("Failed to update todo item.", ex);
             }
-            return Record;
-
+            return record;
         }
     }
 }

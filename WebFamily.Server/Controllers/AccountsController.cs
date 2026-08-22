@@ -22,18 +22,21 @@ namespace WebFamily.Server.Controllers
         private readonly EmailService _emailService;
         private readonly IConfiguration _config;
         private readonly HttpClient _facebookHttpClient;
+        private readonly ILogger<AccountController> _logger;
 
         public AccountController(JWTService jwtService,
             SignInManager<User> signInManager,
             UserManager<User> userManager,
             EmailService emailService,
-            IConfiguration config)
+            IConfiguration config,
+            ILogger<AccountController> logger)
         {
             _jwtService = jwtService;
             _signInManager = signInManager;
             _userManager = userManager;
             _emailService = emailService;
             _config = config;
+            _logger = logger;
             _facebookHttpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://graph.facebook.com")
@@ -44,7 +47,11 @@ namespace WebFamily.Server.Controllers
         [HttpGet("refresh-user-token")]
         public async Task<ActionResult<UserDto>> RefreshUserToken()
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.Email)?.Value);
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email)) return Unauthorized("Invalid token");
+
+            var user = await _userManager.FindByNameAsync(email);
+            if (user == null) return Unauthorized("User not found");
 
             if (await _userManager.IsLockedOutAsync(user))
             {
@@ -70,11 +77,12 @@ namespace WebFamily.Server.Controllers
 
             if (!result.Succeeded)
             {
-                // User has input an invalid password.
-                // Note: lockout tracking applies to every account, including
-                // the admin account - it should never be exempt from
-                // brute-force protection.
-                await _userManager.AccessFailedAsync(user);
+                // User has input an invalid password
+                if (!user.UserName.Equals(SD.AdminUserName))
+                {
+                    // Increamenting AccessFailedCount of the AspNetUser by 1
+                    await _userManager.AccessFailedAsync(user);
+                }
 
                 if (user.AccessFailedCount >= SD.MaximumLoginAttempts)
                 {
@@ -105,8 +113,9 @@ namespace WebFamily.Server.Controllers
                         return Unauthorized("Unable to login with facebook");
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Facebook login validation failed");
                     return Unauthorized("Unable to login with facebook");
                 }
             }
@@ -119,8 +128,9 @@ namespace WebFamily.Server.Controllers
                         return Unauthorized("Unable to login with google");
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Google login validation failed");
                     return Unauthorized("Unable to login with google");
                 }
             }
@@ -184,8 +194,9 @@ namespace WebFamily.Server.Controllers
                         return Unauthorized("Unable to register with facebook");
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Facebook registration validation failed");
                     return Unauthorized("Unable to register with facebook");
                 }
             }
@@ -198,8 +209,9 @@ namespace WebFamily.Server.Controllers
                         return Unauthorized("Unable to register with google");
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Google registration validation failed");
                     return Unauthorized("Unable to register with google");
                 }
             }

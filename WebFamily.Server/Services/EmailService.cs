@@ -25,7 +25,7 @@ namespace WebFamily.Server.Services
                  .Build();
 
             var response = await client.SendTransactionalEmailAsync(email);
-            if (response.Messages != null)
+            if (response.Messages != null && response.Messages.Length > 0)
             {
                 if (response.Messages[0].Status == "success")
                 {

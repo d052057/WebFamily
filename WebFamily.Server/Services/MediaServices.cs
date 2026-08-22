@@ -40,7 +40,7 @@ public class MediaServices : IMediaServices
         }
         catch (Exception ex)
         {
-            throw new ApplicationException(ex.Message);
+            throw new ApplicationException($"Failed to get files for folder '{folder}' in menu '{menu}'.", ex);
         }
         return Record;
     }
@@ -65,7 +65,7 @@ public class MediaServices : IMediaServices
         var record = _context.MediaMetaData.Find(Id);
         if (record is null)
         {
-            throw new KeyNotFoundException("Todo not found");
+            throw new KeyNotFoundException($"Media item with ID '{Id}' not found");
         }
         return record;
     }
@@ -89,7 +89,7 @@ public class MediaServices : IMediaServices
         }
         catch (Exception ex)
         {
-            throw new ApplicationException(ex.Message);
+            throw new ApplicationException($"Failed to get media directory with ID '{id}'.", ex);
         }
         return Record;
     }

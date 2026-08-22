@@ -23,7 +23,7 @@ namespace WebFamily.Server.Services
 
         public async Task InitializeContextAsync()
         {
-            if ((await _context.Database.GetPendingMigrationsAsync()).Any())
+            if ((await _context.Database.GetPendingMigrationsAsync()).Count() > 0)
             {
                 // applies any pending migration into our database
                 await _context.Database.MigrateAsync();

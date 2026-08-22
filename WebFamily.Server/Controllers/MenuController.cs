@@ -69,6 +69,11 @@ namespace WebFamily.Server.Controllers
         [HttpPost("addMenuItem/{menuId}/items")]
         public IActionResult AddMenuItem(string menuId, [FromBody] MenuItem newItem)
         {
+            if (newItem == null)
+            {
+                return BadRequest("Request body is required");
+            }
+
             if (string.IsNullOrEmpty(newItem.Title) || string.IsNullOrEmpty(newItem.Param))
             {
                 return BadRequest("Title and Param are required");

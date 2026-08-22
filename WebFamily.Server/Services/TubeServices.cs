@@ -52,7 +52,7 @@ namespace WebFamily.Server.Services
             WebTube record = await _context.WebTubes
                                     .Where(i => i.RecordId == id)
                                     .Include(p => p.WebTubeSeries.OrderBy(s => s.SeqNumber))
-                                    .FirstAsync();
+                                    .FirstOrDefaultAsync();
 
             return record == null ? throw new Exception(string.Format("Can't find webtube {0}. {1}", id.ToString(), "Error")) : record;
         }
@@ -62,11 +62,11 @@ namespace WebFamily.Server.Services
             {
                 _context.Entry(Record).State = EntityState.Modified;
                 _context.WebTubes.Update(Record);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(ex.Message);
+                throw new ApplicationException($"Failed to update WebTube with ID '{Record.RecordId}'.", ex);
             }
             return await _context.WebTubes
                 .Where(i => i.RecordId == Record.RecordId)
@@ -160,7 +160,7 @@ namespace WebFamily.Server.Services
             }
             catch (Exception e)
             {
-                throw new ApplicationException(e.Message);
+                throw new ApplicationException("Failed to add WebTube record.", e);
             }
             return await _context.WebTubes
                 .Where(i => i.RecordId == record.RecordId)
@@ -198,8 +198,7 @@ namespace WebFamily.Server.Services
         }
         public async Task<bool> DelWebTube(Guid id)
         {
-            //Guid id = new Guid("5a88a3e1-5051-449d-90ee-28fd535275b5");
-            WebTube record = new();
+            WebTube record;
             try
             {
                 record = await _context.WebTubes
@@ -208,10 +207,18 @@ namespace WebFamily.Server.Services
             }
             catch (Exception e)
             {
-                throw new ApplicationException(e.Message);
+                throw new ApplicationException($"Failed to find WebTube with ID '{id}' to delete.", e);
             }
-            _context.WebTubes.Remove(record);
-            _context.SaveChanges();
+
+            try
+            {
+                _context.WebTubes.Remove(record);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException($"Failed to delete WebTube with ID '{id}'.", e);
+            }
 
             return true;
         }

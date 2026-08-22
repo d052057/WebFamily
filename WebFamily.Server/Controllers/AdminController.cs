@@ -115,7 +115,7 @@ namespace WebFamily.Server.Controllers
                     }
                 }
 
-                if (await IsAdminUserId(model.Id))
+                if (await IsAdminUserIdAsync(model.Id))
                 {
                     return BadRequest(SD.SuperAdminChangeNotAllowed);
                 }
@@ -139,7 +139,7 @@ namespace WebFamily.Server.Controllers
             // Removing users' existing role(s)
             await _userManager.RemoveFromRolesAsync(user, userRoles);
 
-            foreach (var role in model.Roles.Split(",").ToArray())
+            foreach (var role in (model.Roles ?? string.Empty).Split(",").Where(r => !string.IsNullOrWhiteSpace(r)).ToArray())
             {
                 var roleToAdd = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == role);
                 if (roleToAdd != null)
@@ -161,7 +161,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (await IsAdminUserId(id))
+            if (await IsAdminUserIdAsync(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -176,7 +176,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (await IsAdminUserId(id))
+            if (await IsAdminUserIdAsync(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -191,7 +191,7 @@ namespace WebFamily.Server.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            if (await IsAdminUserId(id))
+            if (await IsAdminUserIdAsync(id))
             {
                 return BadRequest(SD.SuperAdminChangeNotAllowed);
             }
@@ -206,7 +206,7 @@ namespace WebFamily.Server.Controllers
             return Ok(await _roleManager.Roles.Select(x => x.Name).ToListAsync());
         }
 
-        private async Task<bool> IsAdminUserId(string userId)
+        private async Task<bool> IsAdminUserIdAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             return user != null && user.UserName.Equals(SD.AdminUserName);
