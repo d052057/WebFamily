@@ -159,7 +159,7 @@ export class AddmenuComponent implements OnInit, OnDestroy {
     this.isUserSpeaking = !this.isUserSpeaking;
   }
   onVoiceInput(transcript: string | any) {
-    let currentText = this.form.value.menuTitle ?? '' + ' ' + transcript;
+    let currentText = (this.form.value.menuTitle ?? '') + ' ' + transcript;
     this.form.patchValue({
       menuTitle: currentText.trim()
     });

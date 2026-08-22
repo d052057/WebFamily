@@ -283,11 +283,11 @@ export class AddComponent implements OnInit {
   onVoiceInput(transcript: string | any) {
     if (this.isTitleUserSpeaking || this.isNoteUserSpeaking) {
       if (this.isTitleUserSpeaking) {
-        let currentText = this.fldform.value.webTubeTitle ?? '' + ' ' + transcript;
+        let currentText = (this.fldform.value.webTubeTitle ?? '') + ' ' + transcript;
         this.f.webTubeTitle.setValue(currentText.trim());
       };
       if (this.isNoteUserSpeaking) {
-        let currentText = this.fldform.value.note ?? '' + ' ' + transcript;
+        let currentText = (this.fldform.value.note ?? '') + ' ' + transcript;
         this.f.note.setValue(currentText.trim());
       }
     }

@@ -137,12 +137,12 @@ export class TodoMaintComponent implements OnInit {
   }
   onVoiceInput(transcript: string | any) {
     if (this.isAssignedUserSpeaking) {
-      let currentText = this.fldform.get('assigned')?.value + ' ' + transcript; 
+      let currentText = (this.fldform.get('assigned')?.value ?? '') + ' ' + transcript;
       this.fldform.get('assigned')?.setValue(currentText.trim());
 
     } else {
       if (this.isNoteUserSpeaking) {
-        let currentText = this.fldform.get('note')?.value + ' ' + transcript; 
+        let currentText = (this.fldform.get('note')?.value ?? '') + ' ' + transcript;
         this.fldform.get('note')?.setValue(currentText.trim());
 
       }

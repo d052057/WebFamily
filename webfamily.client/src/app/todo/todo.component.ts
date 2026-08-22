@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TodoMaintComponent } from './todomaint/todomaint.component';
 import { TodoService } from './services/todo.service';
@@ -53,31 +53,47 @@ export class TodoComponent {
   ];
   displayedColumns = this.initColumns.map(col => col.name);
 
-  readonly paginator = viewChild.required(MatPaginator);
-  readonly sort = viewChild.required(MatSort);
+  readonly paginator = viewChild(MatPaginator);
+  readonly sort = viewChild(MatSort);
   private _dialog = inject(MatDialog);
   public service = inject(TodoService);
   private snackbar = inject(SnackService);
   resource = this.service.todoDataRS;
+  private dataSource = new MatTableDataSource<any>([]);
   filteredData = computed(() => {
     const searchStr = (this.searchVal() || '').toLowerCase();
     const allData = (this.resource.value() || []);
 
     const filtered = allData ? allData.filter(
       (item: any) => {
-        return (item.displayDueDate?.toLowerCase().includes(searchStr) ||
-          item.displayTime?.toLowerCase().includes(searchStr) ||
-          item.note?.toLowerCase().includes(searchStr) ||
-          item.assigned?.toLowerCase().includes(searchStr)
+        return (
+          (item.displayDueDate ?? '').toLowerCase().includes(searchStr) ||
+          (item.displayTime ?? '').toLowerCase().includes(searchStr) ||
+          (item.note ?? '').toLowerCase().includes(searchStr) ||
+          (item.assigned ?? '').toLowerCase().includes(searchStr)
         );
       }
     ) : [];
 
-    const data = new MatTableDataSource(filtered);
-    data.paginator = this.paginator();
-    data.sort = this.sort();
-    return data;
+    this.dataSource.data = filtered;
+    return this.dataSource;
   });
+  constructor() {
+    // Paginator/sort view children aren't available until after the view has
+    // finished initializing. Wiring them here (instead of inside the
+    // computed above) means filteredData() never has to read them, so the
+    // very first render can't throw before they're ready.
+    effect(() => {
+      const paginator = this.paginator();
+      const sort = this.sort();
+      if (paginator) {
+        this.dataSource.paginator = paginator;
+      }
+      if (sort) {
+        this.dataSource.sort = sort;
+      }
+    });
+  }
   deleteTodo(id: number) {
     this.service.deleteTodo(id).subscribe({
       next: (res) => {
