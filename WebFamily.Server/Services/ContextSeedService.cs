@@ -23,7 +23,7 @@ namespace WebFamily.Server.Services
 
         public async Task InitializeContextAsync()
         {
-            if (_context.Database.GetPendingMigrationsAsync().GetAwaiter().GetResult().Count() > 0)
+            if ((await _context.Database.GetPendingMigrationsAsync()).Any())
             {
                 // applies any pending migration into our database
                 await _context.Database.MigrateAsync();
@@ -36,7 +36,7 @@ namespace WebFamily.Server.Services
                 await _roleManager.CreateAsync(new IdentityRole { Name = SD.PlayerRole });
             }
 
-            if (!_userManager.Users.AnyAsync().GetAwaiter().GetResult())
+            if (!await _userManager.Users.AnyAsync())
             {
                 var admin = new User
                 {

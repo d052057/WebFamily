@@ -33,13 +33,10 @@ export const environment = {
     YoutubeUrl: 'https://www.googleapis.com/youtube/v3/playlistItems?key=' + 'AIzaSyAMXlgkrQ2vL2jTGd6RWQCwjYw-r0wWIjE' + '&part=snippet&maxResults=12&playlistId='
   },
   Facebook: {
-    AppId: "1324213154862809",
-    AppSecret: "593ff0ac4cb01fa263ef8e07e7ef9632"
+    AppId: "1324213154862809"
   },
   Google: {
-    ClientId: "430168186770-pulphdhlidoeh42689pmmdpkenho1bm9.apps.googleusercontent.com",
-    SecretId: "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"
-
+    ClientId: "430168186770-pulphdhlidoeh42689pmmdpkenho1bm9.apps.googleusercontent.com"
   },
   "GoogleMaps": {
     "ApiKey": "AIzaSyCn5OoQkllCMw8Z8vG60V13_4LXuravm_s"
