@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal, viewChild
 import { MatDialog } from '@angular/material/dialog';
 import { TodoMaintComponent } from './todomaint/todomaint.component';
 import { TodoService } from './services/todo.service';
-import { MatTableModule } from '@angular/material/table'
+import { MatTableModule, MatTableDataSource } from '@angular/material/table'
 import { SnackService } from '../shared/services/snack.service'
 
 import { MatPaginator } from '@angular/material/paginator';
@@ -63,7 +63,7 @@ export class TodoComponent {
     const searchStr = (this.searchVal() || '').toLowerCase();
     const allData = (this.resource.value() || []);
 
-    return allData ? allData.filter(
+    const filtered = allData ? allData.filter(
       (item: any) => {
         return (item.displayDueDate?.toLowerCase().includes(searchStr) ||
           item.displayTime?.toLowerCase().includes(searchStr) ||
@@ -72,6 +72,11 @@ export class TodoComponent {
         );
       }
     ) : [];
+
+    const data = new MatTableDataSource(filtered);
+    data.paginator = this.paginator();
+    data.sort = this.sort();
+    return data;
   });
   deleteTodo(id: number) {
     this.service.deleteTodo(id).subscribe({

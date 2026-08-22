@@ -82,9 +82,8 @@ export class RenameFileMediaListComponent implements OnInit, OnDestroy, AfterVie
 
       // Define the filter predicate for custom filtering logic
       this.dataSource.filterPredicate = (rowData: any, filter: string) => {
-        return Object.values(rowData).some((value: any) =>
-          value.title.toLowerCase().includes(filter)
-        );
+        return (rowData.title?.toLowerCase().includes(filter) ?? false) ||
+               (rowData.type?.toLowerCase().includes(filter) ?? false);
       };
     });
 

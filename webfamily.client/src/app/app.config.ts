@@ -4,8 +4,6 @@ import { routes } from './app.routes';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { SharedModule } from './shared/shared.module';
-import { HomeModule } from './home/home.module';
-import { TodoModule } from './todo/todo.module';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -56,8 +54,6 @@ export const appConfig: ApplicationConfig = {
       ModalModule,
       BrowserModule,
       SharedModule,
-      HomeModule,
-      TodoModule,
       NgxExtendedPdfViewerModule,
       FormsModule, // Only once
       ReactiveFormsModule,

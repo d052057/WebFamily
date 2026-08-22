@@ -9,7 +9,7 @@ const tubeModule = () => import('./tube/tube.module').then(x => x.TubeModule);
 const menuMaint = () => import('./menu-maint/menu-maint.module').then(routes => routes.MenuMaintModule);
 
 export const routes: Routes = [
-  { path: '', loadChildren: () => import('./home/home.module').then(module => module.HomeModule) },
+  { path: '', pathMatch: 'full', loadChildren: () => import('./home/home.module').then(module => module.HomeModule) },
   {
     path: '',
     runGuardsAndResolvers: 'always',

@@ -86,7 +86,7 @@ export class TubeComponent implements  OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (val) => {
         if (val) {
-          this.service.tubeRecordsRS.reload();
+          this.service.asyncTubeRecordsRS.reload();
         }
       },
     });
@@ -99,7 +99,7 @@ export class TubeComponent implements  OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (val) => {
         if (val) {
-          this.service.tubeRecordsRS.reload();
+          this.service.asyncTubeRecordsRS.reload();
         }
       },
     });
@@ -110,7 +110,7 @@ export class TubeComponent implements  OnDestroy {
       .pipe(first())
       .subscribe((result: any) => {
         this.snackService.openSnackBar(result.message);
-        this.service.tubeRecordsRS.reload();
+        this.service.asyncTubeRecordsRS.reload();
       });
   }
   onSearch(searchStr: string) {
