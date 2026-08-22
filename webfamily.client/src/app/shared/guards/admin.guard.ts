@@ -21,7 +21,12 @@ export class AdminGuard {
 
         if (user) {
           const decodedToken: any = jwtDecode(user.jwt);
-          if (decodedToken.role.includes('Admin')) {
+          // A JWT with exactly one role claim decodes `role` as a plain
+          // string, not an array - only 2+ roles produce an array.
+          // Normalize both cases (and the no-roles case) explicitly.
+          const rawRole = decodedToken.role;
+          const roles: string[] = Array.isArray(rawRole) ? rawRole : (rawRole ? [rawRole] : []);
+          if (roles.includes('Admin')) {
             return true;
           }
         }

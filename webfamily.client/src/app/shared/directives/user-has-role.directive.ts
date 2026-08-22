@@ -17,8 +17,11 @@ export class UserHasRoleDirective implements OnInit {
         if (user) {
           try {
             const decodedToken: any = jwtDecode(user.jwt);
-            // Ensure `decodedToken.role` is an array
-            const roles: string[] = Array.isArray(decodedToken.role) ? decodedToken.role : [];
+            // A JWT with exactly one role claim decodes `role` as a plain
+            // string, not an array - only 2+ roles produce an array.
+            // Normalize both cases instead of discarding single-role tokens.
+            const rawRole = decodedToken.role;
+            const roles: string[] = Array.isArray(rawRole) ? rawRole : (rawRole ? [rawRole] : []);
 
             if (roles.some(role => this.appUserHasRole().includes(role))) {
               this.viewContainerRef.createEmbeddedView(this.templateRef);
