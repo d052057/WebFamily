@@ -70,12 +70,11 @@ namespace WebFamily.Server.Controllers
 
             if (!result.Succeeded)
             {
-                // User has input an invalid password
-                if (!user.UserName.Equals(SD.AdminUserName))
-                {
-                    // Increamenting AccessFailedCount of the AspNetUser by 1
-                    await _userManager.AccessFailedAsync(user);
-                }
+                // User has input an invalid password.
+                // Note: lockout tracking applies to every account, including
+                // the admin account - it should never be exempt from
+                // brute-force protection.
+                await _userManager.AccessFailedAsync(user);
 
                 if (user.AccessFailedCount >= SD.MaximumLoginAttempts)
                 {
