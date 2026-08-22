@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 
@@ -6,7 +7,7 @@ namespace WebFamily.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize(Roles = "Admin")] // Uncomment to require authentication
+    [Authorize(Roles = "Admin")]
     public class SeoAdminController : ControllerBase
     {
         private readonly ISeoService _seoService;
@@ -256,6 +257,7 @@ namespace WebFamily.Server.Controllers
         /// PUBLIC ENDPOINT - Get SEO metadata for Angular frontend
         /// (No authentication required)
         /// </summary>
+        [AllowAnonymous]
         [HttpGet("public/metadata")]
         [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> GetPublicSeoMetadata()
