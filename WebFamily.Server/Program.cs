@@ -16,6 +16,11 @@ using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
+// Local development secrets (connection strings, API keys, JWT key, etc.)
+// This file is git-ignored - see .gitignore - and lives only on this machine.
+// It's optional so the app still starts fine if it doesn't exist yet.
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
 // Configure services
 builder.Services.ConfigureDatabaseServices(builder.Configuration);
 builder.Services.ConfigureDependencyInjectionServices();
