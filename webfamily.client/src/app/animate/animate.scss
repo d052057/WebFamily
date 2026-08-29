@@ -1,132 +1,113 @@
-// _animate.scss
-// Standalone "animate" component — top, middle, bottom sections
-// Khmer text ខ្មែរ (top) and មន (bottom) travel toward the center and
-// combine into ខម (middle) once they meet.
-
-.animate {
-  --animate-duration: 3.5s; // slow, deliberate movement
-  --animate-ease: cubic-bezier(0.65, 0, 0.35, 1);
-  --animate-travel: 40vh; // how far each letter travels toward center
-  --animate-letter-size: clamp(3rem, 8vw, 8rem);
-  --animate-color: #1a1a1a;
-
+.equation {
+  --equation-letter-size: clamp(2.5rem, 6vw, 5rem);
+  --equation-color: #1a1a1a;
+  --equation-final-color: #b8860b; // gold — shared by source hints AND the landed ខម
+  --equation-depart-delay: 0.8s; // pause before the letters take off
+  --equation-flight-duration: 2.5s;
+  --equation-flight-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --equation-arc-height: 90px;
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  align-items: center; // vertical centering of the row
+  justify-content: center; // horizontal centering
+  flex-wrap: wrap;
+  gap: 0.4em;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  font-family: Moulpali, "Khmer OS", "Noto Sans Khmer", sans-serif;
+  font-size: var(--equation-letter-size);
+  color: var(--equation-color);
+  line-height: 1;
 
-  &__section {
+  &__word {
+    white-space: nowrap; // kept intact — never split, so shaping stays correct
+  }
+
+  &__operator {
+    opacity: 0.6;
+    padding: 0 0.15em;
+  }
+
+  &__result {
     position: relative;
-    flex: 1 1 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-  &__letter {
     display: inline-block;
-    font-size: var(--animate-letter-size);
-    line-height: 1;
-    color: var(--animate-color);
-    font-family: Moulpali, "Khmer OS", "Noto Sans Khmer", sans-serif;
-    will-change: transform, opacity;
+    min-width: 1.2em;
+    text-align: center;
   }
 
-  // ---------- TOP SECTION ----------
-  &__top {
-    align-items: flex-start;
-    padding-top: 2rem;
-
-    .animate__letter {
-      animation: animate-fall var(--animate-duration) var(--animate-ease) forwards;
-      animation-play-state: paused; // triggered via .is-playing on parent
-    }
+  &__placeholder {
+    opacity: 1;
+    transition: opacity 0.5s ease;
   }
 
-  &.is-playing &__top .animate__letter {
-    animation-play-state: running;
+  &__combined {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    color: var(--equation-final-color);
+    transform: scale(0.6);
   }
 
-  // ---------- BOTTOM SECTION ----------
-  &__bottom {
-    align-items: flex-end;
-    padding-bottom: 2rem;
-
-    .animate__letter {
-      animation: animate-rise var(--animate-duration) var(--animate-ease) forwards;
-      animation-play-state: paused;
-    }
+  &.is-combined &__placeholder {
+    opacity: 0;
   }
 
-  &.is-playing &__bottom .animate__letter {
-    animation-play-state: running;
-  }
-
-  // ---------- MIDDLE SECTION (combined glyph) ----------
-  &__middle {
-    .animate__letter--combined {
-      opacity: 0;
-      transform: scale(0.85);
-      animation: animate-combine 1.2s var(--animate-ease) forwards;
-      animation-delay: var(--animate-duration); // wait until fall/rise finish
-      animation-play-state: paused;
-    }
-  }
-
-  &.is-playing &__middle .animate__letter--combined {
-    animation-play-state: running;
+  &.is-combined &__combined {
+    animation: equation-land 1.6s ease forwards;
   }
 }
 
-// ខ្មែរ travels DOWN from the top section toward center, fading out as it nears
-@keyframes animate-fall {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  85% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(var(--animate-travel));
-    opacity: 0;
-  }
+// Persistent color on ខ (its full subscript cluster within ខ្មែរ) and ម
+// (within មន) — via CSS Custom Highlight API, so the DOM/text nodes are
+// never split and Khmer shaping stays intact. Set from animate.ts.
+::highlight(equation-source) {
+  color: var(--equation-final-color);
 }
 
-// មន travels UP from the bottom section toward center, fading out as it nears
-@keyframes animate-rise {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  85% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(calc(var(--animate-travel) * -1));
-    opacity: 0;
-  }
+// transient flying copy used only for the flight animation
+.equation-flyer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  font-family: Moulpali, "Khmer OS", "Noto Sans Khmer", sans-serif;
+  line-height: 1;
+  will-change: transform, opacity;
+  z-index: 20;
 }
 
-// combined glyph settles in with a gentle scale + fade once the halves meet
-@keyframes animate-combine {
+.equation-spark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8dc 0%, var(--equation-final-color) 55%, transparent 75%);
+  pointer-events: none;
+  z-index: 25;
+  will-change: transform, opacity;
+}
+
+@keyframes equation-land {
   0% {
     opacity: 0;
-    transform: scale(0.85);
+    transform: scale(0.6);
   }
 
-  60% {
+  30% {
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.4);
+  }
+
+  50% {
+    transform: scale(0.92);
+  }
+
+  70% {
+    transform: scale(1.08);
   }
 
   100% {
@@ -135,16 +116,18 @@
   }
 }
 
-// Reduced motion: skip the travel, just fade
 @media (prefers-reduced-motion: reduce) {
-  .animate__top .animate__letter,
-  .animate__bottom .animate__letter {
-    animation-duration: 0.6s !important;
-    animation-name: none !important;
-    transition: opacity 0.6s ease;
+  .equation {
+    --equation-depart-delay: 0.1s;
+    --equation-flight-duration: 0.3s;
   }
 
-  .animate__middle .animate__letter--combined {
-    animation-delay: 0.6s !important;
+  .equation__combined {
+    animation-duration: 0.4s !important;
+  }
+
+  .equation-spark {
+    display: none;
   }
 }
+
