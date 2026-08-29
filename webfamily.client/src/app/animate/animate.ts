@@ -11,99 +11,136 @@ export class Animate implements AfterViewInit {
   @ViewChild('moWord') moWord!: ElementRef<HTMLElement>;
   @ViewChild('resultSlot') resultSlot!: ElementRef<HTMLElement>;
 
-  constructor(private host: ElementRef<HTMLElement>) { }
+  private readonly khFull = 'ខ្មែរ';
+  private readonly moFull = 'មន';
+  private readonly khHighlightEnd = 3; // ខ + coeng + ម — the whole subscript-stack cluster
+  private readonly moHighlightEnd = 1; // ម alone
+  private readonly typeSpeed = 180; // ms per character
+
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   ngAfterViewInit(): void {
     const root = this.host.nativeElement.querySelector<HTMLElement>('.equation');
     if (!root) return;
 
-    // 1. Persistent color — safe to do immediately, independent of the font.
-    this.applyPersistentHighlight();
-
-    // 2. Wait for Moulpali to actually finish loading before measuring any
-    //    positions. Measuring too early gets fallback-font metrics, which
-    //    silently sends the flight animation to the wrong spot.
     document.fonts.ready.then(() => {
       requestAnimationFrame(() => this.play(root));
     });
   }
 
-  private applyPersistentHighlight(): void {
-    const CSSAny = CSS as any;
-    const HighlightCtor = (window as any).Highlight;
-    if (!CSSAny.highlights || typeof HighlightCtor !== 'function') {
-      return; // unsupported browser — gracefully skip, no error
-    }
-
-    const khText = this.khWord.nativeElement.firstChild;
-    const moText = this.moWord.nativeElement.firstChild;
-    if (!khText || !moText) return;
-
-    const khRange = document.createRange();
-    khRange.setStart(khText, 0);
-    khRange.setEnd(khText, 3); // ខ + coeng + ម — the whole subscript-stack cluster
-
-    const moRange = document.createRange();
-    moRange.setStart(moText, 0);
-    moRange.setEnd(moText, 1); // ម alone
-
-    const highlight = new HighlightCtor(khRange, moRange);
-    CSSAny.highlights.set('equation-source', highlight);
-  }
-
-  private play(root: HTMLElement): void {
+  private async play(root: HTMLElement): Promise<void> {
     const styles = getComputedStyle(root);
-    const departDelay = parseFloat(styles.getPropertyValue('--equation-depart-delay')) * 1000 || 800;
-    const flightDuration = parseFloat(styles.getPropertyValue('--equation-flight-duration')) * 1000 || 2500;
-    const flightEase = styles.getPropertyValue('--equation-flight-ease').trim() || 'ease';
     const finalColor = styles.getPropertyValue('--equation-final-color').trim() || '#b8860b';
+    const flightDuration =
+      parseFloat(styles.getPropertyValue('--equation-flight-duration')) * 1000 || 2500;
+    const flightEase = styles.getPropertyValue('--equation-flight-ease').trim() || 'ease';
     const arcHeight = parseFloat(styles.getPropertyValue('--equation-arc-height')) || 90;
 
-    const flights = [
-      this.animateLetter(this.khWord.nativeElement, 'ខ', this.resultSlot.nativeElement, -arcHeight, departDelay, flightDuration, flightEase, finalColor),
-      this.animateLetter(this.moWord.nativeElement, 'ម', this.resultSlot.nativeElement, arcHeight, departDelay, flightDuration, flightEase, finalColor),
-    ];
+    const khEl = this.khWord.nativeElement;
+    const moEl = this.moWord.nativeElement;
 
-    Promise.all(flights).then(() => {
-      root.classList.add('is-combined');
-      this.spawnSparkles(this.resultSlot.nativeElement, finalColor);
+    // Type both words at once. Each resolves with the permanent, colored
+    // overlay it created over its target letter.
+    const [khOverlay, moOverlay] = await Promise.all([
+      this.typeWord(khEl, this.khFull, this.khHighlightEnd, finalColor),
+      this.typeWord(moEl, this.moFull, this.moHighlightEnd, finalColor),
+    ]);
+
+    await new Promise((resolve) => setTimeout(resolve, 600)); // brief pause once typed
+
+    // Fly CLONES of the overlays to the result — the originals stay put,
+    // so the words never lose their color.
+    await Promise.all([
+      this.flyOverlayClone(khOverlay, this.resultSlot.nativeElement, -arcHeight, flightDuration, flightEase),
+      this.flyOverlayClone(moOverlay, this.resultSlot.nativeElement, arcHeight, flightDuration, flightEase),
+    ]);
+
+    root.classList.add('is-combined');
+    this.spawnSparkles(this.resultSlot.nativeElement, finalColor);
+  }
+
+  /**
+   * Types `full` into `el` one character at a time by appending to a single
+   * Text node (never replacing/recreating it), so Khmer shaping — e.g. the
+   * ខ + coeng + ម subscript stack — stays correct at every step. Once
+   * `highlightEnd` characters have been typed, places a PERMANENT colored
+   * overlay exactly on top of that span of text. This overlay is a plain,
+   * independent DOM element — not a live-tracked Range/Highlight — so it
+   * cannot silently collapse or revert the way the Custom Highlight API did.
+   */
+  private typeWord(
+    el: HTMLElement,
+    full: string,
+    highlightEnd: number,
+    color: string
+  ): Promise<HTMLElement> {
+    return new Promise((resolve) => {
+      const textNode = document.createTextNode('');
+      el.appendChild(textNode);
+      let overlay: HTMLElement | null = null;
+
+      let i = 0;
+      const tick = () => {
+        textNode.appendData(full[i]);
+        i++;
+
+        if (i < full.length) {
+          setTimeout(tick, this.typeSpeed);
+        } else {
+          // The word is fully typed and its layout has settled — including
+          // any pre-base vowel reordering (e.g. ែ visually shifting before
+          // ខ). Only now is it safe to measure and place the overlay;
+          // doing it mid-word left it stranded once later characters
+          // reflowed the cluster's position.
+          overlay = this.createPersistentOverlay(textNode, highlightEnd, color);
+          resolve(overlay as HTMLElement);
+        }
+      };
+      setTimeout(tick, this.typeSpeed);
     });
   }
 
-  private getFirstCharRect(word: HTMLElement): DOMRect {
-    const textNode = word.firstChild;
-    if (!textNode || textNode.nodeType !== Node.TEXT_NODE) {
-      return word.getBoundingClientRect();
-    }
+  /**
+   * Measures the on-screen position of textNode[0..end) ONCE (a plain,
+   * one-time snapshot — not something the DOM keeps "live"), then places a
+   * separate, permanently-colored span exactly on top of it. The real text
+   * underneath stays black and untouched; this overlay is purely visual.
+   */
+  private createPersistentOverlay(textNode: Text, end: number, color: string): HTMLElement {
     const range = document.createRange();
     range.setStart(textNode, 0);
-    range.setEnd(textNode, 1);
-    const rects = range.getClientRects();
-    return (rects[0] as DOMRect) ?? word.getBoundingClientRect();
-  }
+    range.setEnd(textNode, end);
+    const rect =
+      (range.getClientRects()[0] as DOMRect) ??
+      (textNode.parentElement as HTMLElement).getBoundingClientRect();
 
-  private async animateLetter(
-    word: HTMLElement,
-    char: string,
-    target: HTMLElement,
-    arcOffset: number,
-    departDelay: number,
-    flightDuration: number,
-    ease: string,
-    color: string
-  ): Promise<void> {
-    const rect = this.getFirstCharRect(word);
-
+    const parentEl = textNode.parentElement as HTMLElement;
     const overlay = document.createElement('span');
     overlay.className = 'equation-flyer';
-    overlay.textContent = char;
-    overlay.style.fontSize = getComputedStyle(word).fontSize;
+    overlay.textContent = textNode.data.slice(0, end);
+    overlay.style.fontSize = getComputedStyle(parentEl).fontSize;
     overlay.style.color = color;
     overlay.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
     document.body.appendChild(overlay);
+    return overlay;
+  }
 
-    // A brief pause so the "departure" reads as intentional, not instant.
-    await new Promise((resolve) => window.setTimeout(resolve, departDelay));
+  /**
+   * Clones the persistent overlay and arcs the CLONE toward the result
+   * slot, leaving the original overlay untouched and in place — so the
+   * word's coloring never disappears once the "letter" departs.
+   */
+  private async flyOverlayClone(
+    sourceOverlay: HTMLElement,
+    target: HTMLElement,
+    arcOffset: number,
+    duration: number,
+    ease: string
+  ): Promise<void> {
+    const rect = sourceOverlay.getBoundingClientRect();
+    const clone = sourceOverlay.cloneNode(true) as HTMLElement;
+    clone.style.transform = `translate(${rect.left}px, ${rect.top}px)`;
+    document.body.appendChild(clone);
 
     const t = target.getBoundingClientRect();
     const sx = rect.left + rect.width / 2;
@@ -127,8 +164,8 @@ export class Animate implements AfterViewInit {
       });
     }
 
-    await overlay.animate(keyframes, { duration: flightDuration, easing: ease, fill: 'forwards' }).finished;
-    overlay.remove();
+    await clone.animate(keyframes, { duration, easing: ease, fill: 'forwards' }).finished;
+    clone.remove();
   }
 
   private spawnSparkles(target: HTMLElement, color: string): void {

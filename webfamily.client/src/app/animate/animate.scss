@@ -1,11 +1,11 @@
 .equation {
-  --equation-letter-size: clamp(2.5rem, 6vw, 5rem);
   --equation-color: #1a1a1a;
-  --equation-final-color: #b8860b; // gold — shared by source hints AND the landed ខម
-  --equation-depart-delay: 0.8s; // pause before the letters take off
+  --equation-final-color: #b8860b; // gold — shared by the typed hint AND the landed ខម
+  --equation-letter-size: clamp(2.5rem, 6vw, 5rem);
   --equation-flight-duration: 2.5s;
   --equation-flight-ease: cubic-bezier(0.65, 0, 0.35, 1);
   --equation-arc-height: 90px;
+
   position: relative;
   display: flex;
   align-items: center; // vertical centering of the row
@@ -22,7 +22,8 @@
   line-height: 1;
 
   &__word {
-    white-space: nowrap; // kept intact — never split, so shaping stays correct
+    white-space: nowrap;
+    min-height: 1em; // keeps layout stable while empty, before typing starts
   }
 
   &__operator {
@@ -59,14 +60,8 @@
   }
 }
 
-// Persistent color on ខ (its full subscript cluster within ខ្មែរ) and ម
-// (within មន) — via CSS Custom Highlight API, so the DOM/text nodes are
-// never split and Khmer shaping stays intact. Set from animate.ts.
-::highlight(equation-source) {
-  color: var(--equation-final-color);
-}
-
-// transient flying copy used only for the flight animation
+// used for both the permanent colored overlay placed over ខ/ម once typed,
+// and the transient clone that arcs away from it during the flight phase
 .equation-flyer {
   position: fixed;
   top: 0;
@@ -96,20 +91,16 @@
     opacity: 0;
     transform: scale(0.6);
   }
-
   30% {
     opacity: 1;
     transform: scale(1.4);
   }
-
   50% {
     transform: scale(0.92);
   }
-
   70% {
     transform: scale(1.08);
   }
-
   100% {
     opacity: 1;
     transform: scale(1);
@@ -118,16 +109,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .equation {
-    --equation-depart-delay: 0.1s;
     --equation-flight-duration: 0.3s;
   }
-
   .equation__combined {
     animation-duration: 0.4s !important;
   }
-
   .equation-spark {
     display: none;
   }
 }
-
