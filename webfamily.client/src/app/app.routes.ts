@@ -128,6 +128,10 @@ export const routes: Routes = [
     loadComponent: () => import('./googlegpsmap/googlegpsmap')
       .then(mod => mod.Googlegpsmap)
   },
+  {
+    path: 'animate', loadComponent: () => import('./animate/animate')
+      .then(mod => mod.Animate)
+  },
   { path: 'contact', component: ContactComponent },
   { path: 'account', loadChildren: () => import('./account/account.module').then(module => module.AccountModule) },
   { path: 'not-found', component: NotFoundComponent },
