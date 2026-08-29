@@ -1,18 +1,111 @@
-.top-center-element {
-  position:absolute; 
-  top: 100px; 
-  left: 50%; 
-  transform: translateX(-50%);  
+// _animate.scss
+// Standalone "animate" component — top & bottom sections
+// Khmer letters ខ (top) and ម (bottom) travel toward the middle.
+
+.animate {
+  --animate-duration: 3.5s; // slow, deliberate movement
+  --animate-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --animate-travel: 40vh; // how far each letter travels toward center
+  --animate-letter-size: clamp(3rem, 8vw, 8rem);
+  --animate-color: #1a1a1a;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Moulpali;
+
+  &__section {
+    position: relative;
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__letter {
+    display: inline-block;
+    font-size: var(--animate-letter-size);
+    line-height: 1;
+    color: var(--animate-color);
+    font-family: "Khmer OS", "Noto Sans Khmer", sans-serif;
+    will-change: transform, opacity;
+  }
+  // ---------- TOP SECTION ----------
+  &__top {
+    align-items: flex-start;
+    padding-top: 2rem;
+
+    .animate__letter {
+      animation: animate-fall var(--animate-duration) var(--animate-ease) forwards;
+      animation-play-state: paused; // triggered via .is-playing on parent
+      // .is-playing toggled by JS (e.g. IntersectionObserver) when component enters view
+    }
+  }
+
+  &.is-playing &__top .animate__letter {
+    animation-play-state: running;
+  }
+  // ---------- BOTTOM SECTION ----------
+  &__bottom {
+    align-items: flex-end;
+    padding-bottom: 2rem;
+
+    .animate__letter {
+      animation: animate-rise var(--animate-duration) var(--animate-ease) forwards;
+      animation-play-state: paused;
+    }
+  }
+
+  &.is-playing &__bottom .animate__letter {
+    animation-play-state: running;
+  }
 }
-.bottom-center-element {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
+
+// ខ travels DOWN from the top section toward center, fading out as it nears
+@keyframes animate-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(var(--animate-travel));
+    opacity: 0;
+  }
 }
-.center-element {
-  display: grid;
-  place-items: center; /* Centers both axes at once */
-  min-height: 100vh;
-  margin: 0;
+
+// ម travels UP from the bottom section toward center, fading out as it nears
+@keyframes animate-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(calc(var(--animate-travel) * -1));
+    opacity: 0;
+  }
+}
+
+// Reduced motion: skip the travel, just fade
+@media (prefers-reduced-motion: reduce) {
+  .animate__top .animate__letter,
+  .animate__bottom .animate__letter {
+    animation-duration: 0.6s !important;
+    animation-name: none !important;
+    transition: opacity 0.6s ease;
+  }
 }
