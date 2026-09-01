@@ -1,14 +1,65 @@
-<div class="equation" id="familyAnimate">
-  <span class="equation__word" #khWord></span>
+<div class="page-viewport-center">
+  <!-- Unified Equation Matrix Container -->
+  <div class="khmer-equation-matrix">
+    <svg xmlns="http://w3.org" viewBox="0 -100 1620 600" width="100%" height="100%">
+      <defs>
+        <!-- High-Performance Sparkle Glow Engine Filter -->
+        <filter id="sparkle-engine" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="8" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
 
-  <span class="equation__operator">+</span>
+      <!-- LAYER 1: Base Equation Elements (Fade in sequentially) -->
+      <!-- Word 1 (x=0 to 360) -->
+      <g class="entry-word1">
+        <!-- Static Blue Background Layer -->
+        <text x="180" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text blue-text">ខ្មែរ</text>
 
-  <span class="equation__word" #moWord></span>
+        <!-- FIXED: Added Red Overlay Layer for character 'ខ' (Uses your custom 79px shift metrics) -->
+        <text x="180" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text red-text final-red-source">
+          <tspan dx="79">ខ</tspan><tspan fill="transparent" dx="-79">្ញែរ</tspan>
+        </text>
+      </g>
 
-  <span class="equation__operator">=</span>
+      <!-- Operator 1: + (x=360 to 456) -->
+      <g class="entry-op1">
+        <text x="408" y="228" dominant-baseline="middle" text-anchor="middle" class="khmer-text operator">+</text>
+      </g>
 
-  <span class="equation__result" #resultSlot>
-    <span class="equation__placeholder">??</span>
-    <span class="equation__combined">ខម</span>
-  </span>
+      <!-- Word 2 (x=456 to 816) -->
+      <g class="entry-word2">
+        <!-- Static Blue Background Layer -->
+        <text x="636" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text blue-text">
+          <tspan>ម</tspan>
+          <tspan dx="25">ន</tspan>
+        </text>
+
+        <!-- FIXED: Added Red Overlay Layer for character 'ម' -->
+        <text x="636" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text red-text final-red-source">
+          <tspan>ម</tspan>
+          <tspan fill="transparent" dx="25">ន</tspan>
+        </text>
+      </g>
+
+      <!-- Operator 2: = (x=816 to 912) -->
+      <g class="entry-op2">
+        <text x="864" y="228" dominant-baseline="middle" text-anchor="middle" class="khmer-text operator">=</text>
+      </g>
+
+      <!-- LAYER 2: Advanced Floating Flight Tracks -->
+      <text x="180" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text red-text flying-char-ka">ខ</text>
+      <text x="570" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text red-text flying-char-mo">ម</text>
+
+      <!-- LAYER 3: Target Assembly Landing Lock Zone with Sparkle Glow -->
+      <g class="target-result-word sparkling-result">
+        <text x="1092" y="220" dominant-baseline="middle" text-anchor="middle" class="khmer-text red-text">
+          <tspan>ខម</tspan>
+        </text>
+      </g>
+    </svg>
+  </div>
 </div>

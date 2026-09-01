@@ -1,120 +1,264 @@
-.equation {
-  --equation-color: #1a1a1a;
-  --equation-final-color: #b8860b; // gold — shared by the typed hint AND the landed ខម
-  --equation-letter-size: clamp(2.5rem, 6vw, 5rem);
-  --equation-flight-duration: 2.5s;
-  --equation-flight-ease: cubic-bezier(0.65, 0, 0.35, 1);
-  --equation-arc-height: 90px;
-
-  position: relative;
+/* --- Canvas Environment Configuration --- */
+.page-viewport-center {
   display: flex;
-  align-items: center; // vertical centering of the row
-  justify-content: center; // horizontal centering
-  flex-wrap: wrap;
-  gap: 0.4em;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
-  padding: 0 1rem;
+  width: 100vw;
+  background-color: #fafafa;
   box-sizing: border-box;
-  font-family: Moulpali, "Khmer OS", "Noto Sans Khmer", sans-serif;
-  font-size: var(--equation-letter-size);
-  color: var(--equation-color);
-  line-height: 1;
+}
 
-  &__word {
-    white-space: nowrap;
-    min-height: 1em; // keeps layout stable while empty, before typing starts
+.khmer-equation-matrix {
+  width: 1215px;
+  height: 450px;
+  display: block;
+}
+
+.khmer-text {
+  font-family: 'Moulpali', 'Khmer OS Muol Light', sans-serif;
+  font-size: 168px;
+  font-weight: bold;
+  user-select: none;
+}
+
+.khmer-text.operator {
+  font-size: 96px;
+  color: #333333;
+}
+
+.blue-text {
+  fill: #0033a0;
+}
+
+.red-text {
+  fill: #e50000;
+}
+
+/* --- Step 1: Slowed-Down Base Reveals --- */
+.entry-word1, .entry-op1, .entry-word2, .entry-op2 {
+  opacity: 0;
+  animation: revealElement 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.entry-word1 {
+  animation-delay: 0.4s;
+}
+
+.entry-op1 {
+  animation-delay: 1.4s;
+}
+
+.entry-word2 {
+  animation-delay: 2.4s;
+}
+
+.entry-op2 {
+  animation-delay: 3.4s;
+}
+
+@keyframes revealElement {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
   }
 
-  &__operator {
-    opacity: 0.6;
-    padding: 0 0.15em;
-  }
-
-  &__result {
-    position: relative;
-    display: inline-block;
-    min-width: 1.2em;
-    text-align: center;
-  }
-
-  &__placeholder {
+  to {
     opacity: 1;
-    transition: opacity 0.5s ease;
-  }
-
-  &__combined {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    color: var(--equation-final-color);
-    transform: scale(0.6);
-  }
-
-  &.is-combined &__placeholder {
-    opacity: 0;
-  }
-
-  &.is-combined &__combined {
-    animation: equation-land 1.6s ease forwards;
+    transform: translateY(0);
   }
 }
 
-// used for both the permanent colored overlay placed over ខ/ម once typed,
-// and the transient clone that arcs away from it during the flight phase
-.equation-flyer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  font-family: Moulpali, "Khmer OS", "Noto Sans Khmer", sans-serif;
-  line-height: 1;
-  will-change: transform, opacity;
-  z-index: 20;
+/* --- Step 2: Continuous Cinematic Holding & Spring Landing Animations --- */
+
+/* 'ខ' Flightpath Track */
+.flying-char-ka {
+  opacity: 0;
+  transform: translate(0, 0);
+  animation: glideAndSnapKa 5.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  animation-delay: 4.4s;
 }
 
-.equation-spark {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff8dc 0%, var(--equation-final-color) 55%, transparent 75%);
-  pointer-events: none;
-  z-index: 25;
-  will-change: transform, opacity;
+/* 'ម' Flightpath Track */
+.flying-char-mo {
+  opacity: 0;
+  transform: translate(0, 0);
+  animation: glideAndSnapMo 5.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  animation-delay: 4.4s;
 }
 
-@keyframes equation-land {
+@keyframes glideAndSnapKa {
+  /* 1. START STATE: Invisible and Blue (#0033a0) */
   0% {
     opacity: 0;
-    transform: scale(0.6);
+    fill: #0033a0;
+    transform: translate(0, 0);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1);
   }
-  30% {
+  /* 2. LAUNCH: Smoothly turns fully Red (#e50000) by the time it lifts into the lane */
+  15% {
     opacity: 1;
-    transform: scale(1.4);
+    fill: #e50000;
+    transform: translate(0, -200px);
+    animation-timing-function: ease-in-out;
   }
-  50% {
-    transform: scale(0.92);
+  /* Holds steady in the upper row lane (~1s pause at 5.5s total duration) */
+  45%, 63% {
+    transform: translate(840px, -200px);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
   }
-  70% {
-    transform: scale(1.08);
+  /* Drops past center down to bounce point, squashed on impact */
+  84% {
+    transform: translate(840px, 110px) scale(1.12, 0.85);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+  /* Rebound stretch */
+  88% {
+    transform: translate(840px, -15px) scale(0.95, 1.08);
+    opacity: 1;
+    fill: #e50000;
+  }
+  /* Settles into position */
+  92% {
+    transform: translate(840px, 0) scale(1, 1);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: ease-out;
+  }
+  /* Fades out seamlessly at the end */
   100% {
-    opacity: 1;
-    transform: scale(1);
+    transform: translate(840px, 0) scale(1, 1);
+    opacity: 0;
+    fill: #e50000;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .equation {
-    --equation-flight-duration: 0.3s;
+@keyframes glideAndSnapMo {
+  /* 1. START STATE: Invisible and Blue (#0033a0) */
+  0% {
+    opacity: 0;
+    fill: #0033a0;
+    transform: translate(0, 0);
+    animation-timing-function: cubic-bezier(0.45, 0, 0.4, 1);
   }
-  .equation__combined {
-    animation-duration: 0.4s !important;
+  /* 2. LAUNCH: Smoothly turns fully Red (#e50000) by the time it drops into the lane */
+  15% {
+    opacity: 1;
+    fill: #e50000;
+    transform: translate(0, 200px);
+    animation-timing-function: ease-in-out;
   }
-  .equation-spark {
-    display: none;
+  /* Holds steady in the lower row lane (~1s pause at 5.5s total duration) */
+  45%, 63% {
+    transform: translate(597px, 200px);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  }
+  /* Rises past center up to bounce point, squashed on impact */
+  84% {
+    transform: translate(597px, -110px) scale(1.12, 0.85);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  /* Rebound stretch */
+  88% {
+    transform: translate(597px, 15px) scale(0.95, 1.08);
+    opacity: 1;
+    fill: #e50000;
+  }
+  /* Settles into position */
+  92% {
+    transform: translate(597px, 0) scale(1, 1);
+    opacity: 1;
+    fill: #e50000;
+    animation-timing-function: ease-out;
+  }
+  /* Fades out seamlessly at the end */
+  100% {
+    transform: translate(597px, 0) scale(1, 1);
+    opacity: 0;
+    fill: #e50000;
+  }
+}
+
+
+/* --- Step 3: Sparkle, Pulse & Scale Lock Sequence (Stops after 3 times) --- */
+.sparkling-result {
+  opacity: 0;
+  transform-origin: 1092px 220px;
+  animation: finalLock 0.5s ease-out forwards, sparklePulse 1.8s ease-in-out 1 forwards;
+  animation-delay: 9.6s, 10.1s;
+}
+
+@keyframes finalLock {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sparklePulse {
+  0% {
+    transform: scale(1);
+    filter: url(#sparkle-engine) brightness(1);
+    animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  35% {
+    transform: scale(1.15);
+    filter: url(#sparkle-engine) brightness(1.4) drop-shadow(0 0 12px rgba(229,0,0,0.6));
+    animation-timing-function: ease-in-out;
+  }
+
+  70% {
+    transform: scale(0.92);
+    filter: url(#sparkle-engine) brightness(0.9);
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+.flying-char-ka,
+.flying-char-mo,
+.sparkling-result,
+.final-red-source {
+  will-change: transform, opacity, filter;
+}
+
+/* --- Synchronized Red Reveal on Source Words --- */
+.final-red-source {
+  opacity: 0;
+  /* Fades in AND dips down then settles back up, right as the flight characters land */
+  animation: revealSourceRed 0.6s ease-out forwards;
+  animation-delay: 9.6s;
+}
+
+@keyframes revealSourceRed {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  45% {
+    opacity: 1;
+    transform: translateY(16px);
+  }
+
+  75% {
+    transform: translateY(-6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
