@@ -1,66 +1,89 @@
-<div id="banner" class="fade-in-out m-0 p-0 text-white angkor">
-    <div class="top-left" style="font-size:150%">
-        <span style="font-family: Moulpali;">ប្រាសាទបាយ័ន</span><br />
-        Bayon Temple,<br />Siem Reap Province,<br />Cambodia
-    </div>
-    <div class="calendar-row top-right">
-        <div class="calendar card bg-light">
-            <div class="card-header">{{ now() | timezoneDate:localTimeZone:{ weekday: 'long' } }}</div>
-            <div class="card-body text-primary">
-                <div id="dayNumber" style="font-size:15px">
-                    {{ now() | timezoneDate:localTimeZone:{ day: 'numeric' }:true }}
-                </div>
-                <div id="time" style="font-size:15px; display:inline-block">
-                    {{ now() | timezoneDate:localTimeZone:{ hour: '2-digit', minute: '2-digit', second: '2-digit' } }}
-                </div>
-            </div>
-            <div class="card-footer">{{ now() | timezoneDate:localTimeZone:{ month: 'long' } }}</div>
+<div id="banner" class="fade-in-out m-0 p-0 text-white angkor d-flex flex-column justify-content-between p-3 p-md-4 p-lg-5">
+
+    <!-- Banner Top Layout: Stacks on mobile, splits left/right on medium screens up -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start w-100 gap-3">
+
+        <!-- Left Side Information -->
+        <!-- Banner Text Box: Bright photo background, text protected by a clean shadow blur -->
+        <div class="banner-text" style="text-shadow: 1px 2px 8px rgba(0, 0, 0, 0.9), 0 0 2px rgba(0, 0, 0, 0.9);">
+            <h2 style="font-family: 'Moulpali';" class="fs-3 m-0 mb-2">ប្រាសាទបាយ័ន</h2>
+            <p class="fs-5 m-0 lh-sm text-end">
+                Bayon Temple,<br />
+                Siem Reap Province,<br />
+                Cambodia
+            </p>
         </div>
 
-        <div class="calendar card bg-light" style="font-family: Moulpali;">
-            <div class="card-header calendar-header">
-                <span class="header-icon">
-                    <mat-icon [svgIcon]="langData[langSelected].icon"></mat-icon>
-                </span>
-                <span class="header-text">
-                    ថ្ងៃ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ weekday: 'long' }:false:'km-KH' }}
-                </span>
-            </div>
-            <div class="card-body text-primary">
-                <div id="dayNumber" style="font-size:15px">
-                    ទី {{ now() | timezoneDate:'Asia/Phnom_Penh':{ day: 'numeric' }:false:'km-KH' }}
+
+        <!-- Right Side Calendars -->
+        <div class="calendar-row d-flex flex-wrap gap-2 gap-md-3">
+            <!-- English Calendar Card -->
+            <div class="calendar card bg-light shadow-sm">
+                <div class="card-header small py-1 text-center fw-bold">{{ now() | timezoneDate:localTimeZone:{ weekday: 'long' } }}</div>
+                <div class="card-body text-primary p-2 text-center">
+                    <div id="dayNumber" class="fs-4 fw-bold">
+                        {{ now() | timezoneDate:localTimeZone:{ day: 'numeric' }:true }}
+                    </div>
+                    <div id="time" class="small fw-semibold">
+                        {{ now() | timezoneDate:localTimeZone:{ hour: '2-digit', minute: '2-digit', second: '2-digit' } }}
+                    </div>
                 </div>
-                <div id="time" style="font-size:18px; display:inline-block">
-                    ម៉ោង {{ now() | timezoneDate:'Asia/Phnom_Penh':{ hour: '2-digit', minute: '2-digit', second: '2-digit' }:false:'km-KH' }}
+                <div class="card-footer small py-1 text-center">{{ now() | timezoneDate:localTimeZone:{ month: 'long' } }}</div>
+            </div>
+
+            <!-- Khmer Calendar Card (Updated for absolute stability) -->
+            <div class="calendar card bg-light shadow-sm" style="font-family: 'Moulpali'; width: 190px;">
+
+                <!-- Header: Locked in space -->
+                <div class="card-header calendar-header small py-1 text-center fw-bold text-nowrap justify-content-center">
+                    <span class="header-icon">
+                        <mat-icon [svgIcon]="langData[langSelected].icon"></mat-icon>
+                    </span>
+                    <span class="header-text">
+                        ថ្ងៃ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ weekday: 'long' }:false:'km-KH' }}
+                    </span>
+                </div>
+
+                <!-- Body: Day text is still, time clock ticks independently -->
+                <div class="card-body text-primary p-2 text-center d-flex flex-column justify-content-center align-items-center">
+                    <div id="dayNumber" class="fs-5 fw-bold text-nowrap">
+                        ទី {{ now() | timezoneDate:'Asia/Phnom_Penh':{ day: 'numeric' }:false:'km-KH' }}
+                    </div>
+                    <!-- Only this ticking layout section varies in size, but the outer card stays completely rigid -->
+                    <div id="time" class="small fw-semibold text-nowrap d-inline-block">
+                        ម៉ោង {{ now() | timezoneDate:'Asia/Phnom_Penh':{ hour: '2-digit', minute: '2-digit', second: '2-digit' }:false:'km-KH' }}
+                    </div>
+                </div>
+
+                <!-- Footer: Locked in space -->
+                <div class="card-footer small py-1 text-center text-nowrap">
+                    ខែ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ month: 'long' }:false:'km-KH' }}
                 </div>
             </div>
-            <div class="card-footer">ខែ {{ now() | timezoneDate:'Asia/Phnom_Penh':{ month: 'long' }:false:'km-KH' }}</div>
         </div>
     </div>
 </div>
 
 <!-- ============================= -->
-<div class="container-fluid mt-1">
-    <h1 class="text-center text-primary">Phou Family Website</h1>
-    <div class="row">
+<div class="container-fluid my-4">
+    <h1 class="text-center text-primary mb-4 fw-bold">Phou Family Website</h1>
+
+    <div class="row g-3">
         @for (record of items; track record) {
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2 px-2 mb-1 grid-item-stagger-slow">
-            <div class="row">
-                <div class="col">
-                    <div class="card fade-in-out">
-                        <img src="{{ record }}" style="cursor: pointer" class="card-img-top img-fluid" alt="recordname">
-                    </div>
-                </div>
+        <!-- Fixed column wrapper, removed internal nested row element -->
+        <div class="col-6 col-md-4 col-lg-3 col-xl-2 grid-item-stagger-slow">
+            <div class="card h-100 shadow-sm border-0 fade-in-out">
+                <img [src]="record" style="cursor: pointer" class="card-img-top img-fluid" alt="recordname">
             </div>
         </div>
         }
     </div>
 </div>
+
 <div>
-    @defer (on  viewport) {
+    @defer (on viewport) {
     <app-todo-list></app-todo-list>
     } @placeholder {
-    <div>loading todo list ...</div>
+    <div class="text-center my-3 text-muted">loading todo list ...</div>
     }
 </div>
-
