@@ -1,0 +1,148 @@
+> Building...
+√ Building...
+Application bundle generation failed. [6.889 seconds] - 2026-09-02T07:45:10.311Z
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8109: NG8109: folderName is a function and should be invoked: folderName()}. Find more at https://v22.angular.dev/extended-diagnostics/NG8109[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:2:76:
+[37m      2 │ ...t-primary"><i class="bi bi-folder2-open"></i> {{ [32mfolderName[37m }}</h3>
+        ╵                                                     [32m~~~~~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8117: NG8117: Function in text interpolation should be invoked: folderName(). Find more at https://v22.angular.dev/extended-diagnostics/NG8117[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:2:76:
+[37m      2 │ ...t-primary"><i class="bi bi-folder2-open"></i> {{ [32mfolderName[37m }}</h3>
+        ╵                                                     [32m~~~~~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8109: NG8109: showDownArrow is a function and should be invoked: showDownArrow()}. Find more at https://v22.angular.dev/extended-diagnostics/NG8109[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:24:49:
+[37m      24 │   <div class="scroll-indicator" [class.hidden]="![32mshowDownArrow[37m">
+         ╵                                                  [32m~~~~~~~~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8109: NG8109: showModal is a function and should be invoked: showModal()}. Find more at https://v22.angular.dev/extended-diagnostics/NG8109[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:39:5:
+[37m      39 │ @if ([32mshowModal[37m) {
+         ╵      [32m~~~~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8109: NG8109: showModal is a function and should be invoked: showModal()}. Find more at https://v22.angular.dev/extended-diagnostics/NG8109[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:41:19:
+[37m      41 │      [class.show]="[32mshowModal[37m"
+         ╵                    [32m~~~~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8109: NG8109: images is a function and should be invoked: images(). Find more at https://v22.angular.dev/extended-diagnostics/NG8109[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:59:39:
+[37m      59 │       {{ currentImageIndex + 1 }} / {{ [32mimages[37m.length }}
+         ╵                                        [32m~~~~~~[0m
+
+  Warning occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2488: Type 'InputSignal<any[]>' must have a '[Symbol.iterator]()' method that returns an iterator.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:6:19:
+[37m      6 │     @for (image of [32mimages[37m; track image; let i = $index) {
+        ╵                    [32m~~~~~~[0m
+
+  Error occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS7053: Element implicitly has an 'any' type because expression of type 'number' can't be used to index type 'WritableSignal<Record<number, boolean>>'.
+  No index signature with a parameter of type 'number' was found on type 'WritableSignal<Record<number, boolean>>'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:9:28:
+[37m      9 │            [class.visible]="[32mvisibleImages[i][37m"
+        ╵                             [32m~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:39:5:
+[37m      39 │ @if ([32mshowModal[37m) {
+         ╵      [32m~~~~~~~~~[0m
+
+  Error occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2538: Type 'WritableSignal<number>' cannot be used as an index type.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:51:38:
+[37m      51 │ ...]="fileFolder + images[[32mcurrentImageIndex[37m].title | safe: 'resour...
+         ╵                           [32m~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2365: Operator '+' cannot be applied to types 'WritableSignal<number>' and 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/photo-gallery/photo-gallery.html:59:9:
+[37m      59 │       {{ [32mcurrentImageIndex + 1[37m }} / {{ images.length }}
+         ╵          [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component PhotoGallery.
+
+    src/app/shared/photo-gallery/photo-gallery.ts:11:15:
+[37m      11 │   templateUrl: [32m'./photo-gallery.html'[37m,
+         ╵                [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+

@@ -1,14 +1,21 @@
 <div class="container-fluid mt-1">
-  <h3 class="text-start text-primary"><i class="bi bi-folder2-open"></i> {{ folderName }}</h3>
-  <!-- Gallery -->
-  @if (!isLoading && images.length > 0) {
+  <h3 class="text-start text-primary">
+    <i class="bi bi-folder2-open"></i> {{ folderName() }}
+  </h3>
+
+  <!-- Gallery Grid Frame -->
+  @if (!isLoading() && images().length > 0) {
   <div class="row g-4" id="gallery-container">
-    @for (image of images; track image; let i = $index) {
+    @for (image of images(); track image.title; let i = $index) {
     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-      <div class="gallery-item"
-           [class.visible]="visibleImages[i]"
+      <!-- #galleryItem links this DOM node directly to our TS scroll engine -->
+      <div #galleryItem
+           [attr.data-index]="i"
+           class="gallery-item"
+           [class.visible]="visibleImages()[i]"
            (click)="openModal(i)">
-        <img [src]="fileFolder + image.title | safe: 'resourceUrl'"
+
+        <img [src]="fileFolder() + image.title | safe: 'resourceUrl'"
              [alt]="image.title"
              class="img-fluid gallery-image"
              loading="lazy">
@@ -21,43 +28,47 @@
   </div>
 
   <!-- Down arrow indicator -->
-  <div class="scroll-indicator" [class.hidden]="!showDownArrow">
+  <div class="scroll-indicator" [class.hidden]="!showDownArrow()">
     <i class="bi bi-chevron-down"></i>
     <span>More images</span>
   </div>
   }
 
   <!-- No images state -->
-  @if (!isLoading && images.length === 0) {
+  @if (!isLoading() && images().length === 0) {
   <div class="text-center p-5">
     <p>No images found.</p>
   </div>
   }
 </div>
 
-<!-- Modal -->
-@if (showModal) {
-<div class="modal-backdrop"
-     [class.show]="showModal"
-     (click)="closeModal()">
+<!-- Lightbox Modal Container -->
+@if (showModal()) {
+<div class="modal-backdrop" [class.show]="showModal()" (click)="closeModal()">
   <div class="modal-container" (click)="$event.stopPropagation()">
+
     <button class="modal-close" (click)="closeModal()">
       <i class="bi bi-x-lg"></i>
     </button>
+
     <button class="modal-nav modal-prev" (click)="previousImage()">
       <i class="bi bi-chevron-left"></i>
     </button>
+
     <div class="modal-image-container">
-      <img [src]="fileFolder + images[currentImageIndex].title | safe: 'resourceUrl'"
-           [alt]=""
+      <img [src]="fileFolder() + currentPhoto().title | safe: 'resourceUrl'"
+           [alt]="currentPhoto().title"
            class="modal-image img-fluid">
     </div>
+
     <button class="modal-nav modal-next" (click)="nextImage()">
       <i class="bi bi-chevron-right"></i>
     </button>
+
     <div class="modal-counter">
-      {{ currentImageIndex + 1 }} / {{ images.length }}
+      {{ currentImageIndex() + 1 }} / {{ images().length }}
     </div>
+
   </div>
 </div>
-  }
+}

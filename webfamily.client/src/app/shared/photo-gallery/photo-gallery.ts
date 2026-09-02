@@ -1,96 +1,119 @@
-import { Component, HostListener, Input, OnInit, effect, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component, HostListener, Input, OnInit, signal, computed,
+  ChangeDetectionStrategy, ElementRef, ViewChildren, QueryList, AfterViewInit, input, effect
+} from '@angular/core';
 import { SafePipe } from '../../shared/pipes/safe.pipe';
 
 @Component({
   selector: 'app-photo-gallery',
+  standalone: true,
   imports: [SafePipe],
   templateUrl: './photo-gallery.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './photo-gallery.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PhotoGallery implements OnInit {
-  @Input() images: any[] = [];
-  @Input() fileFolder: string = '';
-  @Input() folderName: string = '';
-  @Input() isLoading: boolean = false;
+export class PhotoGallery implements AfterViewInit {
+  // Component inputs transformed into modern Signals
+  readonly images = input<any[]>([]);
+  readonly fileFolder = input<string>('');
+  readonly folderName = input<string>('');
+  readonly isLoading = input<boolean>(false);
 
-  showDownArrow = true;
-  showModal = false;
-  currentImageIndex = 0;
-  visibleImages: boolean[] = [];
+  // Component UI State tracking
+  readonly showDownArrow = signal(true);
+  readonly showModal = signal(false);
+  readonly currentImageIndex = signal(0);
+  readonly visibleImages = signal<Record<number, boolean>>({});
 
-  @HostListener('window:scroll')
-  onWindowScroll(event?: Event) {
-    this.checkVisibility();
-  }
+  // Query DOM elements natively through Angular template hooks
+  @ViewChildren('galleryItem') galleryItems!: QueryList<ElementRef>;
+
+  // Dynamically computed current active modal asset
+  readonly currentPhoto = computed(() => this.images()[this.currentImageIndex()]);
+
+  private observer!: IntersectionObserver;
 
   constructor() {
-    // Watch for changes in images array to reset visibility
+    // Automatically re-bind scroll animations the exact millisecond server data refreshes
     effect(() => {
-      if (this.images.length > 0) {
-        this.visibleImages = new Array(this.images.length).fill(false);
-        // Small delay to ensure DOM is updated
+      const currentImages = this.images();
+      if (currentImages && currentImages.length > 0) {
         setTimeout(() => {
-          this.checkVisibility();
+          if (this.galleryItems) {
+            this.observeElements();
+          }
         }, 50);
       }
     });
   }
 
-  public ngOnInit(): void {
-    setTimeout(() => {
-      this.checkVisibility();
-    }, 100);
+  ngAfterViewInit() {
+    this.setupIntersectionObserver();
   }
 
-  checkVisibility() {
-    const imageElements = document.querySelectorAll('.gallery-item');
-    if (imageElements.length === 0) {
-      // If elements aren't ready yet, try again
-      setTimeout(() => this.checkVisibility(), 50);
-      return;
-    }
+  private setupIntersectionObserver() {
+    // 5% viewport threshold with a bottom margin so images animate right BEFORE entering view
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = Number((entry.target as HTMLElement).dataset['index']);
 
-    imageElements.forEach((element, index) => {
-      const rect = element.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      // Make images visible if they're within 80% of viewport or already visible
-      if (rect.top <= windowHeight * 0.8) {
-        setTimeout(() => {
-          this.visibleImages[index] = true;
-        }, index * 100);
-      }
-    });
+          // Progressive staggered entry delay timing
+          setTimeout(() => {
+            this.visibleImages.update(prev => ({ ...prev, [index]: true }));
+          }, index * 30);
 
-    // Check if we should show the down arrow
-    if (imageElements.length > 0) {
-      const lastImage = imageElements[imageElements.length - 1];
-      const lastImageRect = lastImage.getBoundingClientRect();
-      // Hide arrow when last image is close to being visible
-      this.showDownArrow = lastImageRect.top > window.innerHeight * 1.2;
-    }
+          this.observer.unobserve(entry.target); // Stop tracking once visible
+        }
+      });
+
+      this.checkArrowVisibility();
+    }, { threshold: 0.05, rootMargin: '0px 0px 15% 0px' });
+
+    // Handle template changes if images array grows dynamically
+    this.galleryItems.changes.subscribe(() => this.observeElements());
+    this.observeElements();
+  }
+
+  private observeElements() {
+    if (!this.observer || !this.galleryItems) return;
+    this.galleryItems.forEach((ref) => this.observer.observe(ref.nativeElement));
+  }
+
+  private checkArrowVisibility() {
+    if (!this.galleryItems || this.galleryItems.length === 0) return;
+    const itemsArray = this.galleryItems.toArray();
+    const lastItemRect = itemsArray[itemsArray.length - 1].nativeElement.getBoundingClientRect();
+    this.showDownArrow.set(lastItemRect.top > window.innerHeight * 1.2);
   }
 
   openModal(index: number) {
-    this.currentImageIndex = index;
-    this.showModal = true;
+    this.currentImageIndex.set(index);
+    this.showModal.set(true);
     document.body.style.overflow = 'hidden';
   }
 
   closeModal() {
-    this.showModal = false;
+    this.showModal.set(false);
     document.body.style.overflow = 'auto';
   }
 
   previousImage() {
-    this.currentImageIndex = this.currentImageIndex > 0
-      ? this.currentImageIndex - 1
-      : this.images.length - 1;
+    const total = this.images().length;
+    this.currentImageIndex.update(idx => (idx > 0 ? idx - 1 : total - 1));
   }
 
   nextImage() {
-    this.currentImageIndex = this.currentImageIndex < this.images.length - 1
-      ? this.currentImageIndex + 1
-      : 0;
+    const total = this.images().length;
+    this.currentImageIndex.update(idx => (idx < total - 1 ? idx + 1 : 0));
+  }
+
+  // Keyboard desktop accessibility navigation
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (!this.showModal()) return;
+    if (event.key === 'ArrowRight') this.nextImage();
+    if (event.key === 'ArrowLeft') this.previousImage();
+    if (event.key === 'Escape') this.closeModal();
   }
 }
