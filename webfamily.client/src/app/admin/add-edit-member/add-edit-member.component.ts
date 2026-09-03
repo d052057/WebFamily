@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AdminService } from '../admin.service';
 import { SharedService } from '../../shared/shared.service';
@@ -22,18 +22,18 @@ export class AddEditMemberComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
 
   memberForm: FormGroup = new FormGroup({});
-  formInitialized = false;
-  addNew = true;
-  submitted = false;
-  errorMessages: string[] = [];
-  applicationRoles: string[] = [];
-  existingMemberRoles: string[] = [];
+  formInitialized = signal(false);
+  addNew = signal(true);
+  submitted = signal(false);
+  errorMessages = signal<string[]>([]);
+  applicationRoles = signal<string[]>([]);
+  existingMemberRoles = signal<string[]>([]);
 
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id) {
-      this.addNew = false; // this means we are editing a member
+      this.addNew.set(false); // this means we are editing a member
       this.getMember(id);
     } else {
       this.initializeForm(undefined);
@@ -52,7 +52,7 @@ export class AddEditMemberComponent implements OnInit {
 
   getRoles() {
     this.adminService.getApplicationRoles().subscribe({
-      next: roles => this.applicationRoles = roles
+      next: roles => this.applicationRoles.set(roles)
     });
   }
 
@@ -68,7 +68,7 @@ export class AddEditMemberComponent implements OnInit {
         roles: [member.roles, Validators.required]
       });
 
-      this.existingMemberRoles = member.roles.split(',');
+      this.existingMemberRoles.set(member.roles.split(','));
     } else {
       // form for creating a member
       this.memberForm = this.formBuilder.group({
@@ -81,11 +81,11 @@ export class AddEditMemberComponent implements OnInit {
       });
     }
 
-    this.formInitialized = true;
+    this.formInitialized.set(true);
   }
 
   passwordOnChange() {
-    if (this.addNew == false) {
+    if (this.addNew() == false) {
       if (this.memberForm.get('password')?.value) {
         this.memberForm.controls['password'].setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(15)]);
       } else {
@@ -106,11 +106,12 @@ export class AddEditMemberComponent implements OnInit {
     }
 
     this.memberForm.controls['roles'].setValue(roles.join(','));
+    this.existingMemberRoles.set(roles);
   }
 
   submit() {
-    this.submitted = true;
-    this.errorMessages = [];
+    this.submitted.set(true);
+    this.errorMessages.set([]);
 
 
     if (this.memberForm.valid) {
@@ -121,9 +122,9 @@ export class AddEditMemberComponent implements OnInit {
         },
         error: error => {
           if (error.error.errors) {
-            this.errorMessages = error.error.errors;
+            this.errorMessages.set(error.error.errors);
           } else {
-            this.errorMessages.push(error.error);
+            this.errorMessages.update(list => [...list, error.error]);
           }
         }
       })
