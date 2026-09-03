@@ -14,7 +14,6 @@ const PROXY_CONFIG = [
       "/api",
       "/medias",
       "/media-files", 
-      "/Todo",
       "/MediaMetaData",
       "/Rpm",
       "/Pdf",

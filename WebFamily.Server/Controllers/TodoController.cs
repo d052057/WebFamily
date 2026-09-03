@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 
 namespace WebFamily.Server.Controllers
 {
-    [Route("[controller]")]
+    [Authorize(Policy = "AdminPolicy")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TodoController : ControllerBase
     {
@@ -13,6 +15,8 @@ namespace WebFamily.Server.Controllers
         {
             _todoServices = todoServices;
         }
+
+        [AllowAnonymous]
         [HttpGet("GetTodoList")]
         public async Task<IEnumerable<TodoList>> GetTodoList()
         {
