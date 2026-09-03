@@ -13,13 +13,13 @@
         </tr>
       </thead>
       <tbody>
-        @if (members.length === 0) {
+        @if (members().length === 0) {
           <tr>
             <td colspan="7" class="text-center">No Members</td>
           </tr>
         }
 
-        @for (member of members; track member) {
+        @for (member of members(); track member.id) {
           <tr>
             <td>{{member.userName}}</td>
             <td>{{member.firstName | titlecase}}</td>

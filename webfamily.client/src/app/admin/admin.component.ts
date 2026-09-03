@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, TemplateRef, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, TemplateRef, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { AdminService } from './admin.service';
 import { SharedService } from '../shared/shared.service';
 import { MemberView } from '../shared/models/admin/memberView';
@@ -19,13 +19,13 @@ export class AdminComponent implements OnInit {
   private sharedService = inject(SharedService);
   private modalService = inject(BsModalService);
 
-  members: MemberView[] = [];
+  members = signal<MemberView[]>([]);
   memberToDelete: MemberView | undefined;
   modalRef?: BsModalRef;
 
   ngOnInit(): void {
     this.adminService.getMembers().subscribe({
-      next: members => this.members = members
+      next: members => this.members.set(members)
     });
   }
   constructor() {
@@ -60,7 +60,7 @@ export class AdminComponent implements OnInit {
       this.adminService.deleteMember(this.memberToDelete.id).subscribe({
         next: _ => {
           this.sharedService.showNotification(true, 'Deleted', `Member of ${this.memberToDelete?.userName} has been deleted!`);
-          this.members = this.members.filter(x => x.id !== this.memberToDelete?.id);
+          this.members.update(list => list.filter(x => x.id !== this.memberToDelete?.id));
           this.memberToDelete = undefined;
           this.modalRef?.hide();
         }
@@ -77,7 +77,9 @@ export class AdminComponent implements OnInit {
     let member = this.findMember(id);
 
     if (member) {
-      member.isLocked = !member.isLocked;
+      this.members.update(list =>
+        list.map(m => m.id === id ? { ...m, isLocked: !m.isLocked } : m)
+      );
 
       if (locking) { 
         this.sharedService.showNotification(true, 'Locked', `${member.userName} member has been locked`);
@@ -88,7 +90,7 @@ export class AdminComponent implements OnInit {
   }
 
   private findMember(id: string): MemberView | undefined {
-    let member = this.members.find(x => x.id === id);
+    let member = this.members().find(x => x.id === id);
     if (member) {
       return member;
     }
