@@ -5,7 +5,6 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { AddEditMemberComponent } from './add-edit-member/add-edit-member.component';
 import { SharedModule } from '../shared/shared.module';
 import { SeoAdminComponent } from './seo-admin/seo-admin.component';
-import { TodoComponent } from './todo-maint/todo.component';
 
 
 @NgModule({
@@ -15,8 +14,7 @@ import { TodoComponent } from './todo-maint/todo.component';
         SharedModule,
         AdminComponent,
         AddEditMemberComponent,
-        SeoAdminComponent,
-        TodoComponent
+        SeoAdminComponent
     ]
 })
 export class AdminModule { }

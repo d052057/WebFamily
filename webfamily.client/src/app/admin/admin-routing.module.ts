@@ -4,7 +4,6 @@ import { AdminComponent } from './admin.component';
 import { AdminGuard } from '../shared/guards/admin.guard';
 import { AddEditMemberComponent } from './add-edit-member/add-edit-member.component';
 import { SeoAdminComponent } from './seo-admin/seo-admin.component';
-import { TodoComponent } from './todo-maint/todo.component';
 const routes: Routes = [
   {
     path: '',
@@ -17,8 +16,6 @@ const routes: Routes = [
       { path: 'add-edit-member', component: AddEditMemberComponent},
       // path for editing an existing member
       { path: 'add-edit-member/:id', component: AddEditMemberComponent},
-      // path for managing todo entries (moved here from the public /todo route)
-      { path: 'todo-maint', component: TodoComponent },
     ]
   },
 ]
