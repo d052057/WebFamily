@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, LOCALE_ID, OnInit, inject, signal }
 import { AbstractControlOptions, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { SnackService } from '../../shared/services/snack.service';
-import { TodoService } from '../services/todo.service';
+import { TodoService } from '../../todo/services/todo.service';
 import { formatDate } from '@angular/common';
 
 import { MatIconModule } from '@angular/material/icon';
