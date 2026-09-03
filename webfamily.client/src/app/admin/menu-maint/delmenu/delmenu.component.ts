@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControlOptions, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { SnackService } from '../../shared/services/snack.service';
-//import { MediaService } from '../../shared/services/media.service';
-import { MenuService } from '../../shared/services/menu.service';
+import { SnackService } from '../../../shared/services/snack.service';
+//import { MediaService } from '../../../shared/services/media.service';
+import { MenuService } from '../../../shared/services/menu.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -79,4 +79,3 @@ export class DelmenuComponent implements OnInit {
     }
   }
 }
-

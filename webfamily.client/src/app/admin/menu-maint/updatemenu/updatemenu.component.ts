@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
-import { MediaService } from '../../shared/services/media.service';
+import { MediaService } from '../../../shared/services/media.service';
 import { finalize, first } from 'rxjs';
-import { MenuService } from '../../shared/services/menu.service';
+import { MenuService } from '../../../shared/services/menu.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-updatemenu',

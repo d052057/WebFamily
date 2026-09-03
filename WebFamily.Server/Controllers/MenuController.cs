@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
@@ -9,6 +10,7 @@ namespace WebFamily.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "AdminPolicy")]
     public class MenuController : ControllerBase
     {
         private readonly ILogger<MenuController> _logger;
@@ -28,6 +30,7 @@ namespace WebFamily.Server.Controllers
             _updateDataBaseServices = updateDataBaseServices ?? throw new ArgumentNullException(nameof(updateDataBaseServices));
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetAllMenus()
         {
@@ -35,6 +38,7 @@ namespace WebFamily.Server.Controllers
             return Ok(menus);
         }
 
+        [AllowAnonymous]
         [HttpGet("{menuId}")]
         public IActionResult GetMenu(string menuId)
         {
@@ -47,6 +51,7 @@ namespace WebFamily.Server.Controllers
             return Ok(menu);
         }
 
+        [AllowAnonymous]
         [HttpGet("{menuId}/items")]
         public IActionResult GetMenuItems(string menuId)
         {
@@ -54,6 +59,7 @@ namespace WebFamily.Server.Controllers
             return Ok(items);
         }
 
+        [AllowAnonymous]
         [HttpGet("{menuId}/version")]
         public IActionResult GetMenuVersion(string menuId)
         {

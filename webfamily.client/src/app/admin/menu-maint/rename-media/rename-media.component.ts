@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { SnackService } from '../../shared/services/snack.service';
-import { MenuService } from '../../shared/services/menu.service';
+import { SnackService } from '../../../shared/services/snack.service';
+import { MenuService } from '../../../shared/services/menu.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { languages } from '../../../app/models/languages';
+import { languages } from '../../../models/languages';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Subject } from 'rxjs';
-import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
+import { VoiceDirective } from '../../../shared/directives/voice.directive';
 
 @Component({
   selector: 'app-rename-media',

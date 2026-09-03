@@ -3,7 +3,7 @@ import { VideoDuration } from './services/video-duration';
 import { finalize } from 'rxjs';
 
 import { ActivatedRoute } from '@angular/router';
-import { TimeConversionPipe } from '../../shared/pipes/time-conversion.pipe';
+import { TimeConversionPipe } from '../../../shared/pipes/time-conversion.pipe';
 @Component({
     selector: 'app-update-video-duration',
     imports: [TimeConversionPipe],

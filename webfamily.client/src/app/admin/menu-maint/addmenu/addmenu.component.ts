@@ -1,17 +1,17 @@
 ﻿import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { SnackService } from '../../shared/services/snack.service';
-import { MediaService } from '../../shared/services/media.service';
-import { AccountService } from '../../account/account.service';
-import { MenuService } from '../../shared/services/menu.service';
+import { SnackService } from '../../../shared/services/snack.service';
+import { MediaService } from '../../../shared/services/media.service';
+import { AccountService } from '../../../account/account.service';
+import { MenuService } from '../../../shared/services/menu.service';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { languages } from '../../../app/models/languages';
+import { languages } from '../../../models/languages';
 import { Subject } from 'rxjs';
-import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
+import { VoiceDirective } from '../../../shared/directives/voice.directive';
 
 @Component({
   selector: 'app-addmenu',

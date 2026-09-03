@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SnackService } from '../../shared/services/snack.service';
-import { MediaService } from '../../shared/services/media.service';
+import { SnackService } from '../../../shared/services/snack.service';
+import { MediaService } from '../../../shared/services/media.service';
 import { Subject } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -11,10 +11,10 @@ import { RenameMediaComponent } from '../rename-media/rename-media.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { languages } from '../../../app/models/languages';
+import { languages } from '../../../models/languages';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MenuService } from '../../shared/services/menu.service';
-import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
+import { MenuService } from '../../../shared/services/menu.service';
+import { VoiceDirective } from '../../../shared/directives/voice.directive';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 @Component({
   selector: 'app-rename-file-media-list',
@@ -152,71 +152,3 @@ export class RenameFileMediaListComponent implements OnInit, OnDestroy, AfterVie
     this.isUserSpeaking = !this.isUserSpeaking;
   }
 }
-//import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-//import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-//import { Subject } from 'rxjs';
-//import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-//import { MatDialog } from '@angular/material/dialog';
-//import { MatFormFieldModule } from '@angular/material/form-field';
-//import { MatIconModule } from '@angular/material/icon';
-//import { MatSelectModule } from '@angular/material/select';
-//import { MatInputModule } from '@angular/material/input';
-//import { MatPaginatorModule } from '@angular/material/paginator';
-//import { MatPaginator } from '@angular/material/paginator';
-//import { MatSortModule, MatSort } from '@angular/material/sort';
-//import { MenuService } from '../../shared/services/menu.service';
-//import { MediaService } from '../../shared/services/media.service';
-//import { SnackService } from '../../shared/services/snack.service';
-//import { VoiceDirective } from '../../../app/shared/directives/voice.directive';
-//import { languages } from '../../../app/models/languages';
-
-//@Component({
-//  selector: 'app-rename-file-media-list',
-//  standalone: true,
-//  imports: [
-//    VoiceDirective,
-//    FormsModule,
-//    ReactiveFormsModule,
-//    MatTableModule,
-//    MatSortModule,
-//    MatPaginatorModule,
-//    MatFormFieldModule,
-//    MatInputModule,
-//    MatIconModule,
-//    MatSelectModule,
-//  ],
-//  template: `
-//    <table mat-table [dataSource]="dataSource">
-//      <ng-container matColumnDef="title">
-//        <th mat-header-cell *matHeaderCellDef>Title</th>
-//        <td mat-cell *matCellDef="let row">{{ row.title }}</td>
-//      </ng-container>
-//      <tr mat-header-row *matHeaderRowDef="['title']"></tr>
-//      <tr mat-row *matRowDef="let row; columns: ['title'];"></tr>
-//    </table>
-//  `,
-//  changeDetection: ChangeDetectionStrategy.OnPush,
-//})
-//export class RenameFileMediaListComponent implements OnInit, AfterViewInit, OnDestroy {
-//  @ViewChild(MatSort) sort!: MatSort;
-//  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-//  private mediaService = inject(MediaService);
-//  private menuService = inject(MenuService);
-//  private toastr = inject(SnackService);
-//  private _dialog = inject(MatDialog);
-
-//  dataSource = new MatTableDataSource<any>();
-//  searchVal = signal('');
-//  private destroy$ = new Subject<void>();
-
-//  ngOnInit() { }
-//  ngAfterViewInit() {
-//    this.dataSource.sort = this.sort;
-//    this.dataSource.paginator = this.paginator;
-//  }
-//  ngOnDestroy() {
-//    this.destroy$.next();
-//    this.destroy$.complete();
-//  }
-//}

@@ -6,7 +6,6 @@ import { ContactComponent } from './contact/contact.component';
 
 const todoModule = () => import('./todo/todo.module').then(x => x.TodoModule);
 const tubeModule = () => import('./tube/tube.module').then(x => x.TubeModule);
-const menuMaint = () => import('./menu-maint/menu-maint.module').then(routes => routes.MenuMaintModule);
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', loadChildren: () => import('./home/home.module').then(module => module.HomeModule) },
@@ -62,11 +61,6 @@ export const routes: Routes = [
     path: 'tubelink',
     loadComponent: () => import('./tube/tubelink/tubelink.component')
       .then(mod => mod.TubelinkComponent)
-  },
-  {
-    path: 'menumaint',
-    loadChildren: menuMaint
-
   },
   {
     path: 'bootstrap',
