@@ -1,4 +1,7 @@
-﻿using Shell32;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace WebFamily.Server.Helpers;
 
@@ -7,114 +10,84 @@ public interface IMetaDataFileInfo
     List<Models.MetaDataInfo> SingleLevelDir(string folder);
     List<Models.MetaDataInfo> MultipleLevelDir(string folder);
 }
+
 public class MetaDataFileInfo : IMetaDataFileInfo
 {
-    public List<Models.MetaDataInfo> list = new();
+    private readonly MimeType _mimeTypeObj = new();
 
     public List<Models.MetaDataInfo> SingleLevelDir(string folder)
     {
-        Thread thread = new(() =>
+        var list = new List<Models.MetaDataInfo>();
+        if (!Directory.Exists(folder)) return list;
+
+        // Get only files in the immediate directory
+        var files = Directory.GetFiles(folder);
+        var currentFolder = Path.GetFileName(folder.TrimEnd(Path.DirectorySeparatorChar));
+
+        foreach (var filePath in files)
         {
-            GetSingleLevelFiles(folder);
-        });
-
-#pragma warning disable CA1416 // Validate platform compatibility
-        thread.SetApartmentState(ApartmentState.STA);
-#pragma warning restore CA1416 // Validate platform compatibility
-        thread.Start();
-        thread.Join();
-
-        return list;
-    }
-
-    private void GetSingleLevelFiles(string folder)
-    {
-        TimeSpan dur = TimeSpan.Zero;
-
-        list.Clear();
-
-        Shell shell = new();
-        MimeType mimeTypeObj = new();
-        Folder objFolder = shell.NameSpace(folder);
-        var thisFolder = folder.TrimEnd(Path.DirectorySeparatorChar).Split(Path.DirectorySeparatorChar).Last();
-        if (objFolder != null)
-        {
-            foreach (FolderItem2 item in objFolder.Items())
-            {
-                if (!(item.IsFolder || item.IsLink))
-                {
-                    if (item.ExtendedProperty("System.Media.Duration") != null)
-                    {
-                        dur = TimeSpan.FromSeconds(item.ExtendedProperty("System.Media.Duration") / 10000000);
-                    }
-                    else
-                    {
-                        dur = TimeSpan.Zero;
-                    }
-                    Models.MetaDataInfo md = new();
-
-                    md.Duration = dur.Duration();
-                    md.FullFileName = item.ExtendedProperty("name"); // name
-
-                    md.FullPath = thisFolder;
-
-                    md.MimeType = mimeTypeObj.Get(item.Path);
-                    list.Add(md);
-
-                }
-            }
-
+            var md = ProcessFile(filePath, currentFolder);
+            if (md != null) list.Add(md);
         }
 
+        return list;
     }
+
     public List<Models.MetaDataInfo> MultipleLevelDir(string folder)
     {
-        var thread = new Thread(() =>
-        {
-            GetMultipleLevelFiles(folder);
-        });
+        var list = new List<Models.MetaDataInfo>();
+        if (!Directory.Exists(folder)) return list;
 
-#pragma warning disable CA1416 // Validate platform compatibility
-        thread.SetApartmentState(ApartmentState.STA);
-#pragma warning restore CA1416 // Validate platform compatibility
-        thread.Start();
-        thread.Join();
+        // SearchOption.AllDirectories handles recursion natively and cleanly
+        var files = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories);
+
+        foreach (var filePath in files)
+        {
+            var fileFolder = Path.GetDirectoryName(filePath) ?? folder;
+            var md = ProcessFile(filePath, fileFolder);
+            if (md != null) list.Add(md);
+        }
 
         return list;
     }
-    private void GetMultipleLevelFiles(string folder)
-    {
-        Shell shell = new();
-        Folder objFolder = shell.NameSpace(folder);
-        MimeType mimeTypeObj = new();
-        TimeSpan dur = TimeSpan.Zero;
-        foreach (FolderItem2 item in objFolder.Items())
-        {
 
-            if (item.IsFolder)
+    private Models.MetaDataInfo? ProcessFile(string filePath, string folderLocation)
+    {
+        try
+        {
+            // Skip symbolic links/shortcuts if needed
+            var fileInfo = new FileInfo(filePath);
+            if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint)) return null;
+
+            TimeSpan duration = TimeSpan.Zero;
+
+            // Use TagLibSharp to extract the media duration safely
+            try
             {
-                GetMultipleLevelFiles(item.Path);
-            }
-            else
-            {
-                if (!item.IsLink)
+                using var tlFile = TagLib.File.Create(filePath);
+                if (tlFile.Properties != null && tlFile.Properties.Duration != TimeSpan.Zero)
                 {
-                    if (item.ExtendedProperty("System.Media.Duration") != null)
-                    {
-                        dur = TimeSpan.FromSeconds(item.ExtendedProperty("System.Media.Duration") / 10000000);
-                    }
-                    else
-                    {
-                        dur = TimeSpan.Zero;
-                    }
-                    Models.MetaDataInfo md = new();
-                    md.Duration = dur.Duration();
-                    md.FullFileName = item.ExtendedProperty("name");
-                    md.FullPath = folder;
-                    md.MimeType = mimeTypeObj.Get(item.Path);
-                    list.Add(md);
+                    duration = tlFile.Properties.Duration;
                 }
             }
+            catch
+            {
+                // Fallback if the file is not a readable media type (e.g. txt, pdf)
+                duration = TimeSpan.Zero;
+            }
+
+            return new Models.MetaDataInfo
+            {
+                Duration = duration.Duration(),
+                FullFileName = Path.GetFileName(filePath),
+                FullPath = folderLocation,
+                MimeType = _mimeTypeObj.Get(filePath)
+            };
+        }
+        catch
+        {
+            // Prevent one corrupt file from crashing the entire directory sweep
+            return null;
         }
     }
 }
