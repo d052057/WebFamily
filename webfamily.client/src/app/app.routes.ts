@@ -16,7 +16,6 @@ export const routes: Routes = [
     canActivate: [AuthorizationGuard],
     children: [
       { path: 'play', component: PlayComponent },
-      { path: 'soaadmin', loadComponent: () => import('./admin/seo-admin/seo-admin.component').then(mod => mod.SeoAdminComponent) },  
       { path: 'admin', loadChildren: () => import('./admin/admin.module').then(module => module.AdminModule) },
 
     ],

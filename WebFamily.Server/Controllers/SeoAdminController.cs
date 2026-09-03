@@ -7,7 +7,7 @@ namespace WebFamily.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminPolicy")]
     public class SeoAdminController : ControllerBase
     {
         private readonly ISeoService _seoService;
