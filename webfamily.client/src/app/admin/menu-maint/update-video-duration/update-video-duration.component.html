@@ -1,5 +1,5 @@
 <div class="container">
-  <h1 style="text-transform: capitalize">{{ menuFolder }} - Duration Update </h1>
+  <h1 style="text-transform: capitalize">{{ menuFolder() }} - Duration Update </h1>
   <table class="table">
     <thead>
       <tr>
@@ -10,7 +10,7 @@
         <th>Assets</th>
       </tr>
     </thead>
-    @for (record of dataSource; track record) {
+    @for (record of dataSource(); track record) {
     <tbody>
       <tr>
         <td>{{ record.recordId }}</td>
@@ -24,7 +24,7 @@
 
   </table>
   <div>
-    @if (dataSource.length) {
+    @if (dataSource().length) {
     <button class="btn btn-primary" (click)="updateDuration()">Update Duration</button>
     }
   </div>

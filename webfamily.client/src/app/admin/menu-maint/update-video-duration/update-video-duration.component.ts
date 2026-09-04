@@ -1,4 +1,4 @@
-﻿import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { VideoDuration } from './services/video-duration';
 import { finalize } from 'rxjs';
 
@@ -14,20 +14,20 @@ import { TimeConversionPipe } from '../../../shared/pipes/time-conversion.pipe';
 })
 export class UpdateVideoDurationComponent implements OnInit {
   private videoDurationService = inject(VideoDuration);
-  processLoading: boolean = true;
-  dataSource: any[] = [];
-  menuFolder!: string;
+  processLoading = signal(true);
+  dataSource = signal<any[]>([]);
+  menuFolder = signal<string>('');
   private timeConversion = inject(TimeConversionPipe);
   private activatedRoute = inject(ActivatedRoute);
   ngOnInit(): void {
     this.activatedRoute.paramMap
       .subscribe(
         (params: any) => {
-          this.dataSource = [];
-          this.menuFolder = params.get('menu');
-          this.videoDurationService.getMediaView(this.menuFolder)
+          this.dataSource.set([]);
+          this.menuFolder.set(params.get('menu'));
+          this.videoDurationService.getMediaView(this.menuFolder())
             .pipe(finalize(() => {
-              this.processLoading = false;
+              this.processLoading.set(false);
             }))
             .subscribe(
               async (data: any) => {
@@ -40,7 +40,7 @@ export class UpdateVideoDurationComponent implements OnInit {
                     this.getVideoDuration(p, tmp)
                   }
                   data[i] = tmp;
-                  this.dataSource = data;
+                  this.dataSource.set(data);
                 }
               }
             ),
@@ -85,10 +85,10 @@ export class UpdateVideoDurationComponent implements OnInit {
     this.update();
   }
   update(): void {
-    let dataSourceLen: number = this.dataSource.length - 1;
+    let source: any[] = this.dataSource();
+    let dataSourceLen: number = source.length - 1;
     let i: number = 0;
-    let source: any[] = this.dataSource;
-    this.dataSource = [];
+    this.dataSource.set([]);
     for (i = dataSourceLen; i >= 0; i--) {
       let data: any = source.pop();
       data.duration = this.timeConversion.transform(data.duration);
@@ -96,7 +96,7 @@ export class UpdateVideoDurationComponent implements OnInit {
         .subscribe((x: any) => {
           if (x.duration == '00:00:00') {
             x.duration = '';
-            this.dataSource.push(x);
+            this.dataSource.update(list => [...list, x]);
           }
         }
       );

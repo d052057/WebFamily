@@ -3,9 +3,9 @@
     <div class="col-md-6 mb-4">
       <div class="card text-center shadow-lg border-light">
         <div class="card-body">
-          @if (message) {
+          @if (message()) {
             <p class="card-text lead">
-              {{ message }}
+              {{ message() }}
             </p>
           }
           <p class="card-text text-muted mt-3">
