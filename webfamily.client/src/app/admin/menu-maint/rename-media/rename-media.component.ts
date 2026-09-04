@@ -54,7 +54,7 @@ export class RenameMediaComponent implements OnInit, OnDestroy {
       toFile: ['', Validators.required]
     });
     this.folderPath = this.data.mediaPath;
-    this.form.patchValue({ toFile: this.data.title });
+    this.form.patchValue({ toFile: this.getFilenameWithoutExtension(this.data.title) });
   }
 
   ngOnDestroy() {
@@ -85,7 +85,11 @@ export class RenameMediaComponent implements OnInit, OnDestroy {
     this.submitting = false;
     this.submitted = false;
   }
-
+  getFilenameWithoutExtension(filename: string): string {
+    const lastDotIndex = filename.lastIndexOf('.');
+    // If no dot is found, return the original string
+    return lastDotIndex === -1 ? filename : filename.substring(0, lastDotIndex);
+  }
   checkMic(): void {
     this.isUserSpeaking = !this.isUserSpeaking;
   }
