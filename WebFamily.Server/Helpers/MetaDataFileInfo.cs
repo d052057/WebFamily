@@ -58,6 +58,7 @@ public class MetaDataFileInfo : IMetaDataFileInfo
             // Skip symbolic links/shortcuts if needed
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint)) return null;
+            if (Path.GetExtension(filePath).Equals(".lnk", StringComparison.OrdinalIgnoreCase)) return null;
 
             TimeSpan duration = TimeSpan.Zero;
 

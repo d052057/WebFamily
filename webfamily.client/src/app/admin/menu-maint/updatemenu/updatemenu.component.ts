@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, OnInit, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MediaService } from '../../../shared/services/media.service';
 import { finalize, first } from 'rxjs';
 import { MenuService } from '../../../shared/services/menu.service';
@@ -14,165 +14,151 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class UpdatemenuComponent {
   mediaservice = inject(MediaService);
   menuService = inject(MenuService);
-  public bookUpdateStatus: any = [];
-  public movieUpdateStatus: any = [];
-  public videoUpdateStatus: any = [];
-  public photoUpdateStatus: any = [];
-  public americanSongUpdateStatus: any = [];
-  public textUpdateStatus: any = [];
-  public rpmUpdateStatus: any = [];
-  public initDatabaseStatus: any = [];
+  public bookUpdateStatus = signal<any>([]);
+  public movieUpdateStatus = signal<any>([]);
+  public videoUpdateStatus = signal<any>([]);
+  public photoUpdateStatus = signal<any>([]);
+  public americanSongUpdateStatus = signal<any>([]);
+  public textUpdateStatus = signal<any>([]);
+  public rpmUpdateStatus = signal<any>([]);
+  public initDatabaseStatus = signal<any>([]);
 
-  public musicUpdateStatus: any = [];
-  public musicsUpdate: boolean = false;
-  public booksUpdate: boolean = false;
-  public moviesUpdate: boolean = false;
-  public videosUpdate: boolean = false;
-  public photosUpdate: boolean = false;
-  public songsUpdate: boolean = false;
-  public textUpdate: boolean = false;
-  public rpmsUpdate: boolean = false;
-  public initDatabaseUpdate: boolean = false;
+  public musicUpdateStatus = signal<any>([]);
+  public musicsUpdate = signal(false);
+  public booksUpdate = signal(false);
+  public moviesUpdate = signal(false);
+  public videosUpdate = signal(false);
+  public photosUpdate = signal(false);
+  public songsUpdate = signal(false);
+  public textUpdate = signal(false);
+  public rpmsUpdate = signal(false);
+  public initDatabaseUpdate = signal(false);
 
   onInitDatabaseUpdate() {
-    this.initDatabaseUpdate = true;
-    this.initDatabaseStatus = 'Processing...';
-
-    // Show a reassuring message if it takes more than 10 seconds
-    const timeoutId = setTimeout(() => {
-      if (this.initDatabaseUpdate) {
-        this.initDatabaseStatus = 'Still updating the database, please wait...';
-      }
-    }, 10000);
-
+    this.initDatabaseUpdate.set(true);
+    this.initDatabaseStatus.set('Processing...');
     this.menuService.initDatabaseUpdate()
-      .pipe(
-        first(),
-        finalize(() => {
-          this.initDatabaseUpdate = false;
-          clearTimeout(timeoutId); // Clean up timer 
-        })
-      )
+      .pipe(first())
+      .pipe(finalize(() => this.initDatabaseUpdate.set(false)))
       .subscribe({
         next: (response: any) => {
-          this.initDatabaseStatus = response.message || 'Update completed successfully!';
+          this.initDatabaseStatus.set(response.message);
         },
         error: (err) => {
-          // Fallback if err.error is an object or string
-          this.initDatabaseStatus = err.error?.message || err.error || 'An error occurred.';
+          this.initDatabaseStatus.set(err.error);
         }
-      });
+      }
+    );
+    
   }
-
   onUpdate(menu: string) {
     
     switch (menu) {
       case 'books':
-        this.booksUpdate = true;
-        this.bookUpdateStatus = ['Processing...'];
+        this.booksUpdate.set(true);
+        this.bookUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.booksUpdate = false))
+          .pipe(finalize(() => this.booksUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.bookUpdateStatus = data; },
-              error: error => this.bookUpdateStatus = error
+              next: (data: any) => { this.bookUpdateStatus.set(data); },
+              error: error => this.bookUpdateStatus.set(error)
             }
           )
         break;
       case 'movies':
-        this.moviesUpdate = true;
-        this.movieUpdateStatus = ['Processing...'];
+        this.moviesUpdate.set(true);
+        this.movieUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.moviesUpdate = false))
+          .pipe(finalize(() => this.moviesUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.movieUpdateStatus = data; },
-              error: error => this.movieUpdateStatus = error
+              next: (data: any) => { this.movieUpdateStatus.set(data); },
+              error: error => this.movieUpdateStatus.set(error)
             }
           )
         break;
       case 'videos':
-        this.videosUpdate = true;
-        this.videoUpdateStatus = ['Processing...'];
+        this.videosUpdate.set(true);
+        this.videoUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.videosUpdate = false))
+          .pipe(finalize(() => this.videosUpdate.set(false)))
           .subscribe(
             {
               next: (data: any) => {
-                this.videoUpdateStatus = data
+                this.videoUpdateStatus.set(data)
               },
               error: error => {
-                this.videoUpdateStatus = error;
+                this.videoUpdateStatus.set(error);
               }
             }
           )
         break;
       case 'musics':
-        this.musicsUpdate = true;
-        this.musicUpdateStatus = ['Processing...'];
+        this.musicsUpdate.set(true);
+        this.musicUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.musicsUpdate = false))
+          .pipe(finalize(() => this.musicsUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any[]) => { this.musicUpdateStatus = data; },
-              error: (err) => { this.musicUpdateStatus.push(JSON.stringify(err)) }
+              next: (data: any[]) => { this.musicUpdateStatus.set(data); },
+              error: (err) => { this.musicUpdateStatus.update(list => [...list, JSON.stringify(err)]); }
             }
           )
-        this.musicsUpdate = false;
         break;
       case 'americansongs':
-        this.songsUpdate = true;
-        this.americanSongUpdateStatus = ['Processing...'];
+        this.songsUpdate.set(true);
+        this.americanSongUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.songsUpdate = false))
+          .pipe(finalize(() => this.songsUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.americanSongUpdateStatus = data; },
-              error: error => this.americanSongUpdateStatus = error
+              next: (data: any) => { this.americanSongUpdateStatus.set(data); },
+              error: error => this.americanSongUpdateStatus.set(error)
             }
           )
         break;
       case 'text':
-        this.textUpdate = true;
-        this.textUpdateStatus = ['Processing...'];
+        this.textUpdate.set(true);
+        this.textUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.songsUpdate = false))
+          .pipe(finalize(() => this.textUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.textUpdateStatus = data; },
-              error: error => this.textUpdateStatus = error
+              next: (data: any) => { this.textUpdateStatus.set(data); },
+              error: error => this.textUpdateStatus.set(error)
             }
           )
         break;
       case 'photos':
-        this.photosUpdate = true;
-        this.photoUpdateStatus = ['Processing...'];
+        this.photosUpdate.set(true);
+        this.photoUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.photosUpdate = false))
+          .pipe(finalize(() => this.photosUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.photoUpdateStatus = data; },
-              error: error => this.photoUpdateStatus = error
+              next: (data: any) => { this.photoUpdateStatus.set(data); },
+              error: error => this.photoUpdateStatus.set(error)
             }
           )
         break;
       case 'rpms':
-        this.rpmsUpdate = true;
-        this.rpmUpdateStatus = ['Processing...'];
+        this.rpmsUpdate.set(true);
+        this.rpmUpdateStatus.set(['Processing...']);
         this.mediaservice.updateMetaData(menu)
           .pipe(first())
-          .pipe(finalize(() => this.rpmsUpdate = false))
+          .pipe(finalize(() => this.rpmsUpdate.set(false)))
           .subscribe(
             {
-              next: (data: any) => { this.rpmUpdateStatus = data; },
-              error: error => this.rpmUpdateStatus = error
+              next: (data: any) => { this.rpmUpdateStatus.set(data); },
+              error: error => this.rpmUpdateStatus.set(error)
             }
           )
         break;

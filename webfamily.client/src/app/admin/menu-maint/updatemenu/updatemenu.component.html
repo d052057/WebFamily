@@ -11,21 +11,21 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onInitDatabaseUpdate()" [disabled]="initDatabaseUpdate">
+            <button type="button" class="btn btn-primary" (click)="onInitDatabaseUpdate()" [disabled]="initDatabaseUpdate()">
               Initial Media Database
             </button>
           </div>
         </td>
         <td>
-          {{ initDatabaseStatus }}
+          {{ initDatabaseStatus() }}
         </td>
 
       </tr>
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('musics')" [disabled]="musicsUpdate">
-              @if (musicsUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('musics')" [disabled]="musicsUpdate()">
+              @if (musicsUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -37,7 +37,7 @@
           </div>
         </td>
         <td>
-          @for (stat of musicUpdateStatus; track stat; let i = $index) {
+          @for (stat of musicUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -48,8 +48,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate">
-              @if (booksUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate()">
+              @if (booksUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -62,7 +62,7 @@
 
         </td>
         <td>
-          @for (stat of bookUpdateStatus; track stat; let i = $index) {
+          @for (stat of bookUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -73,8 +73,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('movies')" [disabled]="moviesUpdate">
-              @if (moviesUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('movies')" [disabled]="moviesUpdate()">
+              @if (moviesUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -86,7 +86,7 @@
           </div>
         </td>
         <td>
-          @for (stat of movieUpdateStatus; track stat; let i = $index) {
+          @for (stat of movieUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -97,8 +97,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('videos')" [disabled]="videosUpdate">
-              @if (videosUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('videos')" [disabled]="videosUpdate()">
+              @if (videosUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -110,7 +110,7 @@
           </div>
         </td>
         <td>
-          @for (stat of videoUpdateStatus; track stat; let i = $index) {
+          @for (stat of videoUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -121,8 +121,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('photos')" [disabled]="photosUpdate">
-              @if (photosUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('photos')" [disabled]="photosUpdate()">
+              @if (photosUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -134,7 +134,7 @@
           </div>
         </td>
         <td>
-          @for (stat of photoUpdateStatus; track stat; let i = $index) {
+          @for (stat of photoUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -147,8 +147,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate">
-              @if (textUpdate) {
+            <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate()">
+              @if (textUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -160,7 +160,7 @@
           </div>
         </td>
         <td>
-          @for (stat of textUpdateStatus ; track stat; let i = $index) {
+          @for (stat of textUpdateStatus() ; track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -173,8 +173,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('americansongs')" [disabled]="songsUpdate">
-              @if (songsUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('americansongs')" [disabled]="songsUpdate()">
+              @if (songsUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -187,7 +187,7 @@
           </div>
         </td>
         <td>
-          @for (stat of americanSongUpdateStatus; track stat; let i = $index) {
+          @for (stat of americanSongUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
@@ -199,8 +199,8 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate">
-              @if (rpmsUpdate) {
+            <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate()">
+              @if (rpmsUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
                 <span></span>
@@ -212,7 +212,7 @@
           </div>
         </td>
         <td>
-          @for (stat of rpmUpdateStatus; track stat; let i = $index) {
+          @for (stat of rpmUpdateStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
