@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MediaService } from '../../../shared/services/media.service';
 import { finalize, first } from 'rxjs';
 import { MenuService } from '../../../shared/services/menu.service';
@@ -37,20 +37,33 @@ export class UpdatemenuComponent {
   onInitDatabaseUpdate() {
     this.initDatabaseUpdate = true;
     this.initDatabaseStatus = 'Processing...';
+
+    // Show a reassuring message if it takes more than 10 seconds
+    const timeoutId = setTimeout(() => {
+      if (this.initDatabaseUpdate) {
+        this.initDatabaseStatus = 'Still updating the database, please wait...';
+      }
+    }, 10000);
+
     this.menuService.initDatabaseUpdate()
-      .pipe(first())
-      .pipe(finalize(() => this.initDatabaseUpdate = false))
+      .pipe(
+        first(),
+        finalize(() => {
+          this.initDatabaseUpdate = false;
+          clearTimeout(timeoutId); // Clean up timer 
+        })
+      )
       .subscribe({
         next: (response: any) => {
-          this.initDatabaseStatus = response.message;
+          this.initDatabaseStatus = response.message || 'Update completed successfully!';
         },
         error: (err) => {
-          this.initDatabaseStatus = (err.error);
+          // Fallback if err.error is an object or string
+          this.initDatabaseStatus = err.error?.message || err.error || 'An error occurred.';
         }
-      }
-    );
-    
+      });
   }
+
   onUpdate(menu: string) {
     
     switch (menu) {
