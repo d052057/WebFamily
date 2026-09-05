@@ -19,17 +19,17 @@
     </div>
 
     <div class="video-controls">
-      <span class="time-display">{{ formatTime(currentTime) }}</span>
-      <span class="frame-display">Frame: {{ currentFrame }}/{{ totalFrames }}</span>
+      <span class="time-display">{{ formatTime(currentTime()) }}</span>
+      <span class="frame-display">Frame: {{ currentFrame() }}/{{ totalFrames() }}</span>
       <input type="range"
              class="time-slider"
              min="0"
-             [max]="videoDuration"
-             [value]="currentTime"
+             [max]="videoDuration()"
+             [value]="currentTime()"
              step="0.1"
              (input)="onTimeSliderChange($event)"
-             [disabled]="!isVideoLoaded">
-      <span class="time-display">{{ formatTime(videoDuration) }}</span>
+             [disabled]="!isVideoLoaded()">
+      <span class="time-display">{{ formatTime(videoDuration()) }}</span>
     </div>
 
     <div class="instructions">

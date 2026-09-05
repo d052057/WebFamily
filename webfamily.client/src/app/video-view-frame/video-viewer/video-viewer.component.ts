@@ -1,5 +1,5 @@
 ﻿import { VideoSource } from './../models/video.model';
-import { Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-video-viewer',
@@ -13,29 +13,30 @@ export class VideoViewerComponent implements OnInit, OnChanges {
   @ViewChild('videoElement', { static: false }) videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild('canvas', { static: false }) canvas!: ElementRef<HTMLCanvasElement>;
 
-  currentTime = 0;
-  videoDuration = 0;
-  isVideoLoaded = false;
+  currentTime = signal(0);
+  videoDuration = signal(0);
+  isVideoLoaded = signal(false);
+  currentFrame = signal(0);
+  totalFrames = signal(0);
+
   frameRate = 30; // Default frame rate (will be calculated if possible)
-  currentFrame = 0;
-  totalFrames = 0;
+
+  // Set once the video element's own load/time listeners have been attached,
+  // so a new video selection resets state and loads the new source without
+  // re-attaching (and thereby duplicating) those listeners every time.
+  private listenersAttached = false;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  ngOnDestroy(): void {
-    // Ensure we remove keyboard event listeners when component is destroyed
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['videoInfo'] && changes['videoInfo'].currentValue) {
-      this.isVideoLoaded = false;
-      this.currentTime = 0;
-      this.videoDuration = 0;
-      this.currentFrame = 0;
+      this.isVideoLoaded.set(false);
+      this.currentTime.set(0);
+      this.videoDuration.set(0);
+      this.currentFrame.set(0);
 
       // We need to wait for the video to be loaded before we can draw the frame
       setTimeout(() => {
@@ -47,22 +48,31 @@ export class VideoViewerComponent implements OnInit, OnChanges {
   initializeVideo(): void {
     const video = this.videoElement.nativeElement;
 
-    // Set up event listeners
-    video.addEventListener('loadedmetadata', () => {
-      this.isVideoLoaded = true;
-      this.videoDuration = video.duration;
-      this.estimateFrameRate();
-      this.calculateTotalFrames();
-      this.drawCurrentFrame();
+    // Attach the video element's own listeners once. They read video.duration/
+    // video.currentTime directly, so the same listeners work correctly for
+    // every subsequently selected video - no need to re-attach (and thereby
+    // duplicate) them on every switch.
+    if (!this.listenersAttached) {
+      this.listenersAttached = true;
 
-      // Add keyboard controls
-      document.addEventListener('keydown', this.handleKeyDown.bind(this));
-    });
+      video.addEventListener('loadedmetadata', () => {
+        this.isVideoLoaded.set(true);
+        this.videoDuration.set(video.duration);
+        this.estimateFrameRate();
+        this.calculateTotalFrames();
+        this.drawCurrentFrame();
+      });
 
-    video.addEventListener('timeupdate', () => {
-      this.currentTime = video.currentTime;
-      this.calculateCurrentFrame();
-    });
+      video.addEventListener('timeupdate', () => {
+        this.currentTime.set(video.currentTime);
+        this.calculateCurrentFrame();
+      });
+
+      // Keyboard navigation is already wired up via the @HostListener on
+      // handleKeyDown below - no need for a second, manual registration
+      // here (that copy also couldn't be cleanly removed later, since
+      // .bind(this) creates a new function reference each call).
+    }
 
     // Load the video without playing it
     video.src = this.videoInfo.src;
@@ -73,28 +83,27 @@ export class VideoViewerComponent implements OnInit, OnChanges {
   estimateFrameRate(): void {
     // Try to get frame rate from video metadata if possible
     // Most browsers don't expose this property directly, so we use a fallback
-    const video = this.videoElement.nativeElement;
 
     // For now we'll use the default 30fps, but this method could be extended
     // to detect frame rate using more advanced techniques if needed 
-      this.frameRate = 30;   
+    this.frameRate = 30;
 
     // Log for debugging
     console.log(`Using frame rate: ${this.frameRate} fps`);
   }
 
   calculateTotalFrames(): void {
-    this.totalFrames = Math.floor(this.videoDuration * this.frameRate);
+    this.totalFrames.set(Math.floor(this.videoDuration() * this.frameRate));
   }
 
   calculateCurrentFrame(): void {
-    this.currentFrame = Math.floor(this.currentTime * this.frameRate);
+    this.currentFrame.set(Math.floor(this.currentTime() * this.frameRate));
   }
 
   // Handle keyboard navigation
   @HostListener('document:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
-    if (!this.isVideoLoaded) return;
+    if (!this.isVideoLoaded()) return;
 
     const frameDuration = 1 / this.frameRate;
     const video = this.videoElement.nativeElement;
@@ -108,7 +117,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
       case 'ArrowRight':
         // Next frame
         event.preventDefault();
-        video.currentTime = Math.min(this.videoDuration, video.currentTime + frameDuration);
+        video.currentTime = Math.min(this.videoDuration(), video.currentTime + frameDuration);
         break;
       case 'Home':
         // First frame
@@ -118,18 +127,18 @@ export class VideoViewerComponent implements OnInit, OnChanges {
       case 'End':
         // Last frame
         event.preventDefault();
-        video.currentTime = Math.max(0, this.videoDuration - frameDuration);
+        video.currentTime = Math.max(0, this.videoDuration() - frameDuration);
         break;
     }
 
     // After changing time, update and draw
-    this.currentTime = video.currentTime;
+    this.currentTime.set(video.currentTime);
     this.calculateCurrentFrame();
     this.drawCurrentFrame();
   }
 
   drawCurrentFrame(): void {
-    if (!this.isVideoLoaded) return;
+    if (!this.isVideoLoaded()) return;
 
     const video = this.videoElement.nativeElement;
     const canvas = this.canvas.nativeElement;
@@ -146,7 +155,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
   }
 
   exportCurrentFrame(): void {
-    if (!this.isVideoLoaded) return;
+    if (!this.isVideoLoaded()) return;
 
     const canvas = this.canvas.nativeElement;
 
@@ -159,7 +168,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
 
     // Generate filename with video title, frame number and timestamp
     const timestamp = new Date().toISOString().replace(/:/g, '-').substring(0, 19);
-    const filename = `${this.videoInfo.title.replace(/\s+/g, '_')}_frame${this.currentFrame}_${timestamp}.png`;
+    const filename = `${this.videoInfo.title.replace(/\s+/g, '_')}_frame${this.currentFrame()}_${timestamp}.png`;
 
     link.download = filename;
 
@@ -172,7 +181,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
   onWheel(event: WheelEvent): void {
     event.preventDefault();
 
-    if (!this.isVideoLoaded) return;
+    if (!this.isVideoLoaded()) return;
 
     const video = this.videoElement.nativeElement;
     const duration = video.duration;
@@ -188,7 +197,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
 
     // Update current time
     video.currentTime = Math.max(0, Math.min(duration, video.currentTime + timeChange));
-    this.currentTime = video.currentTime;
+    this.currentTime.set(video.currentTime);
 
     // Draw the current frame
     this.drawCurrentFrame();
@@ -199,7 +208,7 @@ export class VideoViewerComponent implements OnInit, OnChanges {
     const video = this.videoElement.nativeElement;
 
     video.currentTime = parseFloat(input.value);
-    this.currentTime = video.currentTime;
+    this.currentTime.set(video.currentTime);
     this.drawCurrentFrame();
   }
 
