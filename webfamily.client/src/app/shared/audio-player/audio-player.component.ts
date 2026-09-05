@@ -365,20 +365,12 @@ export class AudioPlayerComponent {
   private handleEnded = (): void => {
     this.trackEndEvent.emit();
 
-    if (this.isRepeat()) {
-      this.restartCurrentTrack();
-    } else if (this.canPlayNext()) {
+    if (this.canPlayNext()) {
       this.playNext();
     } else {
       this.handlePlaylistEnd();
     }
   };
-
-  private restartCurrentTrack(): void {
-    this.audio.currentTime = 0;
-    this.currentAudioTime.set(0);
-    this.play();
-  }
 
   private handlePlaylistEnd(): void {
     this.isAudioPlaying.set(false);

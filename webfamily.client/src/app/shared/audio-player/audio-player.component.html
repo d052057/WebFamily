@@ -36,7 +36,7 @@
 
           <button class="btn btn-outline-secondary rounded-circle"
                   (click)="playPrevious()"
-                  [disabled]="audioListState()"
+                  [disabled]="!canPlayPrevious()"
                   title="Previous">
             <i class="bi bi-skip-start-fill"></i>
           </button>
@@ -51,7 +51,7 @@
 
           <button class="btn btn-outline-secondary rounded-circle"
                   (click)="playNext()"
-                  [disabled]="audioListState()"
+                  [disabled]="!canPlayNext()"
                   title="Next">
             <i class="bi bi-skip-end-fill"></i>
           </button>
@@ -80,7 +80,7 @@
 
           <button class="btn btn-outline-secondary rounded-circle"
                   (click)="playRandom()"
-                  [disabled]="audioListState()"
+                  [disabled]="!canPlayNext()"
                   title="Play Random">
             <i class="bi bi-shuffle"></i>
           </button>
