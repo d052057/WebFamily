@@ -25,61 +25,65 @@ export class UpdateVideoDurationComponent implements OnInit {
         (params: any) => {
           this.dataSource.set([]);
           this.menuFolder.set(params.get('menu'));
+          this.processLoading.set(true);
           this.videoDurationService.getMediaView(this.menuFolder())
             .pipe(finalize(() => {
               this.processLoading.set(false);
             }))
-            .subscribe(
-              async (data: any) => {
-                for (var i = 0; i < data.length; i++) {
-                  let tmp = data[i];
-                  let p = tmp.assets + "/" + tmp.title;
-                  if (tmp.type.indexOf("audio")) {
-                    this.getAudioDuration(p, tmp)
-                  } else {
-                    this.getVideoDuration(p, tmp)
-                  }
-                  data[i] = tmp;
-                  this.dataSource.set(data);
-                }
-              }
-            ),
-            (error: Error) => console.log(error.message),
-            () => console.log('Complete')
+            .subscribe({
+              next: async (data: any) => {
+                // Wait for every item's duration lookup to actually finish
+                // before rendering, instead of setting dataSource on every
+                // loop iteration while the (unawaited) duration lookups are
+                // still pending in the background.
+                await Promise.all(data.map((tmp: any) => {
+                  const p = tmp.assets + "/" + tmp.title;
+                  // .indexOf(...) returns 0 (falsy!) when "audio" is found
+                  // at the very start of the string, which is exactly where
+                  // it sits in a real audio mime type like "audio/mpeg" -
+                  // so this must be compared against -1, not used as a
+                  // truthy check, or every audio file gets misrouted into
+                  // getVideoDuration() instead of getAudioDuration().
+                  return tmp.type.indexOf("audio") !== -1
+                    ? this.getAudioDuration(p, tmp)
+                    : this.getVideoDuration(p, tmp);
+                }));
+                this.dataSource.set(data);
+              },
+              error: (error: Error) => console.log(error.message),
+              complete: () => console.log('Complete')
+            });
         }
       );
   }
-  getVideoDuration(src: string, obj: any) {
-    return new Promise(function (resolve) {
-      var video = document.createElement('video');
+  getVideoDuration(src: string, obj: any): Promise<void> {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
       video.preload = 'metadata';
       video.addEventListener('loadedmetadata', () => {
-        var event = new CustomEvent("myVideoDurationEvent", {
-          detail: {
-            duration: video.duration,
-          }
-        });
         obj['duration'] = Math.floor(video.duration);
-      })
+        resolve();
+      });
+      video.addEventListener('error', () => {
+        // Leave duration unset rather than hang the whole batch forever
+        // waiting on a file that can't be read.
+        resolve();
+      });
       video.src = src;
-    }
-    );
+    });
   }
-  getAudioDuration(src: string, obj: any) {
-    return new Promise(function (resolve) {
-      var audio = new Audio();
+  getAudioDuration(src: string, obj: any): Promise<void> {
+    return new Promise((resolve) => {
+      const audio = new Audio();
       audio.addEventListener('loadedmetadata', () => {
-        var event = new CustomEvent("myAudioDurationEvent", {
-          detail: {
-            duration: audio.duration,
-          }
-        });
         obj['duration'] = Math.floor(audio.duration);
-        /*obj.dispatchEvent(event);*/
-      })
+        resolve();
+      });
+      audio.addEventListener('error', () => {
+        resolve();
+      });
       audio.src = src;
-    }
-    );
+    });
   }
   updateDuration() {
     this.update();

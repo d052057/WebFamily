@@ -309,6 +309,13 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   };
 
   playVideo(video: VideoSource): void {
+    // Clean up any pending play-when-ready handler from a previous switch
+    // that hasn't fired yet, so it doesn't fire later for a stale request.
+    if (this.pendingCanPlayHandler) {
+      this.player.removeEventListener('canplay', this.pendingCanPlayHandler);
+      this.pendingCanPlayHandler = null;
+    }
+
     this.setDefaultAudio(true);
     this._currentVideo.set(video);
     this.resetCaptions();
@@ -322,13 +329,25 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
     }
 
     this.resetPlayerState();
-    this.player.load();
 
-    // Use requestAnimationFrame for smoother playback start
-    requestAnimationFrame(() => {
+    // Wait for the browser to actually be ready to play the new source
+    // before calling play(). Calling play() immediately (or one
+    // requestAnimationFrame later) after load() on an already-playing
+    // <video> element is a known race: the browser may still be tearing
+    // down the previous source, so play() can be silently ignored or
+    // rejected with an AbortError. 'canplay' fires once the new source
+    // has enough data to actually start, which avoids that race reliably.
+    this.pendingCanPlayHandler = () => {
+      this.player.removeEventListener('canplay', this.pendingCanPlayHandler!);
+      this.pendingCanPlayHandler = null;
       this.player.play().catch(this.handlePlayError);
-    });
+    };
+    this.player.addEventListener('canplay', this.pendingCanPlayHandler);
+
+    this.player.load();
   }
+
+  private pendingCanPlayHandler: (() => void) | null = null;
 
   private resetPlayerState(): void {
     this._videoProgress.set(0);
