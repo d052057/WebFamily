@@ -120,12 +120,31 @@ export class AudioPlayerComponent {
     if (value?.length && value !== this._audios()) {
       this._audios.set(value);
       if (value.length > 0) {
-        /*this.audioList.set(value);*/
         this.currentTrackIndex.set(0);
-        this.audio.src = encodeURI(value[0].url);
         this.isAudioLoaded.set(false);
+        this.loadAndPlayFirstTrack(value[0]);
       }
     }
+  }
+
+  private loadAndPlayFirstTrack(track: AudioItem, retryCount = 0): void {
+    if (!this.audio) {
+      // The <audio> element isn't wired up yet - this can happen on the
+      // very first CD selection, since initializeAudioElement() assigns
+      // `this.audio` inside a setTimeout(0) during ngOnInit. Retry briefly
+      // instead of silently dropping the track.
+      if (retryCount < 20) {
+        setTimeout(() => this.loadAndPlayFirstTrack(track, retryCount + 1), 50);
+      }
+      return;
+    }
+
+    this.audio.src = encodeURI(track.url);
+    setTimeout(() => {
+      if (this.isAudioAutoPlay()) {
+        this.play();
+      }
+    }, 50);
   }
 
   get dataSource(): AudioItem[] {
