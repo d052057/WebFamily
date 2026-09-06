@@ -15,8 +15,10 @@ export class JwtInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    // Skip authentication for login/register endpoints
-    if (request.url.includes('/login') || request.url.includes('/register') || request.url.includes('/account')) {
+    // Skip authentication for login/register endpoints, and for public
+    // settings (called during app-initialization, before AccountService's
+    // user$ has emitted anything - awaiting it here would deadlock startup)
+    if (request.url.includes('/login') || request.url.includes('/register') || request.url.includes('/account') || request.url.includes('/settings')) {
       return next.handle(request); // Go directly, don't check for user
     }
 
