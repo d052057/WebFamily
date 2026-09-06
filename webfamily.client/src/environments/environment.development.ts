@@ -32,7 +32,7 @@ export const environment = {
     AppId: "1324213154862809"
   },
   Google: {
-    ClientId: "webfamily"
+    ClientId: "27027384338-8rvjkqp65pitemp92gk9pjh6bq2jqemi.apps.googleusercontent.com"
   },
   "GoogleMaps": {
     "ApiKey": "AIzaSyCn5OoQkllCMw8Z8vG60V13_4LXuravm_s"
