@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, ElementRef, OnInit, Renderer2, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AccountService } from '../account.service';
@@ -8,7 +8,7 @@ import { SharedService } from '../..//shared/shared.service';
 import { LoginWithExternal } from '../../shared/models/account/loginWithExternal';
 import { DOCUMENT } from '@angular/common';
 import { CredentialResponse } from 'google-one-tap';
-import { environment } from '../../../environments/environment';
+import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { jwtDecode } from 'jwt-decode';
 import { ValidationMessagesComponent } from '../../shared/components/errors/validation-messages/validation-messages.component';
 declare const FB: any;
@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private sharedService = inject(SharedService);
   private _renderer2 = inject(Renderer2);
+  private appSettings = inject(AppSettingsService);
   private _document = inject<Document>(DOCUMENT);
 
   @ViewChild('googleButton', {static: true}) googleButton: ElementRef = new ElementRef({});
@@ -129,7 +130,7 @@ export class LoginComponent implements OnInit {
     (window as any).onGoogleLibraryLoad = () => {
       // @ts-ignore
       google.accounts.id.initialize({
-        client_id: environment.Google.ClientId,
+        client_id: this.appSettings.googleClientId,
         callback: this.googleCallBack.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true

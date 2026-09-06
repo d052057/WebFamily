@@ -8,7 +8,7 @@ import { User } from '../../shared/models/account/user';
 import { CredentialResponse } from 'google-one-tap';
 import { jwtDecode } from 'jwt-decode';
 import { DOCUMENT } from '@angular/common';
-import { environment } from '../../../environments/environment';
+import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { ValidationMessagesComponent } from '../../shared/components/errors/validation-messages/validation-messages.component';
 declare const FB: any;
 
@@ -25,6 +25,7 @@ export class RegisterComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
   private _renderer2 = inject(Renderer2);
+  private appSettings = inject(AppSettingsService);
   private _document = inject<Document>(DOCUMENT);
 
   readonly googleButton = viewChild.required<ElementRef>('googleButton');
@@ -101,7 +102,7 @@ export class RegisterComponent implements OnInit {
     (window as any).onGoogleLibraryLoad = () => {
       // @ts-ignore
       google.accounts.id.initialize({
-        client_id: environment.Google.ClientId,
+        client_id: this.appSettings.googleClientId,
         callback: this.googleCallBack.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true
