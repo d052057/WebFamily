@@ -184,7 +184,7 @@ export interface IwebTubeSeries {
   webTube: IwebTube;
 }
 export class YTSettings {
-  public static readonly YOUTUBE_KEY = 'AIzaSyAMXlgkrQ2vL2jTGd6RWQCwjYw-r0wWIjE';
+  public static readonly YOUTUBE_KEY = 'AIzaSyCXRDoNDWUEDDu7LADEeCqgSzow4SP-x5g';
   public static readonly YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/playlistItems?key=' + YTSettings.YOUTUBE_KEY + '&part=snippet&maxResults=12&playlistId='
   public static readonly YOUTUBE_URL_ID = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&key=' + YTSettings.YOUTUBE_KEY + '&id='
 }

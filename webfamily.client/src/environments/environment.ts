@@ -17,7 +17,7 @@ export const environment = {
     angular: 'Angular 19.0.0',
     bootstrap: 'Bootstrap 5.3.3'
   },
-  YoutubeKey: 'AIzaSyAMXlgkrQ2vL2jTGd6RWQCwjYw-r0wWIjE',
+  YoutubeKey: 'AIzaSyCXRDoNDWUEDDu7LADEeCqgSzow4SP-x5g',
   mediaConfig: {
     medias: '/medias',
     AssetAlbumFolder: '/medias/musics',
@@ -30,7 +30,7 @@ export const environment = {
     AssetRpmFolder: '/medias/musics/rpm',
     AssetRpmCoverFolder: '/medias/musics/rpm/cover',
     AssetCloseCaptionFolder: 'closeCaption',
-    YoutubeUrl: 'https://www.googleapis.com/youtube/v3/playlistItems?key=' + 'AIzaSyAMXlgkrQ2vL2jTGd6RWQCwjYw-r0wWIjE' + '&part=snippet&maxResults=12&playlistId='
+    YoutubeUrl: 'https://www.googleapis.com/youtube/v3/playlistItems?key=' + 'AIzaSyCXRDoNDWUEDDu7LADEeCqgSzow4SP-x5g' + '&part=snippet&maxResults=12&playlistId='
   },
   Facebook: {
     AppId: "1324213154862809"
