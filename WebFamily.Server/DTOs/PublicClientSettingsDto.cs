@@ -9,5 +9,6 @@ namespace WebFamily.Server.DTOs
         public string GoogleClientId { get; set; } = string.Empty;
         public string GoogleMapsApiKey { get; set; } = string.Empty;
         public string YoutubeApiKey { get; set; } = string.Empty;
+        public string FacebookAppId { get; set; } = string.Empty;
     }
 }

@@ -5,7 +5,6 @@ export const environment = {
     'https://localhost:7080',
     '/api'
   ],
-  facebookAppId: '',
   userKey: 'identityHubUser',
   application:
   {
@@ -26,8 +25,5 @@ export const environment = {
     AssetRpmFolder: '/medias/musics/rpm',
     AssetRpmCoverFolder: '/medias/musics/rpm/cover',
     AssetCloseCaptionFolder: 'closeCaption'
-  },
-  Facebook: {
-    AppId: "1324213154862809"
   }
 };

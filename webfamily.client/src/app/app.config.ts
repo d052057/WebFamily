@@ -46,7 +46,7 @@ export function initializeAppSettings() {
 export function initializeFacebookSdk() {
   return () => {
     const fb = inject(FacebookService);
-    fb.loadSdk()
+    return fb.loadSdk();
   };
 }
 export const appConfig: ApplicationConfig = {

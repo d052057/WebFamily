@@ -27,7 +27,8 @@ namespace WebFamily.Server.Controllers
             {
                 GoogleClientId = _config["Google:ClientId"] ?? string.Empty,
                 GoogleMapsApiKey = _config["GoogleMaps:ApiKey"] ?? string.Empty,
-                YoutubeApiKey = _config["YouTube:ApiKey"] ?? string.Empty
+                YoutubeApiKey = _config["YouTube:ApiKey"] ?? string.Empty,
+                FacebookAppId = _config["Facebook:AppId"] ?? string.Empty
             });
         }
     }

@@ -6,6 +6,7 @@ interface PublicClientSettings {
   googleClientId: string;
   googleMapsApiKey: string;
   youtubeApiKey: string;
+  facebookAppId: string;
 }
 
 @Injectable({
@@ -13,7 +14,7 @@ interface PublicClientSettings {
 })
 export class AppSettingsService {
   private http = inject(HttpClient);
-  private settings: PublicClientSettings = { googleClientId: '', googleMapsApiKey: '', youtubeApiKey: '' };
+  private settings: PublicClientSettings = { googleClientId: '', googleMapsApiKey: '', youtubeApiKey: '', facebookAppId: '' };
 
   get googleClientId(): string {
     return this.settings.googleClientId;
@@ -27,16 +28,27 @@ export class AppSettingsService {
     return this.settings.youtubeApiKey;
   }
 
-  // Called once via provideAppInitializer in app.config.ts, before the
-  // app finishes bootstrapping, so components can rely on
-  // this.appSettings.googleClientId being populated by the time they render.
+  get facebookAppId(): string {
+    return this.settings.facebookAppId;
+  }
+
+  private loadPromise: Promise<void> | null = null;
+
+  // Called via provideAppInitializer in app.config.ts, before the app
+  // finishes bootstrapping, so components can rely on these getters being
+  // populated by the time they render. Safe to call more than once (e.g.
+  // FacebookService also awaits this to guarantee ordering) - only the
+  // first call actually hits the network, everyone else shares that result.
   load(): Promise<void> {
-    return firstValueFrom(this.http.get<PublicClientSettings>('/api/settings/public'))
-      .then(result => {
-        this.settings = result;
-      })
-      .catch(error => {
-        console.error('Failed to load public app settings from the server', error);
-      });
+    if (!this.loadPromise) {
+      this.loadPromise = firstValueFrom(this.http.get<PublicClientSettings>('/api/settings/public'))
+        .then(result => {
+          this.settings = result;
+        })
+        .catch(error => {
+          console.error('Failed to load public app settings from the server', error);
+        });
+    }
+    return this.loadPromise;
   }
 }
