@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # ignore secret data - don't send to repo
 appsettings.Local.json
+WebFamily.Server/appsettings.Local.json
