@@ -129,7 +129,7 @@ export class LoginComponent implements OnInit {
     (window as any).onGoogleLibraryLoad = () => {
       // @ts-ignore
       google.accounts.id.initialize({
-        client_id: environment.googleClientId,
+        client_id: environment.Google.ClientId,
         callback: this.googleCallBack.bind(this),
         auto_select: false,
         cancel_on_tap_outside: true
