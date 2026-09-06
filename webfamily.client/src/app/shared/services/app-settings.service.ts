@@ -4,6 +4,8 @@ import { firstValueFrom } from 'rxjs';
 
 interface PublicClientSettings {
   googleClientId: string;
+  googleMapsApiKey: string;
+  youtubeApiKey: string;
 }
 
 @Injectable({
@@ -11,10 +13,18 @@ interface PublicClientSettings {
 })
 export class AppSettingsService {
   private http = inject(HttpClient);
-  private settings: PublicClientSettings = { googleClientId: '' };
+  private settings: PublicClientSettings = { googleClientId: '', googleMapsApiKey: '', youtubeApiKey: '' };
 
   get googleClientId(): string {
     return this.settings.googleClientId;
+  }
+
+  get googleMapsApiKey(): string {
+    return this.settings.googleMapsApiKey;
+  }
+
+  get youtubeApiKey(): string {
+    return this.settings.youtubeApiKey;
   }
 
   // Called once via provideAppInitializer in app.config.ts, before the

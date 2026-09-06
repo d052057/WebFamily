@@ -2,7 +2,8 @@ import { Injectable, OnInit, inject, resource, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { expand, map, Observable, of, scan, takeWhile } from 'rxjs';
 import { Router } from '@angular/router';
-import { YTSettings, Webtube } from './../models/webtubes.model';
+import { Webtube } from './../models/webtubes.model';
+import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { TubeSeries } from './../models/tube-series';
 import { rxResource } from '@angular/core/rxjs-interop';
 
@@ -12,9 +13,14 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class TubeService implements OnInit {
   private http = inject(HttpClient);
   router = inject(Router);
+  private appSettings = inject(AppSettingsService);
 
-  private urlYouTube: string = YTSettings.YOUTUBE_URL;
-  private urlYouTubeId: string = YTSettings.YOUTUBE_URL_ID;
+  private get urlYouTube(): string {
+    return `https://www.googleapis.com/youtube/v3/playlistItems?key=${this.appSettings.youtubeApiKey}&part=snippet&maxResults=12&playlistId=`;
+  }
+  private get urlYouTubeId(): string {
+    return `https://www.googleapis.com/youtube/v3/videos?part=snippet&key=${this.appSettings.youtubeApiKey}&id=`;
+  }
   _seqNum!: number;
   public videoListId = signal<string>('');
   public record = new Webtube;

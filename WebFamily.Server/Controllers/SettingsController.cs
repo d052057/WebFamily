@@ -25,7 +25,9 @@ namespace WebFamily.Server.Controllers
         {
             return Ok(new PublicClientSettingsDto
             {
-                GoogleClientId = _config["Google:ClientId"] ?? string.Empty
+                GoogleClientId = _config["Google:ClientId"] ?? string.Empty,
+                GoogleMapsApiKey = _config["GoogleMaps:ApiKey"] ?? string.Empty,
+                YoutubeApiKey = _config["YouTube:ApiKey"] ?? string.Empty
             });
         }
     }

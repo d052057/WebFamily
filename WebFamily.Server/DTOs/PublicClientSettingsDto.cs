@@ -7,5 +7,7 @@ namespace WebFamily.Server.DTOs
     public class PublicClientSettingsDto
     {
         public string GoogleClientId { get; set; } = string.Empty;
+        public string GoogleMapsApiKey { get; set; } = string.Empty;
+        public string YoutubeApiKey { get; set; } = string.Empty;
     }
 }

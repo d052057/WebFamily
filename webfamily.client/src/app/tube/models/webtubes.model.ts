@@ -1,5 +1,3 @@
-import { environment } from '../../../environments/environment';
-
 export class Webtube {
   recordId: any;
   webTubeLink: string;
@@ -184,8 +182,4 @@ export interface IwebTubeSeries {
   seqNumber: number;
   dateTime: string;
   webTube: IwebTube;
-}
-export class YTSettings {
-  public static readonly YOUTUBE_URL = 'https://www.googleapis.com/youtube/v3/playlistItems?key=' + environment.YoutubeKey + '&part=snippet&maxResults=12&playlistId='
-  public static readonly YOUTUBE_URL_ID = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&key=' + environment.YoutubeKey + '&id='
 }

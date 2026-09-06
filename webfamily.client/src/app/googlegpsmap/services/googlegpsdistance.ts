@@ -1,18 +1,21 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
+import { AppSettingsService } from '../../shared/services/app-settings.service';
 import { GPSCoordinate, DistanceResult, TriangleResult } from '../interfaces/googlemapgps.interface';  
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleGPSDistanceService {
-  
+  private appSettings = inject(AppSettingsService);
+
   private readonly EARTH_RADIUS_KM = 6371;
   private readonly EARTH_RADIUS_MILES = 3959;
   private readonly KM_TO_MILES = 0.621371;
   private readonly KM_TO_METERS = 1000;
   private readonly SQM_TO_HECTARES = 10000;
-  public readonly googleMapApi = environment.GoogleMaps.ApiKey
+  public get googleMapApi(): string {
+    return this.appSettings.googleMapsApiKey;
+  }
   /**
    * Calculate distance between two GPS coordinates using Haversine formula
    * @param point1 First GPS coordinate

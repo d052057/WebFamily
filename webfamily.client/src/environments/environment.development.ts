@@ -14,7 +14,6 @@ export const environment = {
     bootstrap: 'Bootstrap 5.3.2',
     fontawesome: 'Font Awesome 6.5.1',
   },
-  YoutubeKey: 'AIzaSyCXRDoNDWUEDDu7LADEeCqgSzow4SP-x5g',
   mediaConfig: {
     medias: '/medias',
     AssetAlbumFolder: '/medias/musics',
@@ -30,8 +29,5 @@ export const environment = {
   },
   Facebook: {
     AppId: "1324213154862809"
-  },
-  "GoogleMaps": {
-    "ApiKey": "AIzaSyCn5OoQkllCMw8Z8vG60V13_4LXuravm_s"
   }
 };

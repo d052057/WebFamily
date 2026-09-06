@@ -16,7 +16,6 @@ export const environment = {
     angular: 'Angular 19.0.0',
     bootstrap: 'Bootstrap 5.3.3'
   },
-  YoutubeKey: 'AIzaSyCXRDoNDWUEDDu7LADEeCqgSzow4SP-x5g',
   mediaConfig: {
     medias: '/medias',
     AssetAlbumFolder: '/medias/musics',
@@ -32,8 +31,5 @@ export const environment = {
   },
   Facebook: {
     AppId: "1324213154862809"
-  },
-  "GoogleMaps": {
-    "ApiKey": "AIzaSyCn5OoQkllCMw8Z8vG60V13_4LXuravm_s"
   }
 };
