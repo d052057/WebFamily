@@ -7,6 +7,10 @@ interface PublicClientSettings {
   googleMapsApiKey: string;
   youtubeApiKey: string;
   facebookAppId: string;
+  mediaBasePath: string;
+  photoFolder: string;
+  rpmFolder: string;
+  rpmCoverFolder: string;
 }
 
 @Injectable({
@@ -14,7 +18,10 @@ interface PublicClientSettings {
 })
 export class AppSettingsService {
   private http = inject(HttpClient);
-  private settings: PublicClientSettings = { googleClientId: '', googleMapsApiKey: '', youtubeApiKey: '', facebookAppId: '' };
+  private settings: PublicClientSettings = {
+    googleClientId: '', googleMapsApiKey: '', youtubeApiKey: '', facebookAppId: '',
+    mediaBasePath: '', photoFolder: '', rpmFolder: '', rpmCoverFolder: ''
+  };
 
   get googleClientId(): string {
     return this.settings.googleClientId;
@@ -30,6 +37,22 @@ export class AppSettingsService {
 
   get facebookAppId(): string {
     return this.settings.facebookAppId;
+  }
+
+  get mediaBasePath(): string {
+    return this.settings.mediaBasePath;
+  }
+
+  get photoFolder(): string {
+    return this.settings.photoFolder;
+  }
+
+  get rpmFolder(): string {
+    return this.settings.rpmFolder;
+  }
+
+  get rpmCoverFolder(): string {
+    return this.settings.rpmCoverFolder;
   }
 
   private loadPromise: Promise<void> | null = null;

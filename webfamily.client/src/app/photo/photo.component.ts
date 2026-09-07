@@ -1,5 +1,5 @@
 ﻿import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { AppSettingsService } from '../shared/services/app-settings.service';
 import { ActivatedRoute } from '@angular/router';
 import { MediaService } from '../shared/services/media.service';
 import { PhotoGallery } from '../shared/photo-gallery/photo-gallery';
@@ -21,7 +21,8 @@ export interface Iphoto {
 export class PhotoComponent {
   private activatedRoute = inject(ActivatedRoute);
   private mediaService = inject(MediaService);
-  readonly mediaConfig = environment.mediaConfig;
+  private appSettings = inject(AppSettingsService);
+  readonly photoFolder = this.appSettings.photoFolder;
   fileFolder!: string | any;
     val: any = {
       photoFolder: '',
@@ -36,7 +37,7 @@ export class PhotoComponent {
       map(params => {
         const folder = params.get('folder');
         const menu = this.activatedRoute.snapshot.url[0]?.path;
-        const fileFolder = this.mediaConfig.AssetPhotoFolder + "/" + folder + "/";
+        const fileFolder = this.photoFolder + "/" + folder + "/";
         // Set service signals directly in the stream
         if (folder && menu && fileFolder) {
           this.mediaService.folder.set(folder);

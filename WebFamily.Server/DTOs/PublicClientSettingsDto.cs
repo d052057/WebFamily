@@ -10,5 +10,9 @@ namespace WebFamily.Server.DTOs
         public string GoogleMapsApiKey { get; set; } = string.Empty;
         public string YoutubeApiKey { get; set; } = string.Empty;
         public string FacebookAppId { get; set; } = string.Empty;
+        public string MediaBasePath { get; set; } = string.Empty;
+        public string PhotoFolder { get; set; } = string.Empty;
+        public string RpmFolder { get; set; } = string.Empty;
+        public string RpmCoverFolder { get; set; } = string.Empty;
     }
 }

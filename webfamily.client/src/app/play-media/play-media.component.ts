@@ -1,7 +1,7 @@
 ﻿import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoPlayerComponent } from '../shared/video-player/video-player.component';
 import { map } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { AppSettingsService } from '../shared/services/app-settings.service';
 import { MediaService } from '../shared/services/media.service';
 import { VideoSource } from '../shared/video-player/models/video.model';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +16,8 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class PlayMediaComponent {
   private mediaService = inject(MediaService);
   private activatedRoute = inject(ActivatedRoute);
-  readonly medias = environment.mediaConfig.medias;
+  private appSettings = inject(AppSettingsService);
+  readonly medias = this.appSettings.mediaBasePath;
 
   routeParamsResource = rxResource({
     stream: () => this.activatedRoute.paramMap.pipe(

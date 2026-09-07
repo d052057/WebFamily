@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Rpm } from '../interfaces/rpm.interface';
 import { map } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { environment } from '../../../environments/environment'; // Import environment if needed'
+import { AppSettingsService } from '../../shared/services/app-settings.service';
 @Injectable({
   providedIn: 'root'
 })
 export class RpmService {
   private http = inject(HttpClient);
-  readonly mediaConfig = environment.mediaConfig;
-  coverFolder = signal<any>(this.mediaConfig.AssetRpmCoverFolder); // signal
+  private appSettings = inject(AppSettingsService);
+  coverFolder = signal<any>(this.appSettings.rpmCoverFolder); // signal
   
   getRpmMenuRS = rxResource<any, any>({
     params: () =>

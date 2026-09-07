@@ -246,7 +246,7 @@ namespace WebFamily.Server
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = fileProvider,
-                RequestPath = "/medias",
+                RequestPath = ApplicationSettings.MediaRequestPath,
                 ContentTypeProvider = mimeProvider
             });
             app.UseStaticFiles(new StaticFileOptions
@@ -265,7 +265,7 @@ namespace WebFamily.Server
             app.UseDirectoryBrowser(new DirectoryBrowserOptions
             {
                 FileProvider = fileProvider,
-                RequestPath = "/medias"
+                RequestPath = ApplicationSettings.MediaRequestPath
             });
 
             // Alternative file server route
@@ -295,7 +295,7 @@ namespace WebFamily.Server
 
             // Fallback to Angular for non-media routes
             app.MapWhen(context =>
-                !context.Request.Path.StartsWithSegments("/medias") &&
+                !context.Request.Path.StartsWithSegments(ApplicationSettings.MediaRequestPath) &&
                 !context.Request.Path.StartsWithSegments("/media-files"),
                 builder =>
                 {

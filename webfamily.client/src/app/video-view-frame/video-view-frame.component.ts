@@ -3,7 +3,7 @@ import { VideoViewerComponent } from './video-viewer/video-viewer.component';
 import { VideoSource } from './models/video.model';
 
 import { MediaService } from '../shared/services/media.service';
-import { environment } from '../../environments/environment';
+import { AppSettingsService } from '../shared/services/app-settings.service';
 import { ActivatedRoute } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
@@ -25,7 +25,8 @@ export class VideoViewFrameComponent {
   private mediaService = inject(MediaService);
   private activatedRoute = inject(ActivatedRoute);
   selectedVideo: VideoSource | null = null;
-  readonly medias = environment.mediaConfig.medias;
+  private appSettings = inject(AppSettingsService);
+  readonly medias = this.appSettings.mediaBasePath;
 
   routeParamsResource = rxResource({
     params: () => ({}),

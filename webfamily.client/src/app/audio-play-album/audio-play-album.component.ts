@@ -2,7 +2,7 @@
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { AppSettingsService } from '../shared/services/app-settings.service';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 
@@ -25,7 +25,8 @@ export class AudioPlayAlbumComponent {
   mediaService = inject(MediaService);
 
   fileDir!: string;
-  medias = environment.mediaConfig.medias;
+  private appSettings = inject(AppSettingsService);
+  medias = this.appSettings.mediaBasePath;
   menuFolder!: string;
   menuSubFolder!: string;
   artist: string = '';

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using WebFamily.Server.DTOs;
+using WebFamily.Server.Helpers;
 
 namespace WebFamily.Server.Controllers
 {
@@ -9,10 +11,12 @@ namespace WebFamily.Server.Controllers
     public class SettingsController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly ApplicationSettings _appSettings;
 
-        public SettingsController(IConfiguration config)
+        public SettingsController(IConfiguration config, IOptions<ApplicationSettings> appSettings)
         {
             _config = config;
+            _appSettings = appSettings.Value;
         }
 
         // Anonymous on purpose: the login and register pages need this
@@ -23,12 +27,21 @@ namespace WebFamily.Server.Controllers
         [HttpGet("public")]
         public ActionResult<PublicClientSettingsDto> GetPublicSettings()
         {
+            // Only the URL-facing folder segments go to the client - never
+            // ApplicationSettings.MediaDrive (the physical drive letter/path),
+            // which stays server-side only. Each value is normalized via
+            // ToWebPath() here, once, so the client never has to deal with
+            // Windows-style backslashes from config or the database.
             return Ok(new PublicClientSettingsDto
             {
                 GoogleClientId = _config["Google:ClientId"] ?? string.Empty,
                 GoogleMapsApiKey = _config["GoogleMaps:ApiKey"] ?? string.Empty,
                 YoutubeApiKey = _config["YouTube:ApiKey"] ?? string.Empty,
-                FacebookAppId = _config["Facebook:AppId"] ?? string.Empty
+                FacebookAppId = _config["Facebook:AppId"] ?? string.Empty,
+                MediaBasePath = ApplicationSettings.MediaRequestPath,
+                PhotoFolder = $"{ApplicationSettings.MediaRequestPath}/{_appSettings.AssetPhotoFolder.ToWebPath()}",
+                RpmFolder = $"{ApplicationSettings.MediaRequestPath}/{_appSettings.AssetRpmFolder.ToWebPath()}",
+                RpmCoverFolder = $"{ApplicationSettings.MediaRequestPath}/{_appSettings.AssetRpmCoverFolder.ToWebPath()}"
             });
         }
     }

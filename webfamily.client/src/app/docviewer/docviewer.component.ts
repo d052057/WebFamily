@@ -1,5 +1,5 @@
 ﻿import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { AppSettingsService } from '../shared/services/app-settings.service';
 import { MediaService } from '../shared/services/media.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
@@ -16,7 +16,8 @@ import { map } from 'rxjs';
 })
 export class DocViewerComponent {
   processLoading: boolean = false;
-  readonly medias = environment.mediaConfig.medias;
+  private appSettings = inject(AppSettingsService);
+  readonly medias = this.appSettings.mediaBasePath;
   bookIndex: number = -1;
   private mediaService = inject(MediaService);
   private activatedRoute = inject(ActivatedRoute);
