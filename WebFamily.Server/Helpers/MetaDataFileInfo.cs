@@ -21,7 +21,7 @@ public class MetaDataFileInfo : IMetaDataFileInfo
     // Only characters with special meaning in a URL - NOT a whitelist, so
     // foreign-language characters (Thai, Khmer, etc.) are left completely
     // untouched. Extend this set if another problem character turns up.
-    private static readonly char[] UrlUnsafeChars = { '+', '%', '#' };
+    private static readonly char[] UrlUnsafeChars = { '+', '%', '#', '&', '=', ';' };
 
     // Exact file names commonly injected into folders by Windows (or other
     // tools) that are never real media/document content. Case-insensitive.

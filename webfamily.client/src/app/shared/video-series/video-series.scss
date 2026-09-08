@@ -4,46 +4,23 @@
   cursor: pointer;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform: translateY(60px) rotateX(10deg);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  background: #1a1a1a; // Dark base prevents gradient bleed behind transparent images
+  /* Initial state before Intersection Observer triggers */
   opacity: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+  transform: translateY(40px) scale(0.96);
+  will-change: transform, opacity;
+  /* Premium timing curve: quint ease-out (smooth finish) */
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
 
-.gallery-item.visible {
-  transform: translateY(0) rotateX(0deg);
-  opacity: 1;
-  animation: slideInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-@keyframes slideInUp {
-  0% {
-    transform: translateY(60px) rotateX(15deg) scale(0.9);
-    opacity: 0;
-  }
-
-  50% {
-    transform: translateY(-10px) rotateX(-5deg) scale(1.02);
-  }
-
-  100% {
-    transform: translateY(0) rotateX(0deg) scale(1);
+  &.visible {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
-}
-
-@keyframes tiltBounce {
-  0%, 20%, 50%, 80%, 100% {
-    /* transform: translateY(-15px) scale(1.05) rotateZ(8deg);*/
-  }
-
-  40% {
-    /*transform: translateY(-20px) scale(1.08) rotateZ(12deg);*/
-  }
-
-  60% {
-    /*transform: translateY(-12px) scale(1.03) rotateZ(5deg);*/
+  /* Refined, smooth hover transition (lift & pop effect) */
+  &:hover {
+    transform: translateY(-8px) scale(1.025);
+    box-shadow: 0 20px 38px rgba(0, 0, 0, 0.18);
   }
 }
 
@@ -51,90 +28,66 @@
   height: 250px; /* Constrain image height to leave room for title */
   width: 100%;
   object-fit: cover;
+  filter: brightness(0.92) contrast(1.02);
+  will-change: transform, filter;
+  transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), filter 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Smooth zoom on hover without raw tilt steps */
+  .gallery-item:hover & {
+    transform: scale(1.06);
+    filter: brightness(1) contrast(1.05) saturate(1.05);
+  }
 }
 
-/* Overlay */
+/* Premium Slide-Up Overlay */
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+  /* Modern clean overlay gradient */
+  background: linear-gradient(to top, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.4) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Start hidden and slightly shifted down */
   opacity: 0;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  backdrop-filter: blur(8px);
-}
-
-.gallery-item:hover .overlay {
-  opacity: 1;
-  animation: overlayPulse 0.6s ease-in-out;
-}
-
-@keyframes overlayPulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: scale(1);
+  transform: translateY(15px);
+  backdrop-filter: blur(0px);
+  will-change: transform, opacity, backdrop-filter;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1), backdrop-filter 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  /* Slide up and fade in smoothly together */
+  .gallery-item:hover & {
     opacity: 1;
+    transform: translateY(0);
+    backdrop-filter: blur(6px);
   }
 }
 
+/* Floating Overlay Action Icon */
 .overlay i {
   color: white;
-  font-size: 2.5rem;
-  transition: all 0.3s ease;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  animation: iconFloat 2s ease-in-out infinite;
+  font-size: 2rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  /* Icon scales up cleanly */
+  transform: scale(0.7);
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); // Slight cinematic bounce
+
+  .gallery-item:hover & {
+    transform: scale(1.15);
+    animation: smoothIconFloat 3s ease-in-out infinite 0.3s;
+  }
 }
 
-@keyframes iconFloat {
+/* Seamless background float cycle */
+@keyframes smoothIconFloat {
   0%, 100% {
-    transform: translateY(0px) scale(1);
+    transform: scale(1.15) translateY(0px);
   }
 
   50% {
-    transform: translateY(-5px) scale(1.1);
-  }
-}
-
-.gallery-item:hover .overlay i {
-  transform: scale(1.3) rotate(15deg);
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes backdropFadeIn {
-  0% {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-
-  100% {
-    opacity: 1;
-    backdrop-filter: blur(15px);
-  }
-}
-
-@keyframes controlsAppear {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.8);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1.15) translateY(-6px);
   }
 }
 
@@ -164,23 +117,25 @@
 
 .scroll-indicator {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.8);
+  bottom: 24px;
+  right: 24px;
+  background: #1a1a1a;
   color: white;
-  padding: 12px 16px;
-  border-radius: 25px;
+  padding: 10px 18px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  transition: opacity 0.3s ease;
+  font-size: 13px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 1000;
-}
 
-.scroll-indicator.hidden {
-  opacity: 0;
-  pointer-events: none;
+  &.hidden {
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+  }
 }
 
 .scroll-indicator i {

@@ -1,6 +1,5 @@
 import { JsonPipe } from '@angular/common';
 import { Component, HostListener, Input, OnInit, effect, signal, input, output, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-video-series',
@@ -73,7 +72,7 @@ export class VideoSeries implements OnInit {
     }
   }
 
-  getImgUrl(record: any): Observable<string> {
+  getImgUrl(record: any): string {
     if (record.thumbNailMaxresUrl.length > 0) {
       return record.thumbNailMaxresUrl;
     }
