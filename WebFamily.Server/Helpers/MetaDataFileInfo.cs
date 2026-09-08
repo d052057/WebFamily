@@ -18,9 +18,90 @@ public class MetaDataFileInfo : IMetaDataFileInfo
     private readonly MimeType _mimeTypeObj = new();
     private readonly ILogger<MetaDataFileInfo>? _logger;
 
+    // Only characters with special meaning in a URL - NOT a whitelist, so
+    // foreign-language characters (Thai, Khmer, etc.) are left completely
+    // untouched. Extend this set if another problem character turns up.
+    private static readonly char[] UrlUnsafeChars = { '+', '%', '#' };
+
+    // Exact file names commonly injected into folders by Windows (or other
+    // tools) that are never real media/document content. Case-insensitive.
+    private static readonly HashSet<string> JunkFileNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "thumbs.db",           // Windows thumbnail cache
+        "ehthumbs.db",         // Windows Media Center thumbnail cache
+        "ehthumbs_vista.db",
+        "desktop.ini",         // Windows folder customization
+        ".ds_store"            // macOS equivalent, in case content ever came from a Mac
+    };
+
+    // Extensions that are never real media/document content, regardless of
+    // the file name. Add to this list as new junk types turn up.
+    private static readonly HashSet<string> JunkExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".ini",
+        ".db",
+        ".tmp",
+        ".bak",
+        ".lnk"                 // shortcuts - previously checked separately in ProcessFile
+    };
+
+    /// <summary>
+    /// True for OS/tool-injected junk that should never be scanned as media:
+    /// known system file names (Thumbs.db, desktop.ini, ...), known junk
+    /// extensions (.ini, .db, .tmp, .bak, .lnk), and Office lock files
+    /// (~$Document.docx).
+    /// </summary>
+    private static bool IsJunkFile(string filePath)
+    {
+        var fileName = Path.GetFileName(filePath);
+        if (JunkFileNames.Contains(fileName)) return true;
+        if (JunkExtensions.Contains(Path.GetExtension(filePath))) return true;
+        if (fileName.StartsWith("~$")) return true; // Office lock files
+        return false;
+    }
+
     public MetaDataFileInfo(ILogger<MetaDataFileInfo>? logger = null)
     {
         _logger = logger;
+    }
+
+    /// <summary>
+    /// If filePath's file name contains any URL-unsafe character, renames the
+    /// file on disk (replacing only those characters with '_') and returns
+    /// the new path. Leaves the file and path untouched, and never throws,
+    /// if nothing needs changing or the rename can't be done.
+    /// </summary>
+    private string SanitizeFileName(string filePath)
+    {
+        var fileName = Path.GetFileName(filePath);
+        if (fileName.IndexOfAny(UrlUnsafeChars) < 0) return filePath;
+
+        var directory = Path.GetDirectoryName(filePath) ?? string.Empty;
+        var sanitizedName = new string(fileName.Select(c => UrlUnsafeChars.Contains(c) ? '_' : c).ToArray());
+
+        var newPath = Path.Combine(directory, sanitizedName);
+
+        // Avoid clobbering an existing file with the same sanitized name.
+        int suffix = 1;
+        while (System.IO.File.Exists(newPath) && !string.Equals(newPath, filePath, StringComparison.OrdinalIgnoreCase))
+        {
+            var nameOnly = Path.GetFileNameWithoutExtension(sanitizedName);
+            var ext = Path.GetExtension(sanitizedName);
+            newPath = Path.Combine(directory, $"{nameOnly}_{suffix}{ext}");
+            suffix++;
+        }
+
+        try
+        {
+            System.IO.File.Move(filePath, newPath);
+            _logger?.LogInformation("Renamed {OldName} to {NewName} (URL-unsafe characters)", fileName, Path.GetFileName(newPath));
+            return newPath;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogWarning(ex, "Could not rename {FilePath}; leaving as-is", filePath);
+            return filePath;
+        }
     }
 
     public List<Models.MetaDataInfo> SingleLevelDir(string folder)
@@ -32,8 +113,10 @@ public class MetaDataFileInfo : IMetaDataFileInfo
         var files = Directory.GetFiles(folder);
         var currentFolder = Path.GetFileName(folder.TrimEnd(Path.DirectorySeparatorChar));
 
-        foreach (var filePath in files)
+        foreach (var rawFilePath in files)
         {
+            if (IsJunkFile(rawFilePath)) continue;
+            var filePath = SanitizeFileName(rawFilePath);
             var md = ProcessFile(filePath, currentFolder);
             if (md != null) list.Add(md);
         }
@@ -49,8 +132,10 @@ public class MetaDataFileInfo : IMetaDataFileInfo
         // SearchOption.AllDirectories handles recursion natively and cleanly
         var files = Directory.GetFiles(folder, "*.*", SearchOption.AllDirectories);
 
-        foreach (var filePath in files)
+        foreach (var rawFilePath in files)
         {
+            if (IsJunkFile(rawFilePath)) continue;
+            var filePath = SanitizeFileName(rawFilePath);
             var fileFolder = Path.GetDirectoryName(filePath) ?? folder;
             var md = ProcessFile(filePath, fileFolder);
             if (md != null) list.Add(md);
@@ -66,7 +151,6 @@ public class MetaDataFileInfo : IMetaDataFileInfo
             // Skip symbolic links/shortcuts if needed
             var fileInfo = new FileInfo(filePath);
             if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint)) return null;
-            if (Path.GetExtension(filePath).Equals(".lnk", StringComparison.OrdinalIgnoreCase)) return null;
 
             TimeSpan duration = TimeSpan.Zero;
             bool isMp3 = Path.GetExtension(filePath).Equals(".mp3", StringComparison.OrdinalIgnoreCase);
