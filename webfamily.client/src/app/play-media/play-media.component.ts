@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoPlayerComponent } from '../shared/video-player/video-player.component';
 import { map } from 'rxjs';
 import { AppSettingsService } from '../shared/services/app-settings.service';
