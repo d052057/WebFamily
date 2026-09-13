@@ -33,7 +33,7 @@ export class HelpReminder implements OnInit {
         this.commandData = data;
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Failed to load data';
         this.loading = false;
       }

@@ -38,8 +38,8 @@ export class Googlegpsmap implements OnInit, AfterViewInit {
   private markers: any[] = [];
   private polylines: any[] = [];
   private googlePlacesService!: any;
-  private geocoder!: any;
-  private infoWindow!: any;
+  /*private geocoder!: any;*/
+  /*private infoWindow!: any;*/
   private readonly googleMapApi = this.gpsService.googleMapApi;
   // User Profile
   userProfile: UserProfile | any | null = null;
@@ -90,8 +90,8 @@ export class Googlegpsmap implements OnInit, AfterViewInit {
        
         const firstName = decodedToken.given_name;
         const lastName = decodedToken.family_name;
-        const nameId = decodedToken.nameid;
-        const role = decodedToken.role;
+        /*const nameId = decodedToken.nameid;*/
+        /*const role = decodedToken.role;*/
         const name = (firstName + lastName).toLowerCase();
         //console.log('email:', email);
         //console.log('firstName:', firstName);
@@ -373,7 +373,7 @@ export class Googlegpsmap implements OnInit, AfterViewInit {
     try {
       // This would integrate with Google Sign-In API
       // For now, we'll simulate a user profile and load from backend
-      const userId = 'admin'; // This would come from Google Sign-In
+      /*const userId = 'admin'; */// This would come from Google Sign-In
 
       // Load user places from backend
       this.loadUserPlaces(this.profile);
@@ -572,8 +572,8 @@ export class Googlegpsmap implements OnInit, AfterViewInit {
 
     // Initialize services
     this.googlePlacesService = new google.maps.places.PlacesService(this.map);
-    this.geocoder = new google.maps.Geocoder();
-    this.infoWindow = new google.maps.InfoWindow();
+    //this.geocoder = new google.maps.Geocoder();
+    //this.infoWindow = new google.maps.InfoWindow();
 
     // Add click handler for manual point placement
     this.map.addListener('click', (event: any) => {
@@ -939,7 +939,7 @@ export class Googlegpsmap implements OnInit, AfterViewInit {
     console.log('Saving to My Maps...');
     // Implementation would depend on Google My Maps API availability
   }
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
   onSearch(searchStr: string): void {

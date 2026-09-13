@@ -287,7 +287,7 @@
                  [language]="langData[langSelected].code"
                  style="width:100% !important">
           <span matSuffix style="display: flex; padding-right:1rem;">
-            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+            <mat-select (selectionChange)="onLangSelectChange()" [(value)]="langSelected">
               <mat-select-trigger>
                 <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
               </mat-select-trigger>

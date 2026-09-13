@@ -1,5 +1,5 @@
-﻿// scrolling-gallery.component.ts
-import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, ElementRef, ViewChild, AfterViewInit, input, ChangeDetectionStrategy } from '@angular/core';
+// scrolling-gallery.component.ts
+import { Component, OnInit, OnDestroy, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { RpmCoverItem } from '../interfaces/rpm.interface'; // Adjust the import path as necessary
 

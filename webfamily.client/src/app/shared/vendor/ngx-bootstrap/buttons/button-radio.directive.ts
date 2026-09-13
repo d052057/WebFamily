@@ -10,7 +10,6 @@ import {
   Optional,
   Provider,
   Renderer2,
-  SimpleChanges,
   input,
   effect
 } from '@angular/core';
@@ -177,7 +176,7 @@ export class ButtonRadioDirective implements ControlValueAccessor, OnChanges {
   }
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges() {
     // Keep for compatibility
   }
 

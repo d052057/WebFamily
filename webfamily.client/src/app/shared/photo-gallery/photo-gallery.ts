@@ -1,5 +1,5 @@
 import {
-  Component, HostListener, Input, OnInit, signal, computed,
+  Component, HostListener, signal, computed,
   ChangeDetectionStrategy, ElementRef, ViewChildren, QueryList, AfterViewInit, input, effect
 } from '@angular/core';
 import { SafePipe } from '../../shared/pipes/safe.pipe';

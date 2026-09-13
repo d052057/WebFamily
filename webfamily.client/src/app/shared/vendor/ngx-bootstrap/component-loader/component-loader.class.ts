@@ -14,9 +14,7 @@ import {
   StaticProvider,
   TemplateRef,
   Type,
-  ViewContainerRef,
-  ChangeDetectorRef,
-  inject
+  ViewContainerRef
 } from '@angular/core';
 
 import { PositioningOptions, PositioningService } from 'ngx-bootstrap/positioning';

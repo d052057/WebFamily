@@ -1,4 +1,4 @@
-import { Component, OnDestroy, inject, signal, viewChild, computed, effect, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, inject, signal, viewChild, effect, ChangeDetectionStrategy } from '@angular/core';
 import { TubeService } from './services/tube.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -122,7 +122,7 @@ export class TubeComponent implements OnDestroy {
     this.searchVal.set(searchStr);
   }
 
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
 

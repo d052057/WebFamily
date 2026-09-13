@@ -9,10 +9,10 @@ export class GoogleGPSDistanceService {
   private appSettings = inject(AppSettingsService);
 
   private readonly EARTH_RADIUS_KM = 6371;
-  private readonly EARTH_RADIUS_MILES = 3959;
+  /*private readonly EARTH_RADIUS_MILES = 3959;*/
   private readonly KM_TO_MILES = 0.621371;
   private readonly KM_TO_METERS = 1000;
-  private readonly SQM_TO_HECTARES = 10000;
+  /*private readonly SQM_TO_HECTARES = 10000;*/
   public get googleMapApi(): string {
     return this.appSettings.googleMapsApiKey;
   }
@@ -144,12 +144,12 @@ export class GoogleGPSDistanceService {
    */
   private calculateSphericalTriangleArea(pointA: GPSCoordinate, pointB: GPSCoordinate, pointC: GPSCoordinate): number {
     // Convert to radians
-    const lat1 = this.degreesToRadians(pointA.latitude);
-    const lon1 = this.degreesToRadians(pointA.longitude);
-    const lat2 = this.degreesToRadians(pointB.latitude);
-    const lon2 = this.degreesToRadians(pointB.longitude);
-    const lat3 = this.degreesToRadians(pointC.latitude);
-    const lon3 = this.degreesToRadians(pointC.longitude);
+    //const lat1 = this.degreesToRadians(pointA.latitude);
+    //const lon1 = this.degreesToRadians(pointA.longitude);
+    //const lat2 = this.degreesToRadians(pointB.latitude);
+    //const lon2 = this.degreesToRadians(pointB.longitude);
+    //const lat3 = this.degreesToRadians(pointC.latitude);
+    //const lon3 = this.degreesToRadians(pointC.longitude);
 
     // Calculate the spherical excess using L'Huilier's theorem
     const a = this.haversineDistance(pointA, pointB) / this.EARTH_RADIUS_KM; // Angular distance

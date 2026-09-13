@@ -46,7 +46,7 @@ export class TubeService implements OnInit {
     stream: ({ params }) => {
       if (params.videoListId.length > 0) {
         let url = this.urlYouTube + params.videoListId;
-        let seqNum = 0;
+        /*let seqNum = 0;*/
         return this.http.get(url)
           .pipe(
             expand((response: any) =>
@@ -124,16 +124,9 @@ export class TubeService implements OnInit {
   }
 
   updateWebtube(record: Webtube): Observable<Webtube> {
-    let header = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
     return this.http.put<Webtube>('/Tube/Update', JSON.stringify(record), this.httpOptions)
   }
   deleteWebtube(id: string) {
-    let header = new HttpHeaders({
-     'Content-Type': ''
-    });
-
     return this.http.delete<any>('/Tube/Delete/' +  `${id}`)
   }
 }

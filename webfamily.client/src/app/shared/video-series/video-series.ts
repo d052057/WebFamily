@@ -1,5 +1,4 @@
-import { JsonPipe } from '@angular/common';
-import { Component, HostListener, Input, OnInit, effect, signal, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, Input, OnInit, effect, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-video-series',
@@ -23,7 +22,7 @@ export class VideoSeries implements OnInit {
   visibleImages: boolean[] = [];
 
   @HostListener('window:scroll')
-  onWindowScroll(event?: Event) {
+  onWindowScroll() {
     this.checkVisibility();
   }
 

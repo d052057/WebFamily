@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Router, RouterStateSnapshot } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { AccountService } from 'src/app/account/account.service';
 import { SharedService } from '../shared.service';
@@ -15,7 +15,7 @@ export class AuthorizationGuard {
 
 
   canActivate(
-    route: ActivatedRouteSnapshot,
+    /*route: ActivatedRouteSnapshot,*/
     state: RouterStateSnapshot): Observable<boolean> {
     return this.accountService.user$.pipe(
       map((user: User | null) => {

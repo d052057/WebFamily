@@ -1,4 +1,4 @@
-import { Directive, ElementRef, OnDestroy, input, output, Input, OnChanges } from '@angular/core';
+import { Directive, OnDestroy, input, output, Input, OnChanges } from '@angular/core';
 
 @Directive({
   selector: '[appVoice]'
@@ -34,7 +34,7 @@ export class VoiceDirective implements OnDestroy, OnChanges {
     }
   };
 
-  constructor(private el: ElementRef) {
+  constructor() {
     const SpeechRecognition = (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) return;
     this.recognition = new SpeechRecognition();

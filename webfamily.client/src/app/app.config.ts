@@ -19,12 +19,12 @@ import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MenuService } from './shared/services/menu.service';
 import { provideRouter, withPreloading, NoPreloading } from '@angular/router';
 import { ModalModule } from 'ngx-bootstrap/modal';
-export function initializeApp(menuService: MenuService): () => Promise<void> {
-  return () => new Promise<void>((resolve) => {
-    // Give the service a moment to initialize
-    setTimeout(() => resolve(), 100);
-  });
-}
+//export function initializeApp(menuService: MenuService): () => Promise<void> {
+//  return () => new Promise<void>((resolve) => {
+//    // Give the service a moment to initialize
+//    setTimeout(() => resolve(), 100);
+//  });
+//}
 function initializeIcons() {
 
   const iconRegistry = inject(MatIconRegistry);

@@ -12,7 +12,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { languages } from '../../../app/models/languages';
-import { Subject } from 'rxjs';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { VoiceDirective } from '../../shared/directives/voice.directive';
@@ -50,7 +49,6 @@ export class TodoMaintComponent implements OnInit {
   fldform!: UntypedFormGroup;
   submitted = false;
   dateValue = new Date();
-  private destroy$ = new Subject<void>();
   searchVal = signal('');
   ngOnInit() {
     this.fldform = this.formBuilder.group({

@@ -1,8 +1,8 @@
-﻿import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-import { map, Subject, takeUntil } from 'rxjs';
+import { map } from 'rxjs';
 import { MediaService } from '../../shared/services/media.service';
 
 @Component({

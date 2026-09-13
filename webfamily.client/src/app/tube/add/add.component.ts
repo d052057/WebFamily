@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControlOptions, FormControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import urlParser, { YouTubeParseResult } from "js-video-url-parser";
 import { finalize, map } from 'rxjs/operators';
@@ -260,7 +260,7 @@ export class AddComponent implements OnInit {
       )
   }
 
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
   checkMic(field: string): void {

@@ -1,4 +1,4 @@
-﻿import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';

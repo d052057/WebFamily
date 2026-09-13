@@ -5,8 +5,7 @@ import {
   HostListener,
   OnInit,
   Provider,
-  input,
-  effect
+  input
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 

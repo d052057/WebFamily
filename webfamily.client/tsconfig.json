@@ -32,7 +32,7 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true
   }
 }

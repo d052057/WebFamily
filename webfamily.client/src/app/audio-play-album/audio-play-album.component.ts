@@ -1,4 +1,4 @@
-﻿import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AudioPlayerComponent } from '../shared/audio-player/audio-player.component';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -6,12 +6,12 @@ import { AppSettingsService } from '../shared/services/app-settings.service';
 import { MediaService } from '../shared/services/media.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-interface RouteParams {
-  menuFolder: string | null;
-  menuSubFolder: string | null;
-  artist: string | null;
-  fileDir: string;
-}
+//interface RouteParams {
+//  menuFolder: string | null;
+//  menuSubFolder: string | null;
+//  artist: string | null;
+//  fileDir: string;
+//}
 
 @Component({
   selector: 'app-audio-play-album',

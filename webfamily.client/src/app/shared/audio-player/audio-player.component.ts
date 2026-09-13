@@ -1,5 +1,5 @@
-﻿import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Subject, from } from 'rxjs';
+import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Subject } from 'rxjs';
 import { AudioItem, AutoplayCapability } from './models/audio.model';
 import { TimeConversionPipe } from './../pipes/time-conversion.pipe';
 import { EventListenerService } from '../services/event-handler.service';
@@ -673,33 +673,33 @@ export class AudioPlayerComponent {
     }
   }
 
-  private attemptAutoplay(): void {
-    if (!this.audioPlayer()) return;
+  //private attemptAutoplay(): void {
+  //  if (!this.audioPlayer()) return;
 
-    const audio = this.audioPlayer().nativeElement;
+  //  const audio = this.audioPlayer().nativeElement;
 
-    audio.play()
-      .then(() => {
-        this.playEvent.emit();
-      })
-      .catch(error => {
-        console.warn('Autoplay with sound was prevented:', error);
+  //  audio.play()
+  //    .then(() => {
+  //      this.playEvent.emit();
+  //    })
+  //    .catch(error => {
+  //      console.warn('Autoplay with sound was prevented:', error);
 
-        if (!audio.muted) {
-          audio.muted = true;
-          this.isMute.set(true);
+  //      if (!audio.muted) {
+  //        audio.muted = true;
+  //        this.isMute.set(true);
 
-          audio.play()
-            .then(() => {
-              console.info('Autoplay succeeded with muted audio');
-              this.playEvent.emit();
-            })
-            .catch(mutedError => {
-              console.error('Even muted autoplay was prevented:', mutedError);
-            });
-        }
-      });
-  }
+  //        audio.play()
+  //          .then(() => {
+  //            console.info('Autoplay succeeded with muted audio');
+  //            this.playEvent.emit();
+  //          })
+  //          .catch(mutedError => {
+  //            console.error('Even muted autoplay was prevented:', mutedError);
+  //          });
+  //      }
+  //    });
+  //}
 
   // =============================================================================
   // UTILITY METHODS
@@ -728,30 +728,30 @@ export class AudioPlayerComponent {
     }
   }
 
-  private async getAudioDuration(src: string): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const audioTemp = new Audio();
+  //private async getAudioDuration(src: string): Promise<number> {
+  //  return new Promise((resolve, reject) => {
+  //    const audioTemp = new Audio();
 
-      const cleanup = () => {
-        this.eventListenerService.unregisterHandlers(audioTemp);
-      };
+  //    const cleanup = () => {
+  //      this.eventListenerService.unregisterHandlers(audioTemp);
+  //    };
 
-      const onMetadata = () => {
-        cleanup();
-        resolve(Math.floor(audioTemp.duration || 0));
-      };
+  //    const onMetadata = () => {
+  //      cleanup();
+  //      resolve(Math.floor(audioTemp.duration || 0));
+  //    };
 
-      const onError = () => {
-        cleanup();
-        reject(new Error(`Failed to load audio: ${src}`));
-      };
+  //    const onError = () => {
+  //      cleanup();
+  //      reject(new Error(`Failed to load audio: ${src}`));
+  //    };
 
-      this.eventListenerService.registerHandler(audioTemp, 'loadedmetadata', onMetadata);
-      this.eventListenerService.registerHandler(audioTemp, 'error', onError);
+  //    this.eventListenerService.registerHandler(audioTemp, 'loadedmetadata', onMetadata);
+  //    this.eventListenerService.registerHandler(audioTemp, 'error', onError);
 
-      audioTemp.src = src;
-    });
-  }
+  //    audioTemp.src = src;
+  //  });
+  //}
 
   private cleanup(): void {
     this.destroy$.next();
@@ -762,7 +762,7 @@ export class AudioPlayerComponent {
     }
   }
   /* audio dictation*/
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
   onSearch(searchStr: string): void {

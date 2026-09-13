@@ -1,4 +1,4 @@
-import { Injectable, OnInit,  inject, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { menuType, mediaMetaDatum } from '../../models';
 import { map, Observable, of } from 'rxjs';

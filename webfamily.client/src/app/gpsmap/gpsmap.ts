@@ -300,11 +300,14 @@ export class GPSMapComponent implements OnInit, AfterViewInit {
     });
 
     // Add mouse wheel zoom with custom options
-    this.map.on('wheel', (e) => {
+    //this.map.on('wheel', (e) => {
+    //  // You can add custom wheel zoom behavior here if needed
+    //  // The default behavior is already enabled above
+    //});
+    this.map.on('wheel', () => {
       // You can add custom wheel zoom behavior here if needed
       // The default behavior is already enabled above
     });
-
     // Define different map layers
     const streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors',
@@ -385,8 +388,8 @@ export class GPSMapComponent implements OnInit, AfterViewInit {
       options: {
         position: 'topright'
       },
-
-      onAdd: (map: L.Map) => {
+      /*onAdd: (map: L.Map) => {*/
+      onAdd: () => {
         const div = L.DomUtil.create('div', 'leaflet-control-fullscreen leaflet-bar');
         div.innerHTML = '<a href="#" title="Toggle Fullscreen" role="button" aria-label="Toggle fullscreen">⛶</a>';
 

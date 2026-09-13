@@ -605,7 +605,7 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   //}
 
   /* audio dictation*/
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
   onSearch(searchStr: string): void {

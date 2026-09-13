@@ -3,7 +3,7 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { mergeMap, Observable, take } from 'rxjs';
 import { AccountService } from 'src/app/account/account.service';
 import { environment } from '../../../environments/environment';
-import { jwtDecode } from 'jwt-decode';
+/*import { jwtDecode } from 'jwt-decode';*/
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -27,7 +27,7 @@ export class JwtInterceptor implements HttpInterceptor {
       take(1),
       mergeMap(user => {
         if (user && user.jwt) {
-          const decodedToken: any = jwtDecode(user.jwt);
+          /*const decodedToken: any = jwtDecode(user.jwt);*/
           //console.log('Adding auth header. Roles:', decodedToken.role);
 
           const clonedRequest = request.clone({

@@ -1,4 +1,4 @@
-﻿import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoViewerComponent } from './video-viewer/video-viewer.component';
 import { VideoSource } from './models/video.model';
 
