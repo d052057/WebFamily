@@ -96,7 +96,7 @@ export class TodoComponent {
   }
   deleteTodo(id: number) {
     this.service.deleteTodo(id).subscribe({
-      next: (res) => {
+      next: () => {
         this.snackbar.openSnackBar('Employee deleted!', 'done');
         this.service.todoDataRS.reload();
       },
@@ -135,7 +135,7 @@ export class TodoComponent {
       },
     });
   }
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
   onSearch(searchStr: string): void {

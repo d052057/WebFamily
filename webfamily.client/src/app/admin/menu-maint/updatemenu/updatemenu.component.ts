@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MediaService } from '../../../shared/services/media.service';
 import { finalize, first } from 'rxjs';
 import { MenuService } from '../../../shared/services/menu.service';

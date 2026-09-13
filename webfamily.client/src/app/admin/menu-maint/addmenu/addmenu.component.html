@@ -53,7 +53,7 @@
             placeholder="{{ langPlaceHolder }}"
             [class.is-invalid]="submitted && f.menuTitle.touched && f.menuTitle.errors" />
           <span matSuffix style="display: flex; padding-right:1rem;">
-            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+            <mat-select (selectionChange)="onLangSelectChange()" [(value)]="langSelected">
               <mat-select-trigger>
                 <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
               </mat-select-trigger>

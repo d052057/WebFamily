@@ -1,8 +1,5 @@
-﻿import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, Signal, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { AbstractControl, AbstractControlOptions, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { SnackService } from '../../../shared/services/snack.service';
-import { MediaService } from '../../../shared/services/media.service';
-import { AccountService } from '../../../account/account.service';
 import { MenuService } from '../../../shared/services/menu.service';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,9 +19,6 @@ import { VoiceDirective } from '../../../shared/directives/voice.directive';
   encapsulation: ViewEncapsulation.None
 })
 export class AddmenuComponent implements OnInit, OnDestroy {
-  private mediaService = inject(MediaService);
-  private toastr = inject(SnackService);
-  private accountService = inject(AccountService);
   private menuService = inject(MenuService);
   private formBuilder = inject(UntypedFormBuilder);
   menuSelectedIndex: number = -1;
@@ -152,7 +146,7 @@ export class AddmenuComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langPlaceHolder = this.langData[this.langSelected].search;
   }
   checkMic(): void {

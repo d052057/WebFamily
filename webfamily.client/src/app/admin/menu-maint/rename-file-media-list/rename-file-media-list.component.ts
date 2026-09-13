@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, viewChild, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, viewChild, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SnackService } from '../../../shared/services/snack.service';
 import { MediaService } from '../../../shared/services/media.service';
@@ -144,7 +144,7 @@ export class RenameFileMediaListComponent implements OnInit, OnDestroy {
     this.searchVal.set(searchStr);
   }
 
-  onLangSelectChange(event: any) {
+  onLangSelectChange() {
     this.langSearch = this.langData[this.langSelected].search;
   }
 

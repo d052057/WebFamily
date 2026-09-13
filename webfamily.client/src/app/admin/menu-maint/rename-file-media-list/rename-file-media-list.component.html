@@ -45,7 +45,7 @@
 
         <div matSuffix class="suffix-container">
             <!-- Language Select -->
-            <mat-select (selectionChange)="onLangSelectChange($event)" [(value)]="langSelected">
+            <mat-select (selectionChange)="onLangSelectChange()" [(value)]="langSelected">
                 <mat-select-trigger>
                     <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon>
                     {{ langData[langSelected].display }}

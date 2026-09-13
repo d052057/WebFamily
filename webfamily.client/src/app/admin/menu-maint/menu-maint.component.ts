@@ -1,4 +1,4 @@
-﻿import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 @Component({
     selector: 'app-menu-maint',

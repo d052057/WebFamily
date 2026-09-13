@@ -1,4 +1,4 @@
-﻿import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeoAdminService, SeoData } from '../../shared/services/seo-admin';
 
@@ -142,7 +142,7 @@ export class SeoAdminComponent implements OnInit {
     if (this.isCreating) {
       // Create new entry
       this.seoAdminService.createSeoData(formValue.key, seoData).subscribe({
-        next: (response) => {
+        next: () => {
           this.showMessage('SEO entry created successfully', 'success');
           this.loading = false;
           this.isCreating = false;
@@ -158,7 +158,7 @@ export class SeoAdminComponent implements OnInit {
     } else {
       // Update existing entry
       this.seoAdminService.updateSeoData(formValue.key, seoData).subscribe({
-        next: (response) => {
+        next: () => {
           this.showMessage('SEO entry updated successfully', 'success');
           this.loading = false;
           this.isEditing = false;
@@ -186,7 +186,7 @@ export class SeoAdminComponent implements OnInit {
 
     this.loading = true;
     this.seoAdminService.deleteSeoData(this.selectedKey).subscribe({
-      next: (response) => {
+      next: () => {
         this.showMessage('SEO entry deleted successfully', 'success');
         this.loading = false;
         this.selectedKey = '';
