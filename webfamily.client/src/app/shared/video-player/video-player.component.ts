@@ -592,13 +592,15 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   }
 
   // TrackBy functions for optimal *ngFor performance
-  trackByVideo = (index: number, video: VideoSource): any => video.id;
+  /* trackByVideo = (index: number, video: VideoSource): any => video.id;*/
+  trackByVideo = (video: VideoSource): any => video.id;
   trackByCaption = (index: number, caption: any): any => caption.src || index;
-  trackByAudioTrack = (index: number, track: AudioTrack): any => track.id;
+  /*trackByAudioTrack = (index: number, track: AudioTrack): any => track.id;*/
+  trackByAudioTrack = ( track: AudioTrack): any => track.id;
   trackByTextTrack = (index: number, track: TextTrack): any => track.id || track.label || index;
   trackByChapter = (index: number, chapter: any): any => chapter.start || index;
-  trackBySpeed = (index: number, speed: number): number => speed;
-
+  //trackBySpeed = (index: number, speed: number): number => speed;
+  trackBySpeed = (speed: number): number => speed;
   // Expose private signals for template access (needed for thumbnail)
   //get _showThumbnail() {
   //  return this._showThumbnail;

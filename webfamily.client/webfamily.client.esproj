@@ -12,4 +12,7 @@
       <UserProperties angular_1json__JsonSchema="" />
     </VisualStudio>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Remove="src\app\shared\services\message.service.ts" />
+  </ItemGroup>
 </Project>

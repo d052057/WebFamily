@@ -8,7 +8,6 @@ import { SharedModule } from './shared/shared.module';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MessageService } from './shared/services/message.service';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
 import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -82,7 +81,6 @@ export const appConfig: ApplicationConfig = {
       useClass: LoadingInterceptor,
       multi: true
     },
-    MessageService,
     MenuService
   ]
 };
