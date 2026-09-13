@@ -23,7 +23,7 @@ export class Positioning {
     hostElement: HTMLElement | null,
     targetElement: HTMLElement | null,
     position: string,
-    appendToBody?: boolean,
+    _appendToBody?: boolean,
     options?: Options
   ): Data | undefined {
     const chainOfModifiers = [flip, shift, preventOverflow, arrow];
