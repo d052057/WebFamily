@@ -285,6 +285,14 @@ namespace WebFamily.Server
             mimeProvider.Mappings[".flv"] = "video/x-flv";
             mimeProvider.Mappings[".mkv"] = "video/mp4";
             mimeProvider.Mappings[".mov"] = "video/mp4";
+            // ASP.NET Core's default StaticFileMiddleware 404s on unrecognized extensions
+            // (ServeUnknownFileTypes is false by default). These are shipped by
+            // ngx-extended-pdf-viewer / pdf.js under wwwroot/assets and aren't in the default map.
+            mimeProvider.Mappings[".ftl"] = "text/plain";                        // Fluent localization files
+            mimeProvider.Mappings[".bcmap"] = "application/octet-stream";        // CJK glyph maps
+            mimeProvider.Mappings[".pfb"] = "application/x-font-type1";          // Type1 fonts
+            mimeProvider.Mappings.TryAdd(".mjs", "text/javascript");
+            mimeProvider.Mappings.TryAdd(".wasm", "application/wasm");
             return mimeProvider;
         }
 
