@@ -39,12 +39,12 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/ngx-extended-pdf-viewer/assets/",
-                "output": "/assets/"
+                "output": "assets/"
               },
               {
                 "glob": "**/*",
                 "input": "public",
-                "output": "/"
+                "output": ""
               }
             ],
             "styles": [
