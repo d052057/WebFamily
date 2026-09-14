@@ -16,11 +16,10 @@ using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
-// Local development secrets (connection strings, API keys, JWT key, etc.)
-// This file is git-ignored - see .gitignore - and lives only on this machine.
-// It's optional so the app still starts fine if it doesn't exist yet.
-builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
-
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+}
 // Configure services
 builder.Services.ConfigureDatabaseServices(builder.Configuration);
 builder.Services.ConfigureDependencyInjectionServices();
@@ -31,6 +30,7 @@ builder.Services.ConfigureCorsServices();
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 builder.Services.ConfigureReverseProxyServices(builder.Configuration);
 var app = builder.Build();
+
 MenuMemoryStore.Initialize(app.Services.GetRequiredService<ILogger<Program>>());
 // Configure pipeline
 app.ConfigureRequestPipeline(builder.Configuration);
