@@ -39,7 +39,7 @@
     "leaflet": "^1.9.4",
     "material-icons": "^1.13.14",
     "moment": "^2.30.1",
-    "ngx-extended-pdf-viewer": "^28.1.2",
+    "ngx-extended-pdf-viewer": "^30.0.1",
     "ngx-pagination": "^6.0.3",
     "run-script-os": "*",
     "rxjs": "~7.8.2",
