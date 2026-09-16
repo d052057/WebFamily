@@ -1,31 +1,28 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Service } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
-import { Urlbase } from '../../../../shared/services/urlbase'
 
-@Service()
+@Injectable({
+  providedIn: 'root'
+})
 export class VideoDuration {
   private http = inject(HttpClient);
-  private urlbase = inject(Urlbase);
-  private apiBase!: string;
-  constructor() {
-    const segment = this.urlbase.baseUrl();
-    this.apiBase = segment ? `/${segment}/api/menu` : '/api/menu';
 
-  }
+  constructor() { }
   getMediaView(menu: string) {
     switch (menu) {
       case 'videos':
-        return this.http.get(`${this.apiBase}/videosView`)
+        return this.http.get('/api/menu/videosView')
         break;
       case 'movies':
-        return this.http.get(`${this.apiBase}/moviesView`)
+        return this.http.get('/api/menu/moviesView')
         break;
       default:
-        return this.http.get(`${this.apiBase}/musicsView`)
+        return this.http.get('/api/menu/musicsView')
     }
   }
   updateDuration(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiBase}/updateMediasDuration`, data)
+    return this.http.post<any>('/api/menu/updateMediasDuration', data)
   }
 }
+

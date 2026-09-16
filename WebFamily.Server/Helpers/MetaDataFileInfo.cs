@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -153,18 +153,20 @@ public class MetaDataFileInfo : IMetaDataFileInfo
             if (fileInfo.Attributes.HasFlag(FileAttributes.ReparsePoint)) return null;
 
             TimeSpan duration = TimeSpan.Zero;
-            bool isMp3 = Path.GetExtension(filePath).Equals(".mp3", StringComparison.OrdinalIgnoreCase);
+            var extension = Path.GetExtension(filePath);
+            bool isRepairable = RepairableTypes.ContainsKey(extension);
 
             duration = TryReadDuration(filePath, out bool readable, out var details);
 
             if (!readable)
             {
                 // TagLib couldn't get a duration. Common causes: VBR MP3s with
-                // no Xing/VBRI header, or stray junk bytes (e.g. leftover MP4
-                // atom fragments) embedded mid-stream from a buggy export tool.
+                // no Xing/VBRI header, a corrupt FLAC STREAMINFO block, or a
+                // missing/incomplete Cues index in an MKV/WebM (e.g. from an
+                // interrupted recording).
                 _logger?.LogWarning("No duration found for {FilePath} ({Details})", filePath, details);
 
-                if (isMp3 && TryRepairMp3(filePath))
+                if (isRepairable && TryRepairMedia(filePath, extension))
                 {
                     // Repair replaced the file in place - read it fresh, once.
                     duration = TryReadDuration(filePath, out readable, out _);
@@ -196,6 +198,20 @@ public class MetaDataFileInfo : IMetaDataFileInfo
 
     private TimeSpan TryReadDuration(string filePath, out bool readable, out string details)
     {
+        // Only audio/video files have a meaningful "duration" - skip everything
+        // else (pdf, txt, images, etc.) before ever touching TagLib, since
+        // TagLib can throw or behave unpredictably on non-media files.
+        var mimeType = _mimeTypeObj.Get(filePath);
+        bool isAudioOrVideo = mimeType.StartsWith("audio/", StringComparison.OrdinalIgnoreCase)
+                            || mimeType.StartsWith("video/", StringComparison.OrdinalIgnoreCase);
+
+        if (!isAudioOrVideo)
+        {
+            readable = false;
+            details = $"skipped: not audio/video ({mimeType})";
+            return TimeSpan.Zero;
+        }
+
         try
         {
             using var tlFile = TagLib.File.Create(filePath);
@@ -224,19 +240,48 @@ public class MetaDataFileInfo : IMetaDataFileInfo
         }
     }
 
-    /// <summary>
-    /// Attempts to repair an MP3 with an unreadable duration by fully
-    /// re-encoding it through ffmpeg (input -> temp file -> input). A full
-    /// re-encode - not a stream copy - is required, since it's what
-    /// discards embedded junk bytes (e.g. stray MP4 atom fragments) that a
-    /// stream copy would otherwise preserve. Expects ffmpeg.exe to sit in
-    /// the application's root/base directory. Returns true only if the
-    /// repaired file was produced and swapped in; the original is left
-    /// untouched if anything goes wrong.
-    /// </summary>
-    private bool TryRepairMp3(string filePath)
+    private enum RepairStrategy
     {
-        var tempPath = filePath + ".repairing.mp3";
+        // Rewrite the audio/video streams from scratch. Correct fix when the
+        // stream data itself (or its embedded metadata) is corrupt - e.g. a
+        // VBR MP3 missing its Xing/VBRI header, or a FLAC with a damaged
+        // STREAMINFO block.
+        ReEncode,
+
+        // Rewrite only the container (index/headers), leaving every
+        // audio/video sample byte-for-byte untouched. Correct fix when the
+        // problem is a missing/incomplete index - e.g. a Matroska/WebM file
+        // left without a proper Cues element after an interrupted recording.
+        // Far cheaper than a re-encode, and lossless by definition.
+        Remux
+    }
+
+    // Extension -> repair configuration. AudioCodec is only used for
+    // ReEncode; Remux always uses stream copy regardless of codec.
+    private static readonly Dictionary<string, (RepairStrategy Strategy, string InputFormat, string? AudioCodec)> RepairableTypes =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            [".mp3"]  = (RepairStrategy.ReEncode, "mp3",      "libmp3lame"),
+            [".flac"] = (RepairStrategy.ReEncode, "flac",     "flac"),        // lossless in, lossless out - never downgrade to a lossy codec
+            [".mkv"]  = (RepairStrategy.Remux,    "matroska", null),
+            [".webm"] = (RepairStrategy.Remux,    "webm",     null)
+        };
+
+    /// <summary>
+    /// Repairs a media file with an unreadable duration, using the strategy
+    /// appropriate to its format (see RepairableTypes / RepairStrategy).
+    /// Expects ffmpeg.exe to sit in the application's root/base directory.
+    /// Returns true only if the repaired file was produced and swapped in;
+    /// the original is left untouched if anything goes wrong.
+    /// </summary>
+    private bool TryRepairMedia(string filePath, string extension)
+    {
+        if (!RepairableTypes.TryGetValue(extension, out var config))
+        {
+            return false;
+        }
+
+        var tempPath = filePath + ".repairing" + extension;
         try
         {
             var ffmpegPath = Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe");
@@ -246,24 +291,32 @@ public class MetaDataFileInfo : IMetaDataFileInfo
                 return false;
             }
 
+            var argumentList = new List<string> { "-y", "-f", config.InputFormat, "-i", filePath };
+
+            if (config.Strategy == RepairStrategy.Remux)
+            {
+                argumentList.AddRange(new[] { "-map", "0", "-c", "copy" });
+            }
+            else
+            {
+                argumentList.AddRange(new[] { "-map", "0:a:0", "-c:a", config.AudioCodec! });
+                if (config.AudioCodec == "libmp3lame")
+                {
+                    argumentList.AddRange(new[] { "-q:a", "2" });
+                }
+            }
+
+            argumentList.Add(tempPath);
+
             var psi = new ProcessStartInfo
             {
                 FileName = ffmpegPath,
-                ArgumentList =
-                {
-                    "-y",
-                    "-f", "mp3",
-                    "-i", filePath,
-                    "-map", "0:a:0",
-                    "-c:a", "libmp3lame",
-                    "-q:a", "2",
-                    tempPath
-                },
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
+            foreach (var arg in argumentList) psi.ArgumentList.Add(arg);
 
             using var process = Process.Start(psi);
             if (process == null)
@@ -277,8 +330,8 @@ public class MetaDataFileInfo : IMetaDataFileInfo
 
             if (process.ExitCode != 0 || !System.IO.File.Exists(tempPath) || new FileInfo(tempPath).Length == 0)
             {
-                _logger?.LogWarning("ffmpeg repair failed for {FilePath} (exit code {ExitCode}): {Error}",
-                    filePath, process.ExitCode, stderr);
+                _logger?.LogWarning("ffmpeg repair ({Strategy}) failed for {FilePath} (exit code {ExitCode}): {Error}",
+                    config.Strategy, filePath, process.ExitCode, stderr);
                 SafeDelete(tempPath);
                 return false;
             }

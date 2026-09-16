@@ -11,23 +11,17 @@ import { ResetPassword } from '../shared/models/account/resetPassword';
 import { RegisterWithExternal } from '../shared/models/account/registerWithExternal';
 import { LoginWithExternal } from '../shared/models/account/loginWithExternal';
 import { jwtDecode } from 'jwt-decode';
-import { Urlbase } from '../shared/services/urlbase'
 
 @Service()
 export class AccountService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private urlbase = inject(Urlbase);
-  private apiBase!: string;
+  readonly apiBase: string = '/api/account';
 
   private userSource = new ReplaySubject<User | null>(1);
   user$ = this.userSource.asObservable();
   private isAdmin = new BehaviorSubject<boolean>(false);
-  constructor() {
-    const segment = this.urlbase.baseUrl();
-    this.apiBase = segment ? `/${segment}/api/account` : '/api/account';
 
-  }
   refreshUser(jwt: string | null) {
     if (jwt === null) {
       this.userSource.next(null);
