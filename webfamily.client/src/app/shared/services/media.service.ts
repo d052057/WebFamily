@@ -136,6 +136,4 @@ export class MediaService  {
   getById(id: string) {
     return this.http.get<any>('/MediaMetaData/getById/' + `${id}`);
   }
-
-
 }
