@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Service, inject } from '@angular/core';
 import { Register } from '../shared/models/account/register';
 import { environment } from '../../environments/environment';
 import { Login } from '../shared/models/account/login';
@@ -11,17 +11,23 @@ import { ResetPassword } from '../shared/models/account/resetPassword';
 import { RegisterWithExternal } from '../shared/models/account/registerWithExternal';
 import { LoginWithExternal } from '../shared/models/account/loginWithExternal';
 import { jwtDecode } from 'jwt-decode';
+import { Urlbase } from '../shared/services/urlbase'
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class AccountService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private urlbase = inject(Urlbase);
+  private apiBase!: string;
 
   private userSource = new ReplaySubject<User | null>(1);
   user$ = this.userSource.asObservable();
   private isAdmin = new BehaviorSubject<boolean>(false);
+  constructor() {
+    const segment = this.urlbase.baseUrl();
+    this.apiBase = segment ? `/${segment}/api/account` : '/api/account';
+
+  }
   refreshUser(jwt: string | null) {
     if (jwt === null) {
       this.userSource.next(null);
@@ -31,7 +37,7 @@ export class AccountService {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', 'Bearer ' + jwt);
 
-    return this.http.get<User>("/api/account/refresh-user-token", { headers }).pipe(
+    return this.http.get<User>(`${this.apiBase}/refresh-user-token`, { headers }).pipe(
       map((user: User) => {
         if (user) {
           this.setUser(user);
@@ -41,7 +47,7 @@ export class AccountService {
   }
 
   login(model: Login) {
-    return this.http.post<User>("/api/account/login", model)
+    return this.http.post<User>(`${this.apiBase}/login`, model)
       .pipe(
         map((user: User) => {
           if (user) {
@@ -52,7 +58,7 @@ export class AccountService {
   }
 
   loginWithThirdParty(model: LoginWithExternal) {
-    return this.http.post<User>("/api/account/login-with-third-party", model).pipe(
+    return this.http.post<User>(`${this.apiBase}/login-with-third-party`, model).pipe(
       map((user: User) => {
         if (user) {
           this.setUser(user);
@@ -68,11 +74,11 @@ export class AccountService {
   }
 
   register(model: Register) {
-    return this.http.post("/api/account/register", model);
+    return this.http.post(`${this.apiBase}/register`, model);
   }
 
   registerWithThirdParty(model: RegisterWithExternal) {
-    return this.http.post<User>("/api/account/register-with-third-party", model).pipe(
+    return this.http.post<User>(`${this.apiBase}/register-with-third-party`, model).pipe(
       map((user: User) => {
         if (user) {
           this.setUser(user);
@@ -82,19 +88,19 @@ export class AccountService {
   }
 
   confirmEmail(model: ConfirmEmail) {
-    return this.http.put("/api/account/confirm-email", model);
+    return this.http.put(`${this.apiBase}/confirm-email`, model);
   }
 
   resendEmailConfirmationLink(email: string) {
-    return this.http.post(`/api/account/resend-email-confirmation-link/${email}`, {});
+    return this.http.post(`${this.apiBase}/resend-email-confirmation-link/${email}`, {});
   }
 
   forgotUsernameOrPassword(email: string) {
-    return this.http.post(`/api/account/forgot-username-or-password/${email}`, {});
+    return this.http.post(`${this.apiBase}/forgot-username-or-password/${email}`, {});
   }
 
   resetPassword(model: ResetPassword) {
-    return this.http.put("/api/account/reset-password", model);
+    return this.http.put(`${this.apiBase}/reset-password`, model);
   }
 
   getJWT() {
@@ -154,6 +160,6 @@ export class AccountService {
     return this.isAdmin.getValue();
   }
   getAll() {
-    return this.http.get('/api/account');
+    return this.http.get(`${this.apiBase}`);
   }
 }
