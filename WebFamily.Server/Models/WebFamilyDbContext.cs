@@ -165,9 +165,8 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.FileName).HasMaxLength(260);
             entity.Property(e => e.Label).HasMaxLength(50);
             entity.Property(e => e.Language).HasMaxLength(10);
-
-            entity.HasOne(d => d.Record).WithOne(p => p.MediaSubtitle)
-                .HasForeignKey<MediaSubtitle>(d => d.RecordId)
+            entity.HasOne(d => d.Record).WithMany(p => p.MediaSubtitles)
+                .HasForeignKey(d => d.MediaMetaDataRecordId)
                 .HasConstraintName("FK_MediaSubtitles_MediaMetaData");
         });
 

@@ -21,5 +21,5 @@ public partial class MediaMetaDatum
 
     public virtual MediaDirectory Directory { get; set; } = null!;
 
-    public virtual MediaSubtitle? MediaSubtitle { get; set; }
+    public virtual ICollection<MediaSubtitle> MediaSubtitles { get; set; } = new List<MediaSubtitle>();
 }

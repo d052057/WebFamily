@@ -98,7 +98,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
                 continue;
             }
 
-            var hasClosedCaption = Directory.Exists(Path.Combine(subDirectory, "closeCaption"));
             var mediaFiles = _metaDataInfo.SingleLevelDir(subDirectory);
 
             if (mediaFiles.Count == 0)
@@ -107,7 +106,7 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
             try
             {
                 await RemoveExistingMediaMetaData(_menuDataRecord.DirectoryRecordId);
-                await AddMediaMetaData(mediaFiles, hasClosedCaption, closedCaptionHelper);
+                await AddMediaMetaData(mediaFiles, subDirectory, closedCaptionHelper);
 
                 results.Add($"Updated {mediaFiles.Count} files in {subFolderName}");
             }
@@ -337,7 +336,7 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         await _context.SaveChangesAsync();
     }
 
-    private async Task AddMediaMetaData(List<MetaDataInfo> mediaFiles, bool hasClosedCaption, ClosedCaption closedCaptionHelper)
+    private async Task AddMediaMetaData(List<MetaDataInfo> mediaFiles, string subDirectory, ClosedCaption closedCaptionHelper)
     {
         foreach (var mediaFile in mediaFiles)
         {
@@ -347,8 +346,25 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
                 RecordId = Guid.NewGuid(),
                 Type = mediaFile.MimeType,
                 Title = mediaFile.FullFileName,
-                Duration = mediaFile.Duration.ToString(@"hh\:mm\:ss")               
+                Duration = mediaFile.Duration.ToString(@"hh\:mm\:ss")
             };
+
+            var videoFilePath = Path.Combine(subDirectory, mediaFile.FullFileName);
+            var subtitles = closedCaptionHelper.GetAll(videoFilePath);
+
+            bool defaultAssigned = false;
+            foreach (var subtitle in subtitles)
+            {
+                metaData.MediaSubtitles.Add(new MediaSubtitle
+                {
+                    RecordId = Guid.NewGuid(),
+                    Language = subtitle.Language,
+                    Label = subtitle.Label,
+                    FileName = subtitle.FileName,
+                    IsDefault = !defaultAssigned // first one found becomes the default track
+                });
+                defaultAssigned = true;
+            }
 
             _context.Add(metaData);
         }

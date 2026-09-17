@@ -177,51 +177,111 @@ namespace WebFamily.Server.Controllers
         [HttpPost("RenameFile")]
         public IActionResult RenameFile([FromBody] RenameFile record)
         {
-            if (_context.MediaMetaData.Any(i => i.RecordId == record.recordId))
-            {
-                MediaMetaDatum mediaRecord = _context.MediaMetaData.Single(i => i.RecordId == record.recordId);
-                var fileExtension = Path.GetExtension(mediaRecord.Title);
-                if (string.IsNullOrEmpty(fileExtension))
-                {
-                    return BadRequest("File has no extension");
-                }
-                var newFileName = $"{record.toFile}{fileExtension}";
+            var mediaRecord = _context.MediaMetaData
+                .Include(m => m.MediaSubtitles)
+                .SingleOrDefault(i => i.RecordId == record.recordId);
 
-                var folder = Path.Combine(_mediasDrive, record.fromFolder);
-                string fromFile = Path.Combine(folder, mediaRecord.Title);
-
-                mediaRecord.Title = newFileName; // Update the title with the new file name 
-
-                newFileName = Path.Combine(folder, newFileName);
-                try
-                {
-                    System.IO.File.Move(fromFile, newFileName);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    return StatusCode(403, "Access denied. Check file permissions.");
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    return NotFound("Directory not found");
-                }
-                catch (IOException ex)
-                {
-                    return Conflict($"File operation failed: {ex.Message}");
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception here if you have logging
-                    return StatusCode(500, $"An unexpected error occurred during file rename: {ex.Message}");
-                }
-                _context.MediaMetaData.Update(mediaRecord);
-                _context.SaveChanges();
-            }
-            else
+            if (mediaRecord == null)
             {
                 return BadRequest($"Invalid mediaRecordId: {record.recordId}");
             }
+
+            var fileExtension = Path.GetExtension(mediaRecord.Title);
+            if (string.IsNullOrEmpty(fileExtension))
+            {
+                return BadRequest("File has no extension");
+            }
+
+            var newFileName = $"{record.toFile}{fileExtension}";
+            var folder = Path.Combine(_mediasDrive, record.fromFolder);
+            var ccFolder = Path.Combine(folder, "closecaption");
+
+            string fromFile = Path.Combine(folder, mediaRecord.Title);
+            string toFile = Path.Combine(folder, newFileName);
+
+            // Rename subtitle files first, tracking each move so we can roll
+            // back cleanly if anything downstream fails (e.g. the main video
+            // rename itself).
+            var renamedSubtitlePaths = new List<(string From, string To)>();
+            var subtitleFileNameUpdates = new List<(MediaSubtitle Subtitle, string NewFileName)>();
+
+            try
+            {
+                foreach (var subtitle in mediaRecord.MediaSubtitles)
+                {
+                    var subtitleExt = Path.GetExtension(subtitle.FileName);
+                    var languageSuffix = string.IsNullOrEmpty(subtitle.Language) ? "" : $".{subtitle.Language}";
+                    var newSubtitleFileName = $"{record.toFile}{languageSuffix}{subtitleExt}";
+
+                    var fromSubtitlePath = Path.Combine(ccFolder, subtitle.FileName);
+                    var toSubtitlePath = Path.Combine(ccFolder, newSubtitleFileName);
+
+                    if (System.IO.File.Exists(fromSubtitlePath))
+                    {
+                        System.IO.File.Move(fromSubtitlePath, toSubtitlePath);
+                        renamedSubtitlePaths.Add((fromSubtitlePath, toSubtitlePath));
+                    }
+
+                    subtitleFileNameUpdates.Add((subtitle, newSubtitleFileName));
+                }
+
+                System.IO.File.Move(fromFile, toFile);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                RollbackSubtitleRenames(renamedSubtitlePaths);
+                return StatusCode(403, "Access denied. Check file permissions.");
+            }
+            catch (DirectoryNotFoundException)
+            {
+                RollbackSubtitleRenames(renamedSubtitlePaths);
+                return NotFound("Directory not found");
+            }
+            catch (IOException ex)
+            {
+                RollbackSubtitleRenames(renamedSubtitlePaths);
+                return Conflict($"File operation failed: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                RollbackSubtitleRenames(renamedSubtitlePaths);
+                return StatusCode(500, $"An unexpected error occurred during file rename: {ex.Message}");
+            }
+
+            mediaRecord.Title = newFileName;
+            foreach (var (subtitle, newSubtitleFileName) in subtitleFileNameUpdates)
+            {
+                subtitle.FileName = newSubtitleFileName;
+            }
+
+            _context.MediaMetaData.Update(mediaRecord);
+            _context.SaveChanges();
+
             return Ok(new { message = "File name has been renamed." });
+        }
+
+        /// <summary>
+        /// Best-effort rollback: moves already-renamed subtitle files back to
+        /// their original names if a later step in the rename fails partway
+        /// through, so a failed rename doesn't leave subtitles mismatched
+        /// with the (unchanged) video file.
+        /// </summary>
+        private static void RollbackSubtitleRenames(List<(string From, string To)> renamed)
+        {
+            foreach (var (from, to) in renamed)
+            {
+                try
+                {
+                    if (System.IO.File.Exists(to) && !System.IO.File.Exists(from))
+                    {
+                        System.IO.File.Move(to, from);
+                    }
+                }
+                catch
+                {
+                    // best-effort cleanup only
+                }
+            }
         }
 
         [HttpDelete("DeleteFile/recordId/{recordId}")]

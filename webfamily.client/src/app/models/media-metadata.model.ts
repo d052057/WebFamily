@@ -26,17 +26,25 @@ export class mediaMenu {
   }
 
 }
+export interface mediaSubtitle {
+  recordId: any;
+  mediaMetaDataRecordId: any;
+  language: string;
+  label: string;
+  fileName: string;
+  isDefault: boolean;
+}
 export class mediaMetaDatum {
   recordId: any;
   directoryId: any;
   title!: string;
   type!: string;
-  caption: string;
+  mediaSubtitles: mediaSubtitle[];
   datetime!: Date;
   duration?: string;
   directory!: mediaDirectory;
   constructor() {
-    this.caption = '';
+    this.mediaSubtitles = [];
     this.title = '';
     this.type = '';
     this.duration = '';

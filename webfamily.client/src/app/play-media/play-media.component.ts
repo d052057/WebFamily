@@ -43,6 +43,7 @@ export class PlayMediaComponent {
   videoSources = computed(() => {
 
     const mediaData = this.mediaService.getMediaRecordRS.value();
+ 
     if (!mediaData) return [];
     const result: VideoSource[] = [];
 
@@ -52,7 +53,7 @@ export class PlayMediaComponent {
         src: v.url,
         type: v.type,
         duration: v.duration,
-        captions: v.captions,
+        captions: v.Captions,
         chapters: v.chapters,
         audioTracks: v.audioTracks
       };
