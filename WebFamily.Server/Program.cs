@@ -291,6 +291,8 @@ namespace WebFamily.Server
             mimeProvider.Mappings[".flv"] = "video/x-flv";
             mimeProvider.Mappings[".mkv"] = "video/mp4";
             mimeProvider.Mappings[".mov"] = "video/mp4";
+            mimeProvider.Mappings[".srt"] = "text/plain";      // subtitle files - not in the default mapping list
+            mimeProvider.Mappings[".vtt"] = "text/vtt";        // subtitle files - not in the default mapping list
             mimeProvider.Mappings[".ftl"] = "text/plain";                        // Fluent localization files
             mimeProvider.Mappings[".bcmap"] = "application/octet-stream";        // CJK glyph maps
             mimeProvider.Mappings[".pfb"] = "application/x-font-type1";          // Type1 fonts

@@ -48,12 +48,13 @@ export class PlayMediaComponent {
     const result: VideoSource[] = [];
 
     for (let v of mediaData) {
+      /*console.log('video item:', v);*/
       const tmp = {
         title: v.title,
         src: v.url,
         type: v.type,
         duration: v.duration,
-        captions: v.Captions,
+        captions: v.captions,
         chapters: v.chapters,
         audioTracks: v.audioTracks
       };

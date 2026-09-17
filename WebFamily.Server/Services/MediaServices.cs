@@ -31,12 +31,6 @@ public class MediaServices : IMediaServices
             MenuRecord = await _context.MediaMenus.SingleAsync(i => i.Menu == menu);
             if (MenuRecord is not null)
             {
-
-                //Record = await _context.MediaDirectories
-                //.Where(m => (m.Directory == folder && m.MenuId == MenuRecord.RecordId))
-                //    .Include(p => p.MediaMetaData.OrderBy(o => o.Title))
-                //        .ThenInclude(m => m.MediaSubtitles)
-                //    .FirstAsync();
                 Record = await _context.MediaDirectories
                     .Where(m => m.Directory == folder && m.MenuId == MenuRecord.RecordId)
                         .Include(p => p.MediaMetaData.OrderBy(o => o.Title))
