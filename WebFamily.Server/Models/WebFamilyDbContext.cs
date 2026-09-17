@@ -299,12 +299,6 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.Artist)
                 .HasMaxLength(250)
                 .HasColumnName("artist");
-#pragma warning disable CS0618 // legacy Duration column, kept until dropped
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-#pragma warning restore CS0618
-
             entity.HasOne(d => d.Rpm).WithMany(p => p.RpmTracks)
                 .HasForeignKey(d => d.RpmId)
                 .HasConstraintName("FK_RpmTrack_rpm");

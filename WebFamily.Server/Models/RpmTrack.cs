@@ -12,12 +12,6 @@ public partial class RpmTrack
 
     public DateTime DateTime { get; set; }
 
-    /// <summary>
-    /// Deprecated: legacy "hh:mm:ss" string duration. No longer written by
-    /// the regen process - use DurationSeconds instead. Left in place so
-    /// existing rows aren't touched until 003_Rpm_Drop_Legacy_Duration is run.
-    /// </summary>
-    [Obsolete("Use DurationSeconds instead. Retained only until the legacy column is dropped.")]
     public string Duration { get; set; }
 
     /// <summary>
