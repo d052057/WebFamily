@@ -27,6 +27,15 @@ public class ApplicationSettings
     public string AssetCCFolder { get; set; }
 
     public string AssetTextFolder { get; set; }
+
+    /// <summary>
+    /// Full path to the JSON artist lookup file (see IArtistLookupService),
+    /// generated from the iTunes Library XML export. Optional: if unset or
+    /// the file doesn't exist, artist backfill is silently skipped and
+    /// Rpm.Artist / RpmTrack.Artist are simply left null during regen.
+    /// </summary>
+    public string ArtistLookupFilePath { get; set; }
+
     public string GetUrlYoutube()
     {
         return "https://www.googleapis.com/youtube/v3/playlistItems?key=" + ApiKey + "&part=snippet&maxResults=12&playlistId=";

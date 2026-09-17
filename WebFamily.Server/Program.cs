@@ -65,6 +65,10 @@ namespace WebFamily.Server
             services.AddScoped<IRpmServices, RpmServices>();
             services.AddScoped<ITubeServices, TubeServices>();
             services.AddScoped<IUpdateDataBaseServices, UpdateDataBaseServices>();
+            // Scoped, not Singleton: each admin "regen" click is a new HTTP
+            // request/scope, so the JSON lookup file is re-read fresh every
+            // run instead of being cached stale across the app's lifetime.
+            services.AddScoped<IArtistLookupService, ArtistLookupService>();
             services.AddScoped<IPlacesService, PlacesService>();
             services.AddScoped<ISeoService, SeoService>();
             return services;

@@ -18,7 +18,9 @@ namespace WebFamily.Server.Services
         public async Task<IEnumerable<Rpm>> GetRpms()
         {
             IEnumerable<Rpm> record = await _context.Rpms
-                .Include(p => p.RpmTracks.OrderBy(s => s.Title))
+                // Unparsed tracks (TrackNumber null) sort after every real
+                // track number rather than disappearing to the top.
+                .Include(p => p.RpmTracks.OrderBy(s => s.TrackNumber ?? int.MaxValue).ThenBy(s => s.Title))
                 .OrderBy(s => s.Title)
                 .ToListAsync();
             
@@ -37,7 +39,8 @@ namespace WebFamily.Server.Services
         {
             IEnumerable<RpmTrack> record = await _context.RpmTracks
                 .Where(s => s.RpmId == RecordId)
-                .OrderBy(s => s.Title)
+                .OrderBy(s => s.TrackNumber ?? int.MaxValue)
+                .ThenBy(s => s.Title)
                 .ToListAsync();
             return record;
 

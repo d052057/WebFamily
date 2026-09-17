@@ -15,15 +15,20 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
     private readonly WebFamilyDbContext _context;
     private readonly ApplicationSettings _appSettings;
     private readonly MetaDataFileInfo _metaDataInfo;
+    private readonly IArtistLookupService _artistLookup;
     private readonly string _mediasDrive;
 
     private MenuDataRecord _menuDataRecord = new();
     private readonly List<string> _processResults = new();
 
-    public UpdateDataBaseServices(WebFamilyDbContext context, IOptions<ApplicationSettings> appSettings)
+    public UpdateDataBaseServices(
+        WebFamilyDbContext context,
+        IOptions<ApplicationSettings> appSettings,
+        IArtistLookupService artistLookup)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _appSettings = appSettings?.Value ?? throw new ArgumentNullException(nameof(appSettings));
+        _artistLookup = artistLookup ?? throw new ArgumentNullException(nameof(artistLookup));
         _metaDataInfo = new WebFamily.Server.Helpers.MetaDataFileInfo();
         _mediasDrive = Path.Combine(_appSettings.MediaDrive, "");
     }
@@ -208,7 +213,7 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
                 }
 
                 var trackList = _metaDataInfo.SingleLevelDir(albumPath);
-                var rpm = CreateRpmRecord(coverFile, mimeTypeHelper, trackList);
+                var rpm = await CreateRpmRecordAsync(coverFile, mimeTypeHelper, trackList);
 
                 _context.Rpms.Add(rpm);
                 await _context.SaveChangesAsync();
@@ -384,22 +389,40 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         };
     }
 
-    private static Rpm CreateRpmRecord(string coverFile, MimeType mimeTypeHelper, List<MetaDataInfo> trackList)
+    private async Task<Rpm> CreateRpmRecordAsync(string coverFile, MimeType mimeTypeHelper, List<MetaDataInfo> trackList)
     {
+        var albumTitle = Path.GetFileNameWithoutExtension(coverFile);
+
         var rpm = new Rpm
         {
             RecordId = Guid.NewGuid(),
+            // NOTE: Title kept as the full cover file name (e.g. "Abbey Road.jpg")
+            // for backward compatibility with existing cover-URL building in
+            // rpm.service.ts - only the artist lookup uses the extension-stripped
+            // albumTitle above.
             Title = Path.GetFileName(coverFile),
-            Type = mimeTypeHelper.Get(coverFile)
+            Type = mimeTypeHelper.Get(coverFile),
+            Artist = await _artistLookup.GetAlbumArtistAsync(albumTitle)
         };
 
-        var rpmTracks = trackList.Select(track => new RpmTrack
+        var rpmTracks = new List<RpmTrack>(trackList.Count);
+        foreach (var track in trackList)
         {
-            RecordId = Guid.NewGuid(),
-            RpmId = rpm.RecordId,
-            Title = track.FullFileName,
-            Duration = track.Duration.ToString(@"hh\:mm\:ss")
-        }).ToList();
+            var parsed = TrackTitleParser.Extract(track.FullFileName);
+
+            rpmTracks.Add(new RpmTrack
+            {
+                RecordId = Guid.NewGuid(),
+                RpmId = rpm.RecordId,
+                Title = track.FullFileName,
+                TrackNumber = parsed.TrackNumber,
+                DurationSeconds = (int)Math.Round(track.Duration.TotalSeconds),
+                // Only set when a per-track override exists (compilation
+                // discs); otherwise null, and the front end falls back to
+                // the album's Artist.
+                Artist = await _artistLookup.GetTrackArtistAsync(albumTitle, track.FullFileName)
+            });
+        }
 
         if (trackList.Count > 0)
         {

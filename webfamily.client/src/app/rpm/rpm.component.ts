@@ -22,6 +22,7 @@ export class RpmComponent {
     this.poster = picture.coverUrl;
     this.rpmService.recordId.set(picture.recordId); // set the recordId in the service
     this.rpmService.rpmTrackUrl.set(this.appSettings.rpmFolder + '/' + picture.folder); // set the track URL
+    this.rpmService.audioType.set(picture.audioType ?? null); // real MIME type for this album, e.g. "audio/wav"
   }
   rpmResource = this.rpmService.getRpmMenuRS;
   rpmTrackResource = this.rpmService.getRpmTracksRS;
@@ -36,6 +37,14 @@ export class RpmComponent {
   })
   dataResult = computed(() => {
     const resource = this.rpmTrackResource.value();
-    return resource;
+    if (!resource) return resource;
+
+    // RpmTrack.artist is only set for compilation-disc overrides; fall back
+    // to the selected album's artist (from Rpm.Artist) for everything else.
+    const albumArtist = this.selectedPicture?.artist ?? null;
+    return resource.map((track: any) => ({
+      ...track,
+      artist: track.artist ?? albumArtist
+    }));
   })
 }

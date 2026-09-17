@@ -14,5 +14,12 @@ public partial class Rpm
 
     public DateTime DateTime { get; set; }
 
+    /// <summary>
+    /// Album-level artist. For compilation/multi-artist discs, individual
+    /// tracks can override this via RpmTrack.Artist; this is the fallback
+    /// shown when a track has no override.
+    /// </summary>
+    public string Artist { get; set; }
+
     public virtual ICollection<RpmTrack> RpmTracks { get; set; } = new List<RpmTrack>();
 }

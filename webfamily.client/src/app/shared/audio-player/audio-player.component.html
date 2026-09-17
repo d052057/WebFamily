@@ -12,6 +12,9 @@
           @if (currentAudio()) {
           <div class="text-center">
             <h5 class="card-title mb-1">{{ currentAudio().title || 'No track selected' }}</h5>
+            @if (currentAudio().artist) {
+            <p class="text-muted mb-1">{{ currentAudio().artist }}</p>
+            }
             <small class="text-muted">{{ currentAudioTime() | timeConversion }} / {{ totalAudioLength() | timeConversion }}</small>
           </div>
           }
@@ -132,16 +135,18 @@
           </span>
         </mat-form-field>
       </div>
-      <h6 class="card-subtitle mb-2 text-muted">Playlist - Track number: {{ currentTrackIndex() + 1 }}</h6>
+      <h6 class="card-subtitle mb-2 text-muted">
+        Playlist - Track {{ currentAudio()?.trackNumber ?? (currentTrackIndex() + 1) }} of {{ audioList().length }}
+      </h6>
       <div #trackListContainer class="list-group playlist-items" style="max-height: 200px; overflow-y: auto;">
         @for (item of audioList(); track item; let i = $index) {
         <button type="button"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 [class.active]="i === currentTrackIndex()"
                 (click)="playTrack(i)">
-          <span class="me-2">{{ i + 1 }}.</span>
+          <span class="me-2">{{ item.trackNumber ?? (i + 1) }}.</span>
           <span class="flex-grow-1 text-start">{{ item?.title || 'Untitled track' }}</span>
-          <span class="badge bg-secondary rounded-pill">{{ item.duration }}</span>
+          <span class="badge bg-secondary rounded-pill">{{ item.duration | timeConversion }}</span>
         </button>
         }
       </div>

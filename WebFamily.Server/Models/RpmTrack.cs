@@ -12,7 +12,31 @@ public partial class RpmTrack
 
     public DateTime DateTime { get; set; }
 
+    /// <summary>
+    /// Deprecated: legacy "hh:mm:ss" string duration. No longer written by
+    /// the regen process - use DurationSeconds instead. Left in place so
+    /// existing rows aren't touched until 003_Rpm_Drop_Legacy_Duration is run.
+    /// </summary>
+    [Obsolete("Use DurationSeconds instead. Retained only until the legacy column is dropped.")]
     public string Duration { get; set; }
+
+    /// <summary>
+    /// Track duration in whole seconds, read from the audio file itself
+    /// (TagLib) during regen. Null if it couldn't be determined.
+    /// </summary>
+    public int? DurationSeconds { get; set; }
+
+    /// <summary>
+    /// 1-based track order, parsed from the source file name during regen
+    /// (see TrackTitleParser). Null if no track number could be parsed.
+    /// </summary>
+    public int? TrackNumber { get; set; }
+
+    /// <summary>
+    /// Per-track artist override for compilation/multi-artist discs. Null
+    /// means "use Rpm.Artist".
+    /// </summary>
+    public string Artist { get; set; }
 
     public virtual Rpm Rpm { get; set; }
 }

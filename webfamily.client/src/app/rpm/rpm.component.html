@@ -3,6 +3,12 @@
   <div class="content-area">
     @if (selectedPicture) {
       <div>
+        <div class="album-header mb-2">
+          <h4 class="mb-0">{{ selectedPicture.folder }}</h4>
+          @if (selectedPicture.artist) {
+            <p class="text-muted mb-0">{{ selectedPicture.artist }}</p>
+          }
+        </div>
         <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster"></app-audio-player>
       </div>
     }
