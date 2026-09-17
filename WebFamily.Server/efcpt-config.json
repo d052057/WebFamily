@@ -1,0 +1,114 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/ErikEJ/EFCorePowerTools/master/samples/efcpt-config.schema.json",
+  "code-generation": {
+    "enable-on-configuring": false,
+    "generate-mermaid-diagram": false,
+    "merge-dacpacs": false,
+    "refresh-object-lists": true,
+    "remove-defaultsql-from-bool-properties": false,
+    "soft-delete-obsolete-files": true,
+    "t4-template-path": null,
+    "type": "all",
+    "use-alternate-stored-procedure-resultset-discovery": false,
+    "use-stored-procedure-resultset-fallback": true,
+    "use-data-annotations": false,
+    "use-database-names": false,
+    "use-database-names-for-routines": true,
+    "use-decimal-data-annotation-for-sproc-results": true,
+    "use-inflector": true,
+    "use-internal-access-modifiers-for-sprocs-and-functions": false,
+    "use-legacy-inflector": false,
+    "use-many-to-many-entity": false,
+    "use-nullable-reference-types": true,
+    "use-prefix-navigation-naming": false,
+    "use-typed-tvp-parameters": true,
+    "use-t4": false,
+    "use-t4-split": false
+  },
+  "file-layout": {
+    "output-dbcontext-path": null,
+    "output-path": "ModelsTest"
+  },
+  "names": {
+    "dbcontext-name": "webfamilydbContext",
+    "dbcontext-namespace": null,
+    "model-namespace": null,
+    "root-namespace": "WebFamily.Server"
+  },
+  "tables": [
+    {
+      "name": "[dbo].[AspNetRoleClaims]"
+    },
+    {
+      "name": "[dbo].[AspNetRoles]"
+    },
+    {
+      "name": "[dbo].[AspNetUserClaims]"
+    },
+    {
+      "name": "[dbo].[AspNetUserLogins]"
+    },
+    {
+      "name": "[dbo].[AspNetUserRoles]"
+    },
+    {
+      "name": "[dbo].[AspNetUsers]"
+    },
+    {
+      "name": "[dbo].[AspNetUserTokens]"
+    },
+    {
+      "name": "[dbo].[MediaDirectory]"
+    },
+    {
+      "name": "[dbo].[MediaMenu]"
+    },
+    {
+      "name": "[dbo].[MediaMetaData]"
+    },
+    {
+      "name": "[dbo].[MediaSubtitles]"
+    },
+    {
+      "name": "[dbo].[Rpm]"
+    },
+    {
+      "name": "[dbo].[RpmTrack]"
+    },
+    {
+      "name": "[dbo].[TodoList]"
+    },
+    {
+      "name": "[dbo].[WebTube]"
+    },
+    {
+      "name": "[dbo].[WebTubeSeries]"
+    }
+  ],
+  "type-mappings": {
+    "use-DateOnly-TimeOnly": true,
+    "use-HierarchyId": false,
+    "use-NodaTime": false,
+    "use-spatial": false
+  },
+  "views": [
+    {
+      "name": "[dbo].[americanMusicsDirectoryView]"
+    },
+    {
+      "name": "[dbo].[americanMusicsView]"
+    },
+    {
+      "name": "[dbo].[mediaView]"
+    },
+    {
+      "name": "[dbo].[moviesView]"
+    },
+    {
+      "name": "[dbo].[musicsView]"
+    },
+    {
+      "name": "[dbo].[videosView]"
+    }
+  ]
+}

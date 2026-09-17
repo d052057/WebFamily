@@ -347,10 +347,7 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
                 RecordId = Guid.NewGuid(),
                 Type = mediaFile.MimeType,
                 Title = mediaFile.FullFileName,
-                Duration = mediaFile.Duration.ToString(@"hh\:mm\:ss"),
-                Caption = hasClosedCaption
-                    ? closedCaptionHelper.Get(Path.Combine(mediaFile.FullPath, mediaFile.FullFileName))
-                    : string.Empty
+                Duration = mediaFile.Duration.ToString(@"hh\:mm\:ss")               
             };
 
             _context.Add(metaData);
@@ -367,8 +364,7 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
             RecordId = Guid.NewGuid(),
             Type = fileInfo.MimeType,
             Title = title,
-            Duration = fileInfo.Duration.ToString(@"hh\:mm\:ss"),
-            Caption = string.Empty
+            Duration = fileInfo.Duration.ToString(@"hh\:mm\:ss")
         };
     }
 
