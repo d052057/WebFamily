@@ -12,8 +12,6 @@ public partial class RpmTrack
 
     public DateTime DateTime { get; set; }
 
-    public string Duration { get; set; }
-
     /// <summary>
     /// Track duration in whole seconds, read from the audio file itself
     /// (TagLib) during regen. Null if it couldn't be determined.

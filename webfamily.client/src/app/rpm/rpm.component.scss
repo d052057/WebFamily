@@ -13,6 +13,18 @@ body {
   margin-top: 56px; /* Add margin equal to navbar height if navbar is fixed */
 }
 
+.content-area > div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-header {
+  width: 100%;
+}
 .content-area {
   flex: 2;
   display: flex;

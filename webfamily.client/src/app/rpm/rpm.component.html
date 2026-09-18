@@ -1,25 +1,17 @@
 <div class="main-container">
-  <!-- Left content area (2/3 width) -->
-  <div class="content-area">
-    @if (selectedPicture) {
-      <div>
-        <div class="album-header mb-2">
-          <h4 class="mb-0">{{ selectedPicture.folder }}</h4>
-          @if (selectedPicture.artist) {
-            <p class="text-muted mb-0">{{ selectedPicture.artist }}</p>
-          }
+    <!-- Left content area (2/3 width) -->
+    <div class="content-area">
+        @if (selectedPicture) {
+        <div>
+            <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster" [albumTitle]="selectedPicture.folder"></app-audio-player>
         </div>
-        <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster"></app-audio-player>
-      </div>
-    }
-  </div>
+        }
+    </div>
 
-  <!-- Right gallery area (1/3 width) -->
-  @if (dataResource().length > 0) {
-    <app-scrolling-gallery
-      [pictureData]="dataResource()"
-      (pictureSelected)="onPictureSelected($event)">
+    <!-- Right gallery area (1/3 width) -->
+    @if (dataResource().length > 0) {
+    <app-scrolling-gallery [pictureData]="dataResource()"
+                           (pictureSelected)="onPictureSelected($event)">
     </app-scrolling-gallery>
-  }
+    }
 </div>
-

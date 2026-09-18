@@ -114,7 +114,7 @@ export class AudioPlayerComponent {
   private readonly _audios = signal<AudioItem[]>([]);
   readonly videos = this._audios.asReadonly();
   @Input() imagePoster: string = '/images/family/calida.jpg';
-
+  @Input() albumTitle: string | null = null;
   @Input()
   set dataSource(value: AudioItem[]) {
     if (value?.length && value !== this._audios()) {

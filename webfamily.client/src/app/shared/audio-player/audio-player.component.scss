@@ -58,4 +58,11 @@ audio {
     color: white;
   }
 }
-
+.album-title-banner {
+  text-align: center;
+  color: #fff;
+  background-color: var(--bs-primary);
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+}
