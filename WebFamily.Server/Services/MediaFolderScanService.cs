@@ -58,7 +58,7 @@ public class MediaFolderScanService : IMediaFolderScanService
             return results;
         }
 
-        var menuRecord = await _context.MediaMenus.SingleOrDefaultAsync(m => m.Menu == "musics");
+        var menuRecord = await _context.MediaMenus.SingleOrDefaultAsync(m => m.Menu == menu);
         if (menuRecord is null)
         {
             results.Add($"Menu not found: {menu}. Create the MediaMenu row first.");

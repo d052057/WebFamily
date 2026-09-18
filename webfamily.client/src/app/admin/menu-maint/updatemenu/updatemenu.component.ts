@@ -44,7 +44,7 @@ export class UpdatemenuComponent {
   onScanFolderTree() {
     this.songsFolderTreeUpdate.set(true);
     this.songsFolderTreeStatus.set(['Processing...']);
-    this.folderTreeService.scanFolderTree('songs')
+    this.folderTreeService.scanFolderTree('musics')
       .pipe(first())
       .pipe(finalize(() => this.songsFolderTreeUpdate.set(false)))
       .subscribe({
