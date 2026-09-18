@@ -14,7 +14,7 @@
                     }
                     @if (currentAudio()) {
                     <div class="text-center">
-                        <h5 class="card-title mb-1">{{ currentAudio().title || 'No track selected' }}</h5>
+                        <h5 class="card-title mb-1">{{ (currentAudio().title | cleanTrackTitle) || 'No track selected' }}</h5>
                         @if (currentAudio().artist) {
                         <p class="text-muted mb-1">{{ currentAudio().artist }}</p>
                         }
@@ -148,7 +148,7 @@
                         [class.active]="i === currentTrackIndex()"
                         (click)="playTrack(i)">
                     <span class="me-2">{{ item.trackNumber ?? (i + 1) }}.</span>
-                    <span class="flex-grow-1 text-start">{{ item?.title || 'Untitled track' }}</span>
+                    <span class="flex-grow-1 text-start">{{ (item?.title | cleanTrackTitle) || 'Untitled track' }}</span>
                     <span class="badge bg-secondary rounded-pill">{{ item.duration | timeConversion }}</span>
                 </button>
                 }

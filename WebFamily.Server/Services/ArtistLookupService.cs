@@ -7,10 +7,10 @@ using WebFamily.Server.Helpers;
 namespace WebFamily.Server.Services;
 
 /// <summary>
-/// One album's worth of artist data, as produced by the (separate, not yet
-/// written) iTunes-XML-to-JSON converter. TrackArtists is only populated
-/// for compilation/multi-artist discs; for a normal single-artist album it
-/// can be omitted entirely and every track falls back to AlbumArtist.
+/// One album's worth of artist data, as produced by the iTunes-XML-to-JSON
+/// converter. TrackArtists is only populated for compilation/multi-artist
+/// discs; for a normal single-artist album it can be omitted entirely and
+/// every track falls back to AlbumArtist.
 /// </summary>
 public class ArtistLookupAlbum
 {
@@ -34,15 +34,15 @@ public interface IArtistLookupService
     Task<string?> GetAlbumArtistAsync(string albumTitle);
 
     /// <summary>
-    /// Per-track artist override for compilation discs. Falls back to null
-    /// (meaning "use the album artist") if the track has no override entry.
+    /// Per-track artist. Tries album-scoped matching first, then falls back
+    /// to a global track-title match across every album (see remarks on
+    /// ArtistLookupService).
     /// </summary>
     Task<string?> GetTrackArtistAsync(string albumTitle, string trackTitle);
 }
 
 /// <summary>
-/// Reads WebFamily.Server/Services/ArtistLookupService.cs's expected JSON
-/// shape from ApplicationSettings.ArtistLookupFilePath:
+/// Reads the JSON shape from ApplicationSettings.ArtistLookupFilePath:
 ///
 ///   [
 ///     {
@@ -60,12 +60,14 @@ public interface IArtistLookupService
 ///     }
 ///   ]
 ///
-/// This file doesn't exist yet - it gets generated once the iTunes Library
-/// XML export is processed. Until then, every lookup returns null and the
-/// regen process simply leaves Artist unset, exactly as it does today.
 /// Matching is case-insensitive and ignores leading track numbers /
-/// punctuation differences, since file-system names and iTunes' displayed
-/// names rarely match byte-for-byte.
+/// punctuation differences. In this library, the DB's album titles are
+/// generic cover-file codes ("RPM-03") that never match iTunes' descriptive
+/// album names, so GetTrackArtistAsync falls back to a GLOBAL track-title
+/// index (built once at load time, flattening every album's TrackArtists)
+/// whenever the album-scoped lookup fails. A track title credited to more
+/// than one distinct artist across different albums is left unmatched by
+/// the fallback rather than guessed.
 /// </summary>
 public class ArtistLookupService : IArtistLookupService
 {
@@ -73,6 +75,9 @@ public class ArtistLookupService : IArtistLookupService
     private readonly string? _filePath;
 
     private Dictionary<string, ArtistLookupAlbum>? _albumsByNormalizedTitle;
+    private Dictionary<string, string>? _globalTrackArtists;
+    private HashSet<string>? _ambiguousTrackTitles;
+
     private bool _loadAttempted;
     private readonly SemaphoreSlim _loadLock = new(1, 1);
 
@@ -97,20 +102,23 @@ public class ArtistLookupService : IArtistLookupService
         var albums = await EnsureLoadedAsync();
         if (albums == null) return null;
 
-        if (!albums.TryGetValue(Normalize(albumTitle), out var album))
-            return null;
-
-        // Track titles on disk are file names like "01 - Song.wav"; strip
-        // the leading number/extension the same way TrackTitleParser does
-        // before comparing against iTunes' plain "Song" track names.
         var parsed = TrackTitleParser.Extract(trackTitle);
         var normalizedTrack = Normalize(parsed.CleanTitle);
 
-        foreach (var (candidateTitle, artist) in album.TrackArtists)
+        if (albums.TryGetValue(Normalize(albumTitle), out var album))
         {
-            if (Normalize(candidateTitle) == normalizedTrack)
-                return artist;
+            foreach (var (candidateTitle, artist) in album.TrackArtists)
+            {
+                if (Normalize(candidateTitle) == normalizedTrack)
+                    return artist;
+            }
         }
+
+        if (_ambiguousTrackTitles != null && _ambiguousTrackTitles.Contains(normalizedTrack))
+            return null;
+
+        if (_globalTrackArtists != null && _globalTrackArtists.TryGetValue(normalizedTrack, out var globalArtist))
+            return globalArtist;
 
         return null;
     }
@@ -118,7 +126,7 @@ public class ArtistLookupService : IArtistLookupService
     private async Task<Dictionary<string, ArtistLookupAlbum>?> EnsureLoadedAsync()
     {
         if (_albumsByNormalizedTitle != null) return _albumsByNormalizedTitle;
-        if (_loadAttempted) return null; // already tried and failed/missing this run
+        if (_loadAttempted) return null;
 
         await _loadLock.WaitAsync();
         try
@@ -153,7 +161,38 @@ public class ArtistLookupService : IArtistLookupService
                 .GroupBy(a => Normalize(a.AlbumTitle))
                 .ToDictionary(g => g.Key, g => g.First());
 
-            _logger.LogInformation("Loaded artist lookup for {Count} albums from {FilePath}", list.Count, _filePath);
+            var allTrackEntries = list
+                .SelectMany(a => a.TrackArtists.Select(kv => new
+                {
+                    NormalizedTitle = Normalize(kv.Key),
+                    Artist = kv.Value
+                }))
+                .Where(e => !string.IsNullOrEmpty(e.NormalizedTitle) && !string.IsNullOrWhiteSpace(e.Artist));
+
+            var grouped = allTrackEntries
+                .GroupBy(e => e.NormalizedTitle)
+                .ToList();
+
+            _ambiguousTrackTitles = grouped
+                .Where(g => g.Select(e => e.Artist).Distinct().Count() > 1)
+                .Select(g => g.Key)
+                .ToHashSet();
+
+            _globalTrackArtists = grouped
+                .Where(g => !_ambiguousTrackTitles.Contains(g.Key))
+                .ToDictionary(g => g.Key, g => g.First().Artist);
+
+            if (_ambiguousTrackTitles.Count > 0)
+            {
+                _logger.LogWarning(
+                    "{Count} track title(s) map to more than one distinct artist across albums and were left unmatched by the global fallback: {Titles}",
+                    _ambiguousTrackTitles.Count,
+                    string.Join(", ", _ambiguousTrackTitles.Take(20)));
+            }
+
+            _logger.LogInformation(
+                "Loaded artist lookup for {AlbumCount} albums ({GlobalTrackCount} globally matchable tracks, {AmbiguousCount} ambiguous) from {FilePath}",
+                list.Count, _globalTrackArtists.Count, _ambiguousTrackTitles.Count, _filePath);
             return _albumsByNormalizedTitle;
         }
         catch (Exception ex)

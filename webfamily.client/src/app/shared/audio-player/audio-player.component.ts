@@ -1,6 +1,7 @@
 import { Component, ElementRef, output, signal, viewChild, effect, inject, computed, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { AudioItem, AutoplayCapability } from './models/audio.model';
+import { CleanTrackTitlePipe } from './../pipes/clean-track-title.pipe';
 import { TimeConversionPipe } from './../pipes/time-conversion.pipe';
 import { EventListenerService } from '../services/event-handler.service';
 import { languages } from '../../../app/models/languages';
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-audio-player',
   imports: [TimeConversionPipe,
+    CleanTrackTitlePipe,
     MatIconModule,
     MatSelectModule,
     MatInputModule,
