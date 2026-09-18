@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MediaService } from '../../../shared/services/media.service';
+import { MediaFolderTreeService } from '../../../shared/services/media-folder-tree.service';
 import { finalize, first } from 'rxjs';
 import { MenuService } from '../../../shared/services/menu.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class UpdatemenuComponent {
   mediaservice = inject(MediaService);
   menuService = inject(MenuService);
+  folderTreeService = inject(MediaFolderTreeService);
   public bookUpdateStatus = signal<any>([]);
   public movieUpdateStatus = signal<any>([]);
   public videoUpdateStatus = signal<any>([]);
@@ -22,6 +24,7 @@ export class UpdatemenuComponent {
   public textUpdateStatus = signal<any>([]);
   public rpmUpdateStatus = signal<any>([]);
   public initDatabaseStatus = signal<any>([]);
+  public songsFolderTreeStatus = signal<any>([]);
 
   public musicUpdateStatus = signal<any>([]);
   public musicsUpdate = signal(false);
@@ -33,6 +36,22 @@ export class UpdatemenuComponent {
   public textUpdate = signal(false);
   public rpmsUpdate = signal(false);
   public initDatabaseUpdate = signal(false);
+  public songsFolderTreeUpdate = signal(false);
+
+  // Regenerates MediaFolder/MediaTrack from disk for the "songs" menu -
+  // the new recursive folder-tree scan, separate from the legacy
+  // updateMetaData path the buttons below still use for other menus.
+  onScanFolderTree() {
+    this.songsFolderTreeUpdate.set(true);
+    this.songsFolderTreeStatus.set(['Processing...']);
+    this.folderTreeService.scanFolderTree('songs')
+      .pipe(first())
+      .pipe(finalize(() => this.songsFolderTreeUpdate.set(false)))
+      .subscribe({
+        next: (data: string[]) => { this.songsFolderTreeStatus.set(data); },
+        error: (err) => { this.songsFolderTreeStatus.set([JSON.stringify(err)]); }
+      });
+  }
 
   onInitDatabaseUpdate() {
     this.initDatabaseUpdate.set(true);

@@ -1,0 +1,26 @@
+.artist-nav .nav-link {
+  color: #333;
+  border-radius: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .8rem;
+  cursor: pointer;
+}
+
+.artist-nav .nav-link.active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.artist-nav .nav-link:not(.active):hover {
+  background-color: #eef1f5;
+}
+
+.artist-nav .badge {
+  margin-left: auto;
+}
+
+.content-card {
+  min-height: 320px;
+}

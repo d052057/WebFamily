@@ -80,14 +80,15 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'song/:musics/:folder/:artish',
-    loadComponent: () => import('./play-audio/play-audio.component')
-      .then(mod => mod.PlayAudioComponent)
-  },
-  {
-    path: 'audio/:musics/:folder/:artish',
-    loadComponent: () => import('./audio-play-album/audio-play-album.component')
-      .then(mod => mod.AudioPlayAlbumComponent)
+    // Replaces the old song/:musics/:folder/:artish and audio/:musics/:folder/:artish
+    // routes (PlayAudioComponent / AudioPlayAlbumComponent) - one route now
+    // handles any folder depth via the recursive folder tree. :menu is which
+    // library ("songs", "musics"); which artist is selected lives in the
+    // ?artist= query param instead of a path segment, so it stays bookmarkable
+    // without needing a second route definition.
+    path: 'song/:menu',
+    loadComponent: () => import('./song-browser/song-browser.component')
+      .then(mod => mod.SongBrowserComponent)
   },
   {
     path: 'books/:folder',

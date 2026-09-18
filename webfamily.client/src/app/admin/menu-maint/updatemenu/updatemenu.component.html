@@ -48,6 +48,30 @@
       <tr>
         <td scope="row">
           <div>
+            <button type="button" class="btn btn-primary" (click)="onScanFolderTree()" [disabled]="songsFolderTreeUpdate()">
+              @if (songsFolderTreeUpdate()) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Regenerate Song Folder Tree
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of songsFolderTreeStatus(); track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
             <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate()">
               @if (booksUpdate()) {
               <div class="bouncing-dots">

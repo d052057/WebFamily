@@ -12,7 +12,9 @@ public partial class WebFamilyDbContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<MediaFolder> MediaFolders { get; set; }
 
+    public virtual DbSet<MediaTrack> MediaTracks { get; set; }
     public virtual DbSet<AmericanMusicsDirectoryView> AmericanMusicsDirectoryViews { get; set; }
 
     public virtual DbSet<AmericanMusicsView> AmericanMusicsViews { get; set; }
@@ -45,6 +47,86 @@ public partial class WebFamilyDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<MediaFolder>(entity =>
+        {
+            entity.HasKey(e => e.RecordId).HasName("PK_folder");
+
+            entity.ToTable("MediaFolder");
+
+            entity.Property(e => e.RecordId)
+                .HasDefaultValueSql("(newid())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_folder_recordId")
+                .HasColumnName("recordId");
+            entity.Property(e => e.Datetime)
+                .HasDefaultValueSql("(getdate())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_folder_datetime")
+                .HasColumnType("datetime")
+                .HasColumnName("datetime");
+            entity.Property(e => e.Name)
+                .HasMaxLength(250)
+                .HasColumnName("name");
+            entity.Property(e => e.CoverImagePath)
+                .HasMaxLength(500)
+                .HasColumnName("coverImagePath");
+            entity.Property(e => e.MenuId).HasColumnName("menuId");
+            entity.Property(e => e.ParentFolderId).HasColumnName("parentFolderId");
+
+            entity.HasOne(d => d.Menu).WithMany()
+                .HasForeignKey(d => d.MenuId)
+                .HasConstraintName("FK_MediaFolder_MediaMenu");
+
+            entity.HasOne(d => d.ParentFolder).WithMany(p => p.ChildFolders)
+                .HasForeignKey(d => d.ParentFolderId)
+                .HasConstraintName("FK_MediaFolder_MediaFolder_Parent");
+        });
+
+        modelBuilder.Entity<MediaTrack>(entity =>
+        {
+            entity.HasKey(e => e.RecordId).HasName("PK_track");
+
+            entity.ToTable("MediaTrack");
+
+            entity.Property(e => e.RecordId)
+                .HasDefaultValueSql("(newid())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_recordId")
+                .HasColumnName("recordId");
+            entity.Property(e => e.Datetime)
+                .HasDefaultValueSql("(getdate())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_datetime")
+                .HasColumnType("datetime")
+                .HasColumnName("datetime");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(260)
+                .HasColumnName("fileName");
+            entity.Property(e => e.Title)
+                .HasMaxLength(250)
+                .HasColumnName("title");
+            entity.Property(e => e.Artist)
+                .HasMaxLength(250)
+                .HasColumnName("artist");
+            entity.Property(e => e.Album)
+                .HasMaxLength(250)
+                .HasColumnName("album");
+            entity.Property(e => e.TrackNumber).HasColumnName("trackNumber");
+            entity.Property(e => e.Year).HasColumnName("year");
+            entity.Property(e => e.Genre)
+                .HasMaxLength(100)
+                .HasColumnName("genre");
+            entity.Property(e => e.Duration)
+                .HasMaxLength(50)
+                .HasColumnName("duration");
+            entity.Property(e => e.Type)
+                .HasMaxLength(150)
+                .HasColumnName("type");
+            entity.Property(e => e.FolderId).HasColumnName("folderId");
+
+            entity.HasOne(d => d.Folder).WithMany(p => p.Tracks)
+                .HasForeignKey(d => d.FolderId)
+                .HasConstraintName("FK_MediaTrack_MediaFolder");
+        });
+
+
+
         modelBuilder.Entity<AmericanMusicsDirectoryView>(entity =>
         {
             entity
