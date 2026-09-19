@@ -62,7 +62,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
             MusicFolder = Path.Combine(_mediasDrive, _appSettings.AssetAlbumFolder!),
             VideoFolder = Path.Combine(_mediasDrive, _appSettings.AssetVideoFolder!),
             BookFolder = Path.Combine(_mediasDrive, _appSettings.AssetBookFolder!),
-            SongFolder = Path.Combine(_mediasDrive, _appSettings.AssetEnglishSongFolder!),
             RpmFolder = Path.Combine(_mediasDrive, _appSettings.AssetRpmFolder!),
             RpmCoverFolder = Path.Combine(_mediasDrive, _appSettings.AssetRpmCoverFolder!),
             PhotoFolder = Path.Combine(_mediasDrive, _appSettings.AssetPhotoFolder!),
@@ -123,58 +122,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         }
 
         results.Add($"Process Complete: {EnumMsg.Get(messageType)}");
-        return results;
-    }
-
-    public async Task<List<string>> UpdateSongAsync(string fullPath)
-    {
-        var results = new List<string>();
-
-        if (!Directory.Exists(fullPath))
-        {
-            results.Add($"Directory not found: {fullPath}");
-            return results;
-        }
-
-        var folderName = Path.GetFileName(fullPath.TrimEnd(Path.DirectorySeparatorChar));
-        var directoryRecord = await TryGetDirectoryRecord(folderName);
-
-        if (directoryRecord == null)
-        {
-            results.Add($"Folder not processed: {folderName} (Directory record not found)");
-            return results;
-        }
-
-        var songFiles = _metaDataInfo.MultipleLevelDir(fullPath);
-
-        if (songFiles.Count == 0)
-        {
-            results.Add("No files found to process");
-            return results;
-        }
-
-        try
-        {
-            await RemoveExistingMediaMetaData(directoryRecord.RecordId);
-
-            foreach (var songFile in songFiles)
-            {
-                var relativePath = GetRelativePathFromBase(fullPath, songFile.FullPath, songFile.FullFileName);
-                var metaData = CreateMediaMetaData(directoryRecord.RecordId, songFile, relativePath);
-                _context.MediaMetaData.Add(metaData);
-            }
-
-            await _context.SaveChangesAsync();
-            results.Add($"Updated {songFiles.Count} song files");
-        }
-        catch (Exception ex)
-        {
-            var errorMessage = $"Update Database Error: {ex.Message}";
-            results.Add(errorMessage);
-            throw new ApplicationException(errorMessage, ex);
-        }
-
-        results.Add($"Complete process: {EnumMsg.EnumMessageUpdate.EnglishSong}");
         return results;
     }
 
@@ -452,7 +399,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         public string MusicFolder { get; set; } = string.Empty;
         public string VideoFolder { get; set; } = string.Empty;
         public string BookFolder { get; set; } = string.Empty;
-        public string SongFolder { get; set; } = string.Empty;
         public string RpmFolder { get; set; } = string.Empty;
         public string RpmCoverFolder { get; set; } = string.Empty;
         public string PhotoFolder { get; set; } = string.Empty;
