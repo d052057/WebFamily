@@ -86,7 +86,7 @@ export const routes: Routes = [
     // library ("songs", "musics"); which artist is selected lives in the
     // ?artist= query param instead of a path segment, so it stays bookmarkable
     // without needing a second route definition.
-    path: 'musics',
+    path: 'songs/:musics/:folder/:artish',
     loadComponent: () => import('./song-browser/song-browser.component')
       .then(mod => mod.SongBrowserComponent)
   },
