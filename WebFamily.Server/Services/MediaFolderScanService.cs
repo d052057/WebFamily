@@ -103,15 +103,20 @@ public class MediaFolderScanService : IMediaFolderScanService
         };
         _context.MediaFolders.Add(folder);
 
-        // Cover art directly in this folder, if any.
+        // All files in this folder, enumerated once - both cover art and
+        // audio tracks are picked out of this single list. Over a network
+        // share, one enumeration beats 9 separate File.Exists() round trips
+        // per folder (cover-art name/extension combos) at any real scale.
+        var allFiles = Directory.GetFiles(physicalPath);
+
         var coverFile = CoverFileBaseNames
             .SelectMany(baseName => CoverExtensions.Select(ext => baseName + ext))
             .Select(candidate => Path.Combine(physicalPath, candidate))
-            .FirstOrDefault(System.IO.File.Exists);
+            .FirstOrDefault(candidate => allFiles.Contains(candidate, StringComparer.OrdinalIgnoreCase));
         folder.CoverImagePath = coverFile is null ? null : Path.GetFileName(coverFile);
 
         // Audio files directly in this folder - allowlist, not blocklist.
-        var audioFiles = Directory.GetFiles(physicalPath)
+        var audioFiles = allFiles
             .Where(f => AudioExtensions.Contains(Path.GetExtension(f)))
             .ToList();
 

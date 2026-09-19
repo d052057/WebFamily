@@ -98,7 +98,7 @@ export class AudioPlayerComponent {
 
   // ViewChild references
   private readonly audioPlayer = viewChild.required<ElementRef<HTMLAudioElement>>('AngAudioPlayer');
-  private readonly trackListContainer = viewChild.required<ElementRef>('trackListContainer');
+  private readonly trackListContainer = viewChild<ElementRef>('trackListContainer');
 
   // Private properties
   private audio!: HTMLAudioElement;
@@ -117,6 +117,11 @@ export class AudioPlayerComponent {
   readonly videos = this._audios.asReadonly();
   @Input() imagePoster: string = '/images/family/calida.jpg';
   @Input() albumTitle: string | null = null;
+  // Hides the built-in playlist/search footer - for pages (like the recursive
+  // song browser) that already show their own song list elsewhere, so the
+  // same tracks aren't presented twice on one page. Defaults to true so every
+  // other existing use of this component is unaffected.
+  @Input() showPlaylist: boolean = true;
   @Input()
   set dataSource(value: AudioItem[]) {
     if (value?.length && value !== this._audios()) {
@@ -142,6 +147,7 @@ export class AudioPlayerComponent {
     }
 
     this.audio.src = encodeURI(track.url);
+    this.trackChangeEvent.emit(track);
     setTimeout(() => {
       if (this.isAudioAutoPlay()) {
         this.play();

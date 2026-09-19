@@ -37,6 +37,7 @@
     <app-audio-player
       [dataSource]="audioItems()"
       [albumTitle]="selectedArtist()?.name ?? null"
+      [showPlaylist]="false"
       (trackChangeEvent)="onTrackChange($event)">
     </app-audio-player>
     }
