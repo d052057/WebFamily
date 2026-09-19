@@ -24,7 +24,7 @@ namespace WebFamily.Server.Controllers
         }
 
         // Rebuilds MediaFolder/MediaTrack for one menu from disk.
-        // e.g. POST /MediaFolder/Scan?menu=songs
+        // e.g. POST /MediaFolder/Scan?menu=musics
         [HttpPost("Scan")]
         public async Task<ActionResult<List<string>>> Scan(string menu)
         {
@@ -39,7 +39,7 @@ namespace WebFamily.Server.Controllers
         }
 
         // Returns the full folder tree (artists -> albums -> ... -> songs) for one menu.
-        // e.g. GET /MediaFolder/Tree/songs
+        // e.g. GET /MediaFolder/Tree/musics
         [HttpGet("Tree/{menu}")]
         public async Task<ActionResult> Tree(string menu)
         {
@@ -54,10 +54,18 @@ namespace WebFamily.Server.Controllers
             var mediasDrive = Path.Combine(_appSettings.MediaDrive, "");
             return menu.ToLowerInvariant() switch
             {
-                "songs" => Path.Combine(mediasDrive, _appSettings.AssetEnglishSongFolder ?? ""),
-                "musics" => Path.Combine(mediasDrive, _appSettings.AssetAlbumFolder ?? ""),
+                "musics" => Path.Combine(mediasDrive, _appSettings.AssetSongFolder ?? ""),
                 _ => null
             };
         }
     }
 }
+
+/*
+============================================================================
+Add to Program.cs, alongside the other AddScoped<> registrations:
+
+    services.AddScoped<IMediaFolderScanService, MediaFolderScanService>();
+    services.AddScoped<IMediaFolderTreeService, MediaFolderTreeService>();
+============================================================================
+*/
