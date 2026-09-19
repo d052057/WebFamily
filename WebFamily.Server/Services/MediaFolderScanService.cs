@@ -65,6 +65,19 @@ public class MediaFolderScanService : IMediaFolderScanService
             return results;
         }
 
+        // Wipe everything under this menu first. A partial upsert can't tell
+        // the difference between "this artist was renamed" and "this artist
+        // was deleted" - it just leaves the old row behind either way. A full
+        // rebuild avoids that entirely: whatever's on disk right now is
+        // exactly what ends up in the tables, nothing more. MediaTrack rows
+        // cascade-delete automatically via the FK to MediaFolder.
+        var existingFolders = await _context.MediaFolders
+            .Where(f => f.MenuId == menuRecord.RecordId)
+            .ToListAsync();
+        _context.MediaFolders.RemoveRange(existingFolders);
+        await _context.SaveChangesAsync();
+        results.Add($"Cleared {existingFolders.Count} existing folder(s) for '{menu}'");
+
         foreach (var topLevelDir in Directory.GetDirectories(rootPath))
         {
             await ScanDirectoryAsync(topLevelDir, menuRecord.RecordId, parentFolderId: null, results);
@@ -79,20 +92,16 @@ public class MediaFolderScanService : IMediaFolderScanService
     {
         var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
 
-        var folder = await _context.MediaFolders.SingleOrDefaultAsync(f =>
-            f.MenuId == menuId && f.ParentFolderId == parentFolderId && f.Name == name);
-
-        if (folder is null)
+        // No lookup needed - everything under this menu was just cleared,
+        // so every folder here is a fresh insert.
+        var folder = new MediaFolder
         {
-            folder = new MediaFolder
-            {
-                RecordId = Guid.NewGuid(),
-                MenuId = menuId,
-                ParentFolderId = parentFolderId,
-                Name = name
-            };
-            _context.MediaFolders.Add(folder);
-        }
+            RecordId = Guid.NewGuid(),
+            MenuId = menuId,
+            ParentFolderId = parentFolderId,
+            Name = name
+        };
+        _context.MediaFolders.Add(folder);
 
         // Cover art directly in this folder, if any.
         var coverFile = CoverFileBaseNames
@@ -106,19 +115,10 @@ public class MediaFolderScanService : IMediaFolderScanService
             .Where(f => AudioExtensions.Contains(Path.GetExtension(f)))
             .ToList();
 
-        var seenFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var filePath in audioFiles)
         {
-            var fileName = Path.GetFileName(filePath);
-            seenFileNames.Add(fileName);
-            await UpsertTrackAsync(folder.RecordId, filePath, fileName);
+            await AddTrackAsync(folder.RecordId, filePath);
         }
-
-        // Remove tracks for files that no longer exist here (renamed/deleted since last scan).
-        var existingTracks = await _context.MediaTracks
-            .Where(t => t.FolderId == folder.RecordId)
-            .ToListAsync();
-        _context.MediaTracks.RemoveRange(existingTracks.Where(t => !seenFileNames.Contains(t.FileName)));
 
         results.Add($"{name}: {audioFiles.Count} audio file(s)");
 
@@ -130,21 +130,15 @@ public class MediaFolderScanService : IMediaFolderScanService
         return folder.RecordId;
     }
 
-    private async Task UpsertTrackAsync(Guid folderId, string filePath, string fileName)
+    private async Task AddTrackAsync(Guid folderId, string filePath)
     {
-        var track = await _context.MediaTracks.SingleOrDefaultAsync(t =>
-            t.FolderId == folderId && t.FileName == fileName);
-
-        if (track is null)
+        var track = new MediaTrack
         {
-            track = new MediaTrack
-            {
-                RecordId = Guid.NewGuid(),
-                FolderId = folderId,
-                FileName = fileName
-            };
-            _context.MediaTracks.Add(track);
-        }
+            RecordId = Guid.NewGuid(),
+            FolderId = folderId,
+            FileName = Path.GetFileName(filePath)
+        };
+        _context.MediaTracks.Add(track);
 
         track.Type = _mimeType.Get(filePath);
 
