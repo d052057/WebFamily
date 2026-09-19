@@ -43,21 +43,48 @@ namespace WebFamily.Server.Controllers
         [HttpGet("Tree/{menu}")]
         public async Task<ActionResult> Tree(string menu)
         {
-            var tree = await _treeService.GetFolderTree(menu);
+            var urlRootPath = ResolveUrlRootPath(menu);
+            if (urlRootPath is null)
+            {
+                return BadRequest($"No configured root folder for menu '{menu}'.");
+            }
+
+            var tree = await _treeService.GetFolderTree(menu, urlRootPath);
             return Ok(tree);
         }
 
-        // Mirrors the menu -> folder mapping already used in UpdateDataBaseServices.
-        // Extend this as more menus move to the folder-tree model.
+        // menu (the MediaMenu row this data is filed under, e.g. "musics") is NOT
+        // necessarily the same as the folder actually scanned (e.g. "musics"
+        // reuses the existing menu but scans AssetSongFolder = "musics\AmericanMusics").
+        // Every menu -> config-key mapping lives here, once, so Scan/Tree/URL
+        // building can never drift apart from each other again.
+        private static readonly Dictionary<string, Func<ApplicationSettings, string?>> MenuFolderMap =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["musics"] = s => s.AssetSongFolder
+            };
+
+        // Physical path on disk, for the scan job to walk.
         private string? ResolveRootPath(string menu)
         {
+            var relative = ResolveConfiguredFolder(menu);
+            if (relative is null) return null;
+
             var mediasDrive = Path.Combine(_appSettings.MediaDrive, "");
-            return menu.ToLowerInvariant() switch
-            {
-                "musics" => Path.Combine(mediasDrive, _appSettings.AssetSongFolder ?? ""),
-                _ => null
-            };
+            return Path.Combine(mediasDrive, relative);
         }
+
+        // URL-facing prefix for the SAME folder, for building playable track/cover
+        // URLs - forward slashes only, since this becomes part of an HTTP path,
+        // not a filesystem path.
+        private string? ResolveUrlRootPath(string menu)
+        {
+            var relative = ResolveConfiguredFolder(menu);
+            return relative?.Replace('\\', '/');
+        }
+
+        private string? ResolveConfiguredFolder(string menu) =>
+            MenuFolderMap.TryGetValue(menu, out var selector) ? selector(_appSettings) : null;
     }
 }
 

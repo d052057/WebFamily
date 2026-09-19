@@ -20,7 +20,8 @@ const PROXY_CONFIG = [
       "/Tube",
       "/updatedatabase",
       "/Download",
-      "/webdownload"
+      "/webdownload",
+      "/MediaFolder"
     ],
     target,
     secure: false,

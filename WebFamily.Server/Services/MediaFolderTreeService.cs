@@ -11,7 +11,13 @@ public interface IMediaFolderTreeService
     /// scale; if a library grows large enough that this gets slow, swap this
     /// for a "children of one folder" call instead and fetch lazily.
     /// </summary>
-    Task<List<MediaFolderTreeDto>> GetFolderTree(string menu);
+    /// <param name="menu">MediaMenu row this data is filed under (e.g. "musics").</param>
+    /// <param name="urlRootPath">
+    /// URL-facing prefix for reaching these files under /medias - NOT
+    /// necessarily the same string as menu (e.g. menu "musics" can be scanned
+    /// from urlRootPath "musics/AmericanMusics"). Forward slashes only.
+    /// </param>
+    Task<List<MediaFolderTreeDto>> GetFolderTree(string menu, string urlRootPath);
 }
 
 public class MediaFolderTreeService : IMediaFolderTreeService
@@ -23,9 +29,13 @@ public class MediaFolderTreeService : IMediaFolderTreeService
         _context = context;
     }
 
-    public async Task<List<MediaFolderTreeDto>> GetFolderTree(string menu)
+    public async Task<List<MediaFolderTreeDto>> GetFolderTree(string menu, string urlRootPath)
     {
-        var menuRecord = await _context.MediaMenus.SingleAsync(m => m.Menu == menu);
+        var menuRecord = await _context.MediaMenus.SingleOrDefaultAsync(m => m.Menu == menu);
+        if (menuRecord is null)
+        {
+            return new List<MediaFolderTreeDto>();
+        }
 
         // Two queries total, regardless of how deep or wide the tree is -
         // the nesting is reconstructed in memory below.
@@ -57,7 +67,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                         Name = f.Name,
                         CoverImagePath = f.CoverImagePath is null
                             ? null
-                            : $"{menu}/{relativePath}/{f.CoverImagePath}",
+                            : $"{urlRootPath}/{relativePath}/{f.CoverImagePath}",
                         Folders = BuildLevel(f.RecordId, relativePath),
                         Tracks = tracksByFolder[f.RecordId]
                             .OrderBy(t => t.TrackNumber ?? int.MaxValue)
@@ -74,7 +84,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                                 // Relative to the media root; the client already knows
                                 // its own base media URL and prepends it (same pattern
                                 // as the existing play-media/play-audio components).
-                                Url = $"{menu}/{relativePath}/{t.FileName}"
+                                Url = $"{urlRootPath}/{relativePath}/{t.FileName}"
                             }).ToList()
                     };
                 }).ToList();

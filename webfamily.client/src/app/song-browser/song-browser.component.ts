@@ -28,7 +28,7 @@ export class SongBrowserComponent {
 
   // "songs", "musics", etc. - which library this route is browsing.
   readonly menu = toSignal(
-    this.route.paramMap.pipe(map(p => p.get('musics') ?? '')),
+    this.route.paramMap.pipe(map(p => p.get('menu') ?? '')),
     { initialValue: '' }
   );
 
