@@ -55,46 +55,7 @@ export class MediaService  {
       }
     }
 
-  });
-
-  rockDirectoryResource = rxResource<folder[], any>({
-    stream: () => this.http.get<folder[]>('/MediaMetaData/GetRockDirectory'),
-  });
-
-  rockFolder = signal<any>('');
-  rockFileFolder = signal<any>('');
-  getRockMediaRecordRS = rxResource<any, any>({
-    params: () =>
-    ({
-      folder: this.rockFolder(),
-      fileFolder: this.rockFileFolder()
-    }),
-    stream: ({ params }) => {
-      if ((params.folder.length > 0)) {
-        return this.http.get<any[]>('/MediaMetaData/GetRockSong/' + encodeURIComponent(params.folder))
-        .pipe(
-          map((data: any) => {
-            let result: any[] = [];
-            let seq: number = 1;
-            for (let v of data) {
-              result.push({
-                id: seq++,
-                url: params.fileFolder + "/" + v.name,
-                title: v.name,
-                cover: v.cover,
-                type: v.type
-              });
-            }
-            return result;
-          }),
-        )
-      }
-      else {
-        return of([] as any[]);
-      }
-    }
-  })
- 
+  }); 
   /**
    * Converts SRT subtitle text to WebVTT format:
    * - prefixes with the required "WEBVTT" header

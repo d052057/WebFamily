@@ -47,7 +47,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
             "movies" => await UpdateMediaAsync(folderPaths.MovieFolder, EnumMsg.EnumMessageUpdate.Movies.ToString()),
             "videos" => await UpdateMediaAsync(folderPaths.VideoFolder, EnumMsg.EnumMessageUpdate.Videos.ToString()),
             "books" => await UpdateMediaAsync(folderPaths.BookFolder, EnumMsg.EnumMessageUpdate.Books.ToString()),
-            "americansongs" => await UpdateSongAsync(folderPaths.SongFolder),
             "text" => await UpdateTextAsync(folderPaths.TextFolder),
             _ => CreateErrorResult($"Invalid menu parameter: {menu}")
         };

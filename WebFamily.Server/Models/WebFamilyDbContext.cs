@@ -15,9 +15,6 @@ public partial class WebFamilyDbContext : DbContext
     public virtual DbSet<MediaFolder> MediaFolders { get; set; }
 
     public virtual DbSet<MediaTrack> MediaTracks { get; set; }
-    public virtual DbSet<AmericanMusicsDirectoryView> AmericanMusicsDirectoryViews { get; set; }
-
-    public virtual DbSet<AmericanMusicsView> AmericanMusicsViews { get; set; }
 
     public virtual DbSet<MediaDirectory> MediaDirectories { get; set; }
 
@@ -125,44 +122,6 @@ public partial class WebFamilyDbContext : DbContext
                 .HasConstraintName("FK_MediaTrack_MediaFolder");
         });
 
-
-
-        modelBuilder.Entity<AmericanMusicsDirectoryView>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("americanMusicsDirectoryView");
-
-            entity.Property(e => e.Directory)
-                .HasMaxLength(200)
-                .HasColumnName("directory");
-        });
-
-        modelBuilder.Entity<AmericanMusicsView>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("americanMusicsView");
-
-            entity.Property(e => e.Datetime)
-                .HasColumnType("datetime")
-                .HasColumnName("datetime");
-            entity.Property(e => e.Directory)
-                .HasMaxLength(200)
-                .HasColumnName("directory");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.Name)
-                .HasMaxLength(200)
-                .HasColumnName("name");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
-        });
         modelBuilder.Entity<MediaDirectory>(entity =>
         {
             entity.HasKey(e => e.RecordId).HasName("PK_directory");

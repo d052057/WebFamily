@@ -20,7 +20,7 @@ export class UpdatemenuComponent {
   public movieUpdateStatus = signal<any>([]);
   public videoUpdateStatus = signal<any>([]);
   public photoUpdateStatus = signal<any>([]);
-  public americanSongUpdateStatus = signal<any>([]);
+ 
   public textUpdateStatus = signal<any>([]);
   public rpmUpdateStatus = signal<any>([]);
   public initDatabaseStatus = signal<any>([]);
@@ -126,19 +126,6 @@ export class UpdatemenuComponent {
             {
               next: (data: any[]) => { this.musicUpdateStatus.set(data); },
               error: (err) => { this.musicUpdateStatus.update(list => [...list, JSON.stringify(err)]); }
-            }
-          )
-        break;
-      case 'americansongs':
-        this.songsUpdate.set(true);
-        this.americanSongUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.songsUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any) => { this.americanSongUpdateStatus.set(data); },
-              error: error => this.americanSongUpdateStatus.set(error)
             }
           )
         break;

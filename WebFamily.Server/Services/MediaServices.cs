@@ -7,8 +7,7 @@ public interface IMediaServices
     Task<MediaDirectory> GetFilesByFolder(string folder, string menu);
     Task<IEnumerable<MediaDirectory>> GetDirectoryList(Guid id);
     Task<IEnumerable<MediaDirectory>> DirectoryIndex();
-    Task<IEnumerable<AmericanMusicsDirectoryView>> GetRockDirectory();
-    Task<IEnumerable<AmericanMusicsView>> GetRockSong(string Folder);
+  
     IEnumerable<MediaMetaDatum> Index();
     Task<MediaDirectory> GetMediaDirectory(Guid id);
     MediaMetaDatum GetById(Guid id);
@@ -45,16 +44,6 @@ public class MediaServices : IMediaServices
             throw new ApplicationException($"Failed to get files for folder '{folder}' in menu '{menu}'.", ex);
         }
         return Record;
-    }
-    public async Task<IEnumerable<AmericanMusicsDirectoryView>> GetRockDirectory()
-    {
-        return await _context.AmericanMusicsDirectoryViews.ToListAsync();
-    }
-    public async Task<IEnumerable<AmericanMusicsView>> GetRockSong(string Folder)
-    {
-        return await _context.AmericanMusicsViews
-            .Where(d => d.Directory == Folder)
-            .ToListAsync();
     }
     public async Task<IEnumerable<MediaDirectory>> GetDirectoryList(Guid id)
     {

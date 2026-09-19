@@ -40,17 +40,6 @@ namespace WebFamily.Server.Controllers
         {
             var files = await _mediaServices.GetMediaDirectory(id);
             return Ok(files);
-        }
-
-        [HttpGet("GetRockDirectory")]
-        public async Task<IEnumerable<AmericanMusicsDirectoryView>> GetRockDirectory()
-        {
-            return await _mediaServices.GetRockDirectory();
-        }
-        [HttpGet("GetRockSong/{Folder}")]
-        public async Task<IEnumerable<AmericanMusicsView>> GetRockSong(string Folder)
-        {
-            return await _mediaServices.GetRockSong(Folder);
-        }       
+        }      
     }
 }
