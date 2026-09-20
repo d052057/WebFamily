@@ -142,8 +142,8 @@ public class MediaFolderScanService : IMediaFolderScanService
             RecordId = Guid.NewGuid(),
             FolderId = folderId,
             FileName = Path.GetFileName(filePath)
-        };
-        _context.MediaTracks.Add(track);
+        };  
+        await _context.MediaTracks.AddAsync(track);
 
         track.Type = _mimeType.Get(filePath);
 

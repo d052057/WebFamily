@@ -88,11 +88,3 @@ namespace WebFamily.Server.Controllers
     }
 }
 
-/*
-============================================================================
-Add to Program.cs, alongside the other AddScoped<> registrations:
-
-    services.AddScoped<IMediaFolderScanService, MediaFolderScanService>();
-    services.AddScoped<IMediaFolderTreeService, MediaFolderTreeService>();
-============================================================================
-*/
