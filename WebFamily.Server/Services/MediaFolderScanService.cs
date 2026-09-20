@@ -19,9 +19,11 @@ public interface IMediaFolderScanService
 {
     /// <summary>
     /// Recursively scans every given root and populates MediaFolder/MediaTrack
-    /// under the given menu, merging all roots into one tree. Which folders
-    /// become end-items (top-level MediaFolder rows) is decided purely by
-    /// shape, not by name - see MediaFolderScanService.ScanForEndItemsAsync.
+    /// under the given menu, merging all roots into one tree. A small list of
+    /// known wrapper/category folder names (Songs, Etc, AmericanMusics, ...)
+    /// is peeled through regardless of shape; everything else is treated as a
+    /// real end-item - see MediaFolderScanService.ScanForEndItemsAsync for why
+    /// shape alone can't safely make that call.
     /// </summary>
     Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots);
 }
@@ -45,12 +47,23 @@ public class MediaFolderScanService : IMediaFolderScanService
         new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
 
     // Folders that belong to a different, already-existing app feature
-    // entirely (rpm has its own dedicated tables/UI) - skipped outright,
-    // before shape-detection ever looks at them. Everything else is still
-    // classified purely by shape, no other names hardcoded anywhere.
+    // entirely (rpm has its own dedicated tables/UI) - skipped outright.
     private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "rpm"
+    };
+
+    // Folders known to be pure pass-through wrappers or categories (never
+    // artists themselves) - peeled straight through regardless of what they
+    // contain. This can't be inferred from shape alone: an artist with
+    // exactly one album, or an artist with several albums and no loose
+    // top-level songs, is structurally identical to a wrapper/category
+    // folder (no songs directly inside, one-or-more sub-folders). Only a
+    // folder's name reliably tells the two apart - everything NOT in this
+    // list is treated as a real end-item, however many albums it has.
+    private static readonly HashSet<string> KnownCollectionFolderNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Songs", "Etc", "AmericanMusics", "Variety"
     };
 
     // A stray image directly in a folder is very often intentional cover art,
@@ -68,6 +81,13 @@ public class MediaFolderScanService : IMediaFolderScanService
     private readonly WebFamilyDbContext _context;
     private readonly MimeType _mimeType = new();
     private readonly ILogger<MediaFolderScanService>? _logger;
+
+    // Tracks top-level (artist-level) names already used in the current scan
+    // run, so a genuine name collision - two real, different folders that
+    // happen to share a name - gets auto-renamed instead of aborting the
+    // whole scan when SaveChanges runs at the end. Reset at the start of
+    // every ScanAsync call.
+    private readonly HashSet<string> _usedTopLevelNames = new(StringComparer.OrdinalIgnoreCase);
 
     public MediaFolderScanService(WebFamilyDbContext context, ILogger<MediaFolderScanService>? logger = null)
     {
@@ -92,6 +112,8 @@ public class MediaFolderScanService : IMediaFolderScanService
             return results;
         }
 
+        _usedTopLevelNames.Clear();
+
         // Wipe everything under this menu first, across ALL its roots. A
         // partial upsert can't tell the difference between "this artist was
         // renamed" and "this artist was deleted" - it just leaves the old row
@@ -114,7 +136,10 @@ public class MediaFolderScanService : IMediaFolderScanService
                 continue;
             }
 
-            await ScanForEndItemsAsync(root.PhysicalPath, menuRecord.RecordId, parentFolderId: null, root.UrlPrefix, results);
+            foreach (var topLevelDir in Directory.GetDirectories(root.PhysicalPath))
+            {
+                await ScanForEndItemsAsync(topLevelDir, menuRecord.RecordId, parentFolderId: null, root.UrlPrefix, results);
+            }
         }
 
         await _context.SaveChangesAsync();
@@ -123,54 +148,58 @@ public class MediaFolderScanService : IMediaFolderScanService
     }
 
     /// <summary>
-    /// Decides, purely by shape, whether physicalPath is a real end-item
-    /// (an artist) or a pass-through folder that should be looked straight
-    /// through:
-    ///   - Has playable (audio or video) files directly inside?  -> it IS an
-    ///     end-item, full stop, no matter what else it contains. Whatever's
-    ///     nested inside (one album, several, discs, ...) is just its own
-    ///     content from here on.
-    ///   - No playable files, one or more sub-folders? -> pure pass-through
-    ///     (a wrapper with exactly one collection inside, or a category with
-    ///     many artists inside - doesn't matter which). Never becomes an
-    ///     end-item itself; each sub-folder is evaluated the same way, and
-    ///     whatever real end-items are found underneath attach directly to
+    /// Decides whether physicalPath is a real end-item (an artist) or a
+    /// pass-through folder that should be looked straight through:
+    ///   - Its name is a known wrapper/category (Songs, Etc, AmericanMusics,
+    ///     Variety, ...)? -> peel straight through it, no matter what it
+    ///     contains - each sub-folder is evaluated the same way, and whatever
+    ///     real end-items are found underneath attach directly to
     ///     parentFolderId, as if this folder were never there.
-    ///   - No playable files, no sub-folders? -> empty, nothing to do.
-    /// This is why AmericanMusics (many artist sub-folders) and a "Songs"
-    /// wrapper (exactly one sub-folder) both work with no special-casing by
-    /// name anywhere - the shape alone tells them apart from a real artist.
+    ///   - Otherwise -> it's confirmed as an end-item, full stop - whether it
+    ///     has songs directly inside, one album, several albums, or discs
+    ///     within albums. Shape alone can't safely make this call: an artist
+    ///     with exactly one album (no loose songs) looks structurally
+    ///     identical to a pure wrapper, and an artist with several albums
+    ///     looks structurally identical to a category of many artists. Only
+    ///     the name reliably tells them apart, which is why the excluded
+    ///     list above exists at all.
+    ///   - Empty (no files, no sub-folders)? -> nothing here, skipped.
     /// </summary>
-    private async Task ScanForEndItemsAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string? rootUrlPrefix, List<string> results)
+    private async Task ScanForEndItemsAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string currentUrlPrefix, List<string> results)
     {
         var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
+
         if (ExcludedFolderNames.Contains(name))
         {
             results.Add($"{name}: skipped (belongs to a different feature)");
             return;
         }
 
-        var playableFiles = Directory.GetFiles(physicalPath)
-            .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
-            .ToList();
-
-        if (playableFiles.Count > 0)
+        if (KnownCollectionFolderNames.Contains(name))
         {
-            await ScanFolderAsync(physicalPath, menuId, parentFolderId, rootUrlPrefix, results);
+            // Peeled through, but its name is still a real folder on disk -
+            // the URL has to include it even though no MediaFolder row does,
+            // or every file underneath ends up pointing one folder short of
+            // where it actually lives.
+            var nextUrlPrefix = $"{currentUrlPrefix}/{name}";
+            foreach (var sub in Directory.GetDirectories(physicalPath))
+            {
+                await ScanForEndItemsAsync(sub, menuId, parentFolderId, nextUrlPrefix, results);
+            }
             return;
         }
 
-        var subDirectories = Directory.GetDirectories(physicalPath);
-        if (subDirectories.Length == 0)
+        var hasPlayableFiles = Directory.GetFiles(physicalPath)
+            .Any(f => PlayableExtensions.Contains(Path.GetExtension(f)));
+        var hasSubDirectories = Directory.GetDirectories(physicalPath).Length > 0;
+
+        if (!hasPlayableFiles && !hasSubDirectories)
         {
-            results.Add($"{Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar))}: empty, skipped");
+            results.Add($"{name}: empty, skipped");
             return;
         }
 
-        foreach (var sub in subDirectories)
-        {
-            await ScanForEndItemsAsync(sub, menuId, parentFolderId, rootUrlPrefix, results);
-        }
+        await ScanFolderAsync(physicalPath, menuId, parentFolderId, currentUrlPrefix, results);
     }
 
     /// <summary>
@@ -184,6 +213,14 @@ public class MediaFolderScanService : IMediaFolderScanService
     private async Task<Guid> ScanFolderAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string? rootUrlPrefix, List<string> results)
     {
         var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
+
+        // Top-level folders can genuinely collide (two different, unrelated
+        // folders that happen to share a name) - nested folders can't, since
+        // a real directory can't have two children with the same name.
+        if (parentFolderId is null)
+        {
+            name = DisambiguateTopLevelName(name);
+        }
 
         // No lookup needed - everything under this menu was just cleared,
         // so every folder here is a fresh insert. RootPath is only meaningful
@@ -216,9 +253,21 @@ public class MediaFolderScanService : IMediaFolderScanService
             .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
             .ToList();
 
+        // Filenames only need to be unique within this one folder - scoped
+        // locally per call, unlike top-level names which persist across the
+        // whole scan. A genuine collision here (e.g. two files differing only
+        // by case, or by a Unicode quirk the filesystem tolerates but SQL
+        // Server's default collation doesn't) gets disambiguated rather than
+        // aborting the scan.
+        var usedFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var filePath in playableFiles)
         {
-            await AddTrackAsync(folder.RecordId, filePath);
+            // Trimmed before comparison AND storage: SQL Server's default
+            // string comparison ignores trailing whitespace, .NET's does not -
+            // an untrimmed name can look unique here yet still collide at the
+            // database, which is exactly what was happening.
+            var fileName = DisambiguateFileName(Path.GetFileName(filePath).Trim(), usedFileNames);
+            await AddTrackAsync(folder.RecordId, filePath, fileName);
         }
 
         results.Add($"{name}: {playableFiles.Count} media file(s)");
@@ -231,13 +280,58 @@ public class MediaFolderScanService : IMediaFolderScanService
         return folder.RecordId;
     }
 
-    private async Task AddTrackAsync(Guid folderId, string filePath)
+    // Appends a numeric suffix if this exact top-level name was already used
+    // earlier in this scan run - keeps every real folder's content, just
+    // gives the second (third, ...) one a distinguishable name instead of
+    // silently failing the whole scan on a unique-index violation.
+    private string DisambiguateTopLevelName(string name)
+    {
+        if (_usedTopLevelNames.Add(name))
+        {
+            return name;
+        }
+
+        var suffix = 2;
+        string candidate;
+        do
+        {
+            candidate = $"{name} ({suffix})";
+            suffix++;
+        } while (!_usedTopLevelNames.Add(candidate));
+
+        return candidate;
+    }
+
+    // Same idea as DisambiguateTopLevelName, but scoped to a fresh HashSet
+    // per folder (passed in) rather than an instance field, and preserves
+    // the extension when appending a suffix.
+    private static string DisambiguateFileName(string fileName, HashSet<string> usedNames)
+    {
+        if (usedNames.Add(fileName))
+        {
+            return fileName;
+        }
+
+        var extension = Path.GetExtension(fileName);
+        var baseName = Path.GetFileNameWithoutExtension(fileName);
+        var suffix = 2;
+        string candidate;
+        do
+        {
+            candidate = $"{baseName} ({suffix}){extension}";
+            suffix++;
+        } while (!usedNames.Add(candidate));
+
+        return candidate;
+    }
+
+    private async Task AddTrackAsync(Guid folderId, string filePath, string fileName)
     {
         var track = new MediaTrack
         {
             RecordId = Guid.NewGuid(),
             FolderId = folderId,
-            FileName = Path.GetFileName(filePath)
+            FileName = fileName
         };
         await _context.MediaTracks.AddAsync(track);
 

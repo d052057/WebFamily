@@ -65,6 +65,9 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.CoverImagePath)
                 .HasMaxLength(500)
                 .HasColumnName("coverImagePath");
+            entity.Property(e => e.RootPath)
+                .HasMaxLength(500)
+                .HasColumnName("rootPath");
             entity.Property(e => e.MenuId).HasColumnName("menuId");
             entity.Property(e => e.ParentFolderId).HasColumnName("parentFolderId");
 

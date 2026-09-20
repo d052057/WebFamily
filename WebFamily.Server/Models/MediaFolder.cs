@@ -12,6 +12,10 @@ public partial class MediaFolder
     public Guid? ParentFolderId { get; set; }
     public string Name { get; set; }
 
+    // URL-facing prefix (forward slashes) for the physical root this folder
+    // came from - only ever set on top-level rows (ParentFolderId is null).
+    public string RootPath { get; set; }
+
     // Path to cover.jpg/folder.jpg/album.jpg etc. found directly in this
     // folder during scan, relative to the media root. Null if none found.
     public string CoverImagePath { get; set; }

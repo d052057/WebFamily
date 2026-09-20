@@ -11,13 +11,7 @@ public interface IMediaFolderTreeService
     /// scale; if a library grows large enough that this gets slow, swap this
     /// for a "children of one folder" call instead and fetch lazily.
     /// </summary>
-    /// <param name="menu">MediaMenu row this data is filed under (e.g. "musics").</param>
-    /// <param name="urlRootPath">
-    /// URL-facing prefix for reaching these files under /medias - NOT
-    /// necessarily the same string as menu (e.g. menu "musics" can be scanned
-    /// from urlRootPath "musics/AmericanMusics"). Forward slashes only.
-    /// </param>
-    Task<List<MediaFolderTreeDto>> GetFolderTree(string menu, string urlRootPath);
+    Task<List<MediaFolderTreeDto>> GetFolderTree(string menu);
 }
 
 public class MediaFolderTreeService : IMediaFolderTreeService
@@ -29,7 +23,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
         _context = context;
     }
 
-    public async Task<List<MediaFolderTreeDto>> GetFolderTree(string menu, string urlRootPath)
+    public async Task<List<MediaFolderTreeDto>> GetFolderTree(string menu)
     {
         var menuRecord = await _context.MediaMenus.SingleOrDefaultAsync(m => m.Menu == menu);
         if (menuRecord is null)
@@ -51,14 +45,19 @@ public class MediaFolderTreeService : IMediaFolderTreeService
         var foldersByParent = folders.ToLookup(f => f.ParentFolderId);
         var tracksByFolder = tracks.ToLookup(t => t.FolderId);
 
-        List<MediaFolderTreeDto> BuildLevel(Guid? parentId, string parentRelativePath)
+        List<MediaFolderTreeDto> BuildLevel(Guid? parentId, string? parentRelativePath)
         {
             return foldersByParent[parentId]
                 .OrderBy(f => f.Name)
                 .Select(f =>
                 {
-                    var relativePath = string.IsNullOrEmpty(parentRelativePath)
-                        ? f.Name
+                    // Top-level folders (parentId is null) start from their OWN
+                    // RootPath - a menu can be scanned from more than one
+                    // physical root, so each top-level folder knows which one
+                    // it came from. Nested folders just extend their parent's
+                    // path as before.
+                    var relativePath = parentId is null
+                        ? $"{f.RootPath}/{f.Name}"
                         : $"{parentRelativePath}/{f.Name}";
 
                     return new MediaFolderTreeDto
@@ -67,7 +66,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                         Name = f.Name,
                         CoverImagePath = f.CoverImagePath is null
                             ? null
-                            : $"{urlRootPath}/{relativePath}/{f.CoverImagePath}",
+                            : $"{relativePath}/{f.CoverImagePath}",
                         Folders = BuildLevel(f.RecordId, relativePath),
                         Tracks = tracksByFolder[f.RecordId]
                             .OrderBy(t => t.TrackNumber ?? int.MaxValue)
@@ -84,12 +83,12 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                                 // Relative to the media root; the client already knows
                                 // its own base media URL and prepends it (same pattern
                                 // as the existing play-media/play-audio components).
-                                Url = $"{urlRootPath}/{relativePath}/{t.FileName}"
+                                Url = $"{relativePath}/{t.FileName}"
                             }).ToList()
                     };
                 }).ToList();
         }
 
-        return BuildLevel(null, string.Empty);
+        return BuildLevel(null, null);
     }
 }
