@@ -4,34 +4,21 @@ import { AudioItem, AutoplayCapability } from './models/audio.model';
 import { CleanTrackTitlePipe } from './../pipes/clean-track-title.pipe';
 import { TimeConversionPipe } from './../pipes/time-conversion.pipe';
 import { EventListenerService } from '../services/event-handler.service';
-import { languages } from '../../../app/models/languages';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { VoiceDirective } from '../../shared/directives/voice.directive';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
+import { SearchBoxComponent } from './../search-box/search-box.component';
 
 @Component({
   selector: 'app-audio-player',
   imports: [TimeConversionPipe,
     CleanTrackTitlePipe,
-    MatIconModule,
-    MatSelectModule,
-    MatInputModule,
-    VoiceDirective,
-    MatFormFieldModule,
-    FormsModule
+    SearchBoxComponent
   ],
   templateUrl: './audio-player.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './audio-player.component.scss'
 })
 export class AudioPlayerComponent {
-  isUserSpeaking: boolean = false;
-  langData = languages;
-  langSelected: number = 0;
-  langSearch: string = this.langData[this.langSelected].search;
+  // Filters audioList() below - text comes from the shared SearchBoxComponent
+  // (typed or dictated) via its (searchChange) output.
   searchVal = signal('');
 
   // Injected services
@@ -768,20 +755,5 @@ export class AudioPlayerComponent {
     if (this.audio) {
       this.eventListenerService.unregisterAll();
     }
-  }
-  /* audio dictation*/
-  onLangSelectChange() {
-    this.langSearch = this.langData[this.langSelected].search;
-  }
-  onSearch(searchStr: string): void {
-    this.searchVal.set(searchStr);
-  }
-  checkMic(): void {
-    this.isUserSpeaking = !this.isUserSpeaking;
-
-  }
-  onVoiceInput(transcript: string | any) {
-    let currentText = this.searchVal() + ' ' + transcript;
-    this.searchVal.set(currentText.trim());
   }
 }

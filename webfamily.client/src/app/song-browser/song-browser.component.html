@@ -15,8 +15,9 @@
     <div class="card">
       <div class="card-body">
         <h2 class="h6 text-muted mb-3">Artists</h2>
+        <app-search-box label="Search artists" (searchChange)="searchVal.set($event)"></app-search-box>
         <div class="nav flex-column nav-pills artist-nav" role="tablist" aria-orientation="vertical">
-          @for (artist of tree(); track artist.id) {
+          @for (artist of filteredArtists(); track artist.id) {
           <a href="javascript:void(0)"
              class="nav-link"
              [class.active]="artist.id === selectedArtist()?.id"
@@ -25,6 +26,9 @@
             <span>{{ artist.name }}</span>
             <span class="badge text-bg-secondary">{{ countTracks(artist) }}</span>
           </a>
+          }
+          @if (!filteredArtists().length) {
+          <div class="text-muted small px-2 py-3">No artists match "{{ searchVal() }}"</div>
           }
         </div>
       </div>

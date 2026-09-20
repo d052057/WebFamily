@@ -9,11 +9,12 @@ import { MediaFolderTreeService } from '../shared/services/media-folder-tree.ser
 import { MediaFolderTreeDto, MediaTrackDto } from '../models/media-folder-tree.model';
 import { flattenTracks, toAudioItems } from '../shared/utils/media-tree.utils';
 import { FolderNodeComponent } from '../folder-node/folder-node.component';
+import { SearchBoxComponent } from '../shared/search-box/search-box.component';
 
 @Component({
   selector: 'app-song-browser',
   standalone: true,
-  imports: [AudioPlayerComponent, FolderNodeComponent],
+  imports: [AudioPlayerComponent, FolderNodeComponent, SearchBoxComponent],
   templateUrl: './song-browser.component.html',
   styleUrl: './song-browser.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -45,6 +46,17 @@ export class SongBrowserComponent {
 
   readonly tree = computed<MediaFolderTreeDto[]>(() => this.treeService.treeResource.value() ?? []);
   readonly isLoading = computed(() => this.treeService.treeResource.isLoading());
+
+  // Filters the artist nav list only - doesn't touch which artist is
+  // currently selected/playing. Text comes from the shared SearchBoxComponent
+  // (typed or dictated) via its (searchChange) output.
+  readonly searchVal = signal('');
+
+  readonly filteredArtists = computed<MediaFolderTreeDto[]>(() => {
+    const query = this.searchVal().trim().toLowerCase();
+    const list = this.tree();
+    return query ? list.filter(a => a.name.toLowerCase().includes(query)) : list;
+  });
 
   readonly selectedArtist = computed<MediaFolderTreeDto | null>(() => {
     const list = this.tree();
