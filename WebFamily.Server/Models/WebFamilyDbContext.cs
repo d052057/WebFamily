@@ -41,7 +41,7 @@ public partial class WebFamilyDbContext : DbContext
     public virtual DbSet<WebTube> WebTubes { get; set; }
 
     public virtual DbSet<WebTubeSeries> WebTubeSeries { get; set; }
-
+    public virtual DbSet<MediaEndItem> MediaEndItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MediaFolder>(entity =>
@@ -535,7 +535,18 @@ public partial class WebFamilyDbContext : DbContext
                 .HasForeignKey(d => d.WebTubeId)
                 .HasConstraintName("FK_WebTubeSeries_WebTube");
         });
+        modelBuilder.Entity<MediaEndItem>(entity =>
+        {
+            // Keyless, read-only view mapping - same pattern as the old
+            // AmericanMusicsView/AmericanMusicsDirectoryView mappings.
+            entity.HasNoKey();
+            entity.ToView("MediaEndItemView");
 
+            entity.Property(e => e.FolderId).HasColumnName("folderId");
+            entity.Property(e => e.MenuId).HasColumnName("menuId");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.CoverImagePath).HasColumnName("coverImagePath");
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

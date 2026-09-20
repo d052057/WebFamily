@@ -5,25 +5,52 @@ using WebFamily.Server.Models;
 
 namespace WebFamily.Server.Services;
 
+/// <summary>
+/// One physical location to scan for a menu. Its immediate contents are
+/// evaluated by shape (see MediaFolderScanService) to find the real end-items
+/// (artists) underneath, however many pass-through/category folders sit
+/// above them.
+/// </summary>
+/// <param name="PhysicalPath">Disk path to walk.</param>
+/// <param name="UrlPrefix">URL-facing prefix (forward slashes) for files found under this root.</param>
+public record ScanRoot(string PhysicalPath, string UrlPrefix);
+
 public interface IMediaFolderScanService
 {
     /// <summary>
-    /// Recursively scans rootPath and populates MediaFolder/MediaTrack under
-    /// the given menu. Each immediate sub-folder of rootPath becomes a
-    /// top-level MediaFolder (e.g. an artist); anything nested under that
-    /// becomes a child folder (album, disc, ...), to any depth.
+    /// Recursively scans every given root and populates MediaFolder/MediaTrack
+    /// under the given menu, merging all roots into one tree. Which folders
+    /// become end-items (top-level MediaFolder rows) is decided purely by
+    /// shape, not by name - see MediaFolderScanService.ScanForEndItemsAsync.
     /// </summary>
-    Task<List<string>> ScanAsync(string menu, string rootPath);
+    Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots);
 }
 
 public class MediaFolderScanService : IMediaFolderScanService
 {
     // Allowlist: only these are ever turned into MediaTrack rows. Anything else
-    // found in a music folder (cover art, .nfo, playlists, Thumbs.db, ...) is
+    // found in a media folder (cover art, .nfo, playlists, Thumbs.db, ...) is
     // simply skipped rather than needing to be named on a junk-file blocklist.
     private static readonly HashSet<string> AudioExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
         ".mp3", ".flac", ".m4a", ".aac", ".wav", ".ogg", ".wma", ".aiff"
+    };
+
+    private static readonly HashSet<string> VideoExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".mp4", ".mkv", ".mov", ".avi", ".wmv", ".m4v", ".webm", ".flv", ".mpg", ".mpeg", ".3gp"
+    };
+
+    private static readonly HashSet<string> PlayableExtensions =
+        new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
+
+    // Folders that belong to a different, already-existing app feature
+    // entirely (rpm has its own dedicated tables/UI) - skipped outright,
+    // before shape-detection ever looks at them. Everything else is still
+    // classified purely by shape, no other names hardcoded anywhere.
+    private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "rpm"
     };
 
     // A stray image directly in a folder is very often intentional cover art,
@@ -48,13 +75,13 @@ public class MediaFolderScanService : IMediaFolderScanService
         _logger = logger;
     }
 
-    public async Task<List<string>> ScanAsync(string menu, string rootPath)
+    public async Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots)
     {
         var results = new List<string>();
 
-        if (!Directory.Exists(rootPath))
+        if (roots.Count == 0)
         {
-            results.Add($"Directory not found: {rootPath}");
+            results.Add($"No configured root folders for menu '{menu}'.");
             return results;
         }
 
@@ -65,12 +92,13 @@ public class MediaFolderScanService : IMediaFolderScanService
             return results;
         }
 
-        // Wipe everything under this menu first. A partial upsert can't tell
-        // the difference between "this artist was renamed" and "this artist
-        // was deleted" - it just leaves the old row behind either way. A full
-        // rebuild avoids that entirely: whatever's on disk right now is
-        // exactly what ends up in the tables, nothing more. MediaTrack rows
-        // cascade-delete automatically via the FK to MediaFolder.
+        // Wipe everything under this menu first, across ALL its roots. A
+        // partial upsert can't tell the difference between "this artist was
+        // renamed" and "this artist was deleted" - it just leaves the old row
+        // behind either way. A full rebuild avoids that entirely: whatever's
+        // on disk right now, across every configured root, is exactly what
+        // ends up in the tables. MediaTrack rows cascade-delete automatically
+        // via the FK to MediaFolder.
         var existingFolders = await _context.MediaFolders
             .Where(f => f.MenuId == menuRecord.RecordId)
             .ToListAsync();
@@ -78,9 +106,15 @@ public class MediaFolderScanService : IMediaFolderScanService
         await _context.SaveChangesAsync();
         results.Add($"Cleared {existingFolders.Count} existing folder(s) for '{menu}'");
 
-        foreach (var topLevelDir in Directory.GetDirectories(rootPath))
+        foreach (var root in roots)
         {
-            await ScanDirectoryAsync(topLevelDir, menuRecord.RecordId, parentFolderId: null, results);
+            if (!Directory.Exists(root.PhysicalPath))
+            {
+                results.Add($"Directory not found: {root.PhysicalPath}");
+                continue;
+            }
+
+            await ScanForEndItemsAsync(root.PhysicalPath, menuRecord.RecordId, parentFolderId: null, root.UrlPrefix, results);
         }
 
         await _context.SaveChangesAsync();
@@ -88,18 +122,81 @@ public class MediaFolderScanService : IMediaFolderScanService
         return results;
     }
 
-    private async Task<Guid> ScanDirectoryAsync(string physicalPath, Guid menuId, Guid? parentFolderId, List<string> results)
+    /// <summary>
+    /// Decides, purely by shape, whether physicalPath is a real end-item
+    /// (an artist) or a pass-through folder that should be looked straight
+    /// through:
+    ///   - Has playable (audio or video) files directly inside?  -> it IS an
+    ///     end-item, full stop, no matter what else it contains. Whatever's
+    ///     nested inside (one album, several, discs, ...) is just its own
+    ///     content from here on.
+    ///   - No playable files, one or more sub-folders? -> pure pass-through
+    ///     (a wrapper with exactly one collection inside, or a category with
+    ///     many artists inside - doesn't matter which). Never becomes an
+    ///     end-item itself; each sub-folder is evaluated the same way, and
+    ///     whatever real end-items are found underneath attach directly to
+    ///     parentFolderId, as if this folder were never there.
+    ///   - No playable files, no sub-folders? -> empty, nothing to do.
+    /// This is why AmericanMusics (many artist sub-folders) and a "Songs"
+    /// wrapper (exactly one sub-folder) both work with no special-casing by
+    /// name anywhere - the shape alone tells them apart from a real artist.
+    /// </summary>
+    private async Task ScanForEndItemsAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string? rootUrlPrefix, List<string> results)
+    {
+        var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
+        if (ExcludedFolderNames.Contains(name))
+        {
+            results.Add($"{name}: skipped (belongs to a different feature)");
+            return;
+        }
+
+        var playableFiles = Directory.GetFiles(physicalPath)
+            .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
+            .ToList();
+
+        if (playableFiles.Count > 0)
+        {
+            await ScanFolderAsync(physicalPath, menuId, parentFolderId, rootUrlPrefix, results);
+            return;
+        }
+
+        var subDirectories = Directory.GetDirectories(physicalPath);
+        if (subDirectories.Length == 0)
+        {
+            results.Add($"{Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar))}: empty, skipped");
+            return;
+        }
+
+        foreach (var sub in subDirectories)
+        {
+            await ScanForEndItemsAsync(sub, menuId, parentFolderId, rootUrlPrefix, results);
+        }
+    }
+
+    /// <summary>
+    /// Once a folder is confirmed as a real end-item (or once we're already
+    /// inside a confirmed one), this is a plain, unconditional recursive walk:
+    /// every folder becomes a MediaFolder row, every audio file becomes a
+    /// MediaTrack row. No more shape-checking below this point - an artist's
+    /// own album/disc structure is real structure, not something to peel
+    /// through.
+    /// </summary>
+    private async Task<Guid> ScanFolderAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string? rootUrlPrefix, List<string> results)
     {
         var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
 
         // No lookup needed - everything under this menu was just cleared,
-        // so every folder here is a fresh insert.
+        // so every folder here is a fresh insert. RootPath is only meaningful
+        // on top-level rows (parentFolderId is null) - it's how the tree
+        // service knows which physical root a given top-level folder (and
+        // everything nested under it) came from.
         var folder = new MediaFolder
         {
             RecordId = Guid.NewGuid(),
             MenuId = menuId,
             ParentFolderId = parentFolderId,
-            Name = name
+            Name = name,
+            RootPath = parentFolderId is null ? rootUrlPrefix : null
         };
         _context.MediaFolders.Add(folder);
 
@@ -115,21 +212,20 @@ public class MediaFolderScanService : IMediaFolderScanService
             .FirstOrDefault(candidate => allFiles.Contains(candidate, StringComparer.OrdinalIgnoreCase));
         folder.CoverImagePath = coverFile is null ? null : Path.GetFileName(coverFile);
 
-        // Audio files directly in this folder - allowlist, not blocklist.
-        var audioFiles = allFiles
-            .Where(f => AudioExtensions.Contains(Path.GetExtension(f)))
+        var playableFiles = allFiles
+            .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
             .ToList();
 
-        foreach (var filePath in audioFiles)
+        foreach (var filePath in playableFiles)
         {
             await AddTrackAsync(folder.RecordId, filePath);
         }
 
-        results.Add($"{name}: {audioFiles.Count} audio file(s)");
+        results.Add($"{name}: {playableFiles.Count} media file(s)");
 
         foreach (var subDirectory in Directory.GetDirectories(physicalPath))
         {
-            await ScanDirectoryAsync(subDirectory, menuId, folder.RecordId, results);
+            await ScanFolderAsync(subDirectory, menuId, folder.RecordId, null, results);
         }
 
         return folder.RecordId;
@@ -142,7 +238,7 @@ public class MediaFolderScanService : IMediaFolderScanService
             RecordId = Guid.NewGuid(),
             FolderId = folderId,
             FileName = Path.GetFileName(filePath)
-        };  
+        };
         await _context.MediaTracks.AddAsync(track);
 
         track.Type = _mimeType.Get(filePath);

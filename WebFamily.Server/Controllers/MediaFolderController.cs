@@ -28,13 +28,13 @@ namespace WebFamily.Server.Controllers
         [HttpPost("Scan")]
         public async Task<ActionResult<List<string>>> Scan(string menu)
         {
-            var rootPath = ResolveRootPath(menu);
-            if (rootPath is null)
+            var roots = ResolveScanRoots(menu);
+            if (roots.Count == 0)
             {
                 return BadRequest($"No configured root folder for menu '{menu}'.");
             }
 
-            var results = await _scanService.ScanAsync(menu, rootPath);
+            var results = await _scanService.ScanAsync(menu, roots);
             return Ok(results);
         }
 
@@ -43,48 +43,43 @@ namespace WebFamily.Server.Controllers
         [HttpGet("Tree/{menu}")]
         public async Task<ActionResult> Tree(string menu)
         {
-            var urlRootPath = ResolveUrlRootPath(menu);
-            if (urlRootPath is null)
-            {
-                return BadRequest($"No configured root folder for menu '{menu}'.");
-            }
-
-            var tree = await _treeService.GetFolderTree(menu, urlRootPath);
+            var tree = await _treeService.GetFolderTree(menu);
             return Ok(tree);
         }
 
-        // menu (the MediaMenu row this data is filed under, e.g. "musics") is NOT
-        // necessarily the same as the folder actually scanned (e.g. "musics"
-        // reuses the existing menu but scans AssetSongFolder = "musics\AmericanMusics").
-        // Every menu -> config-key mapping lives here, once, so Scan/Tree/URL
-        // building can never drift apart from each other again.
-        private static readonly Dictionary<string, Func<ApplicationSettings, string?>> MenuFolderMap =
+        // Every menu -> physical root mapping lives here, once. "musics" is a
+        // single root now (the whole musics folder) - the scan service's
+        // shape-based detection finds every real end-item (artist) underneath
+        // on its own, no matter how many pass-through/category folders
+        // (AmericanMusics, a "Songs" wrapper, etc.) sit above them. No
+        // per-name exclusion list needed here anymore.
+        private static readonly Dictionary<string, Func<ApplicationSettings, string?>> MenuRootMap =
             new(StringComparer.OrdinalIgnoreCase)
             {
-                ["musics"] = s => s.AssetSongFolder
+                ["musics"] = s => s.AssetAlbumFolder
             };
 
-        // Physical path on disk, for the scan job to walk.
-        private string? ResolveRootPath(string menu)
+        private List<ScanRoot> ResolveScanRoots(string menu)
         {
-            var relative = ResolveConfiguredFolder(menu);
-            if (relative is null) return null;
+            if (!MenuRootMap.TryGetValue(menu, out var selector))
+            {
+                return new List<ScanRoot>();
+            }
+
+            var relativePath = selector(_appSettings);
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                return new List<ScanRoot>();
+            }
 
             var mediasDrive = Path.Combine(_appSettings.MediaDrive, "");
-            return Path.Combine(mediasDrive, relative);
-        }
 
-        // URL-facing prefix for the SAME folder, for building playable track/cover
-        // URLs - forward slashes only, since this becomes part of an HTTP path,
-        // not a filesystem path.
-        private string? ResolveUrlRootPath(string menu)
-        {
-            var relative = ResolveConfiguredFolder(menu);
-            return relative?.Replace('\\', '/');
+            return new List<ScanRoot>
+            {
+                new(
+                    PhysicalPath: Path.Combine(mediasDrive, relativePath),
+                    UrlPrefix: relativePath.Replace('\\', '/'))
+            };
         }
-
-        private string? ResolveConfiguredFolder(string menu) =>
-            MenuFolderMap.TryGetValue(menu, out var selector) ? selector(_appSettings) : null;
     }
 }
-

@@ -10,7 +10,7 @@ public partial class MediaFolder
     // Null = top-level folder (e.g. an artist). Set = nested folder (e.g. an
     // album, or a disc under an album) - self-reference lets this go to any depth.
     public Guid? ParentFolderId { get; set; }
-
+    public string? RootPath { get; set; }
     public string Name { get; set; }
 
     // Path to cover.jpg/folder.jpg/album.jpg etc. found directly in this
@@ -22,6 +22,8 @@ public partial class MediaFolder
     public virtual MediaMenu Menu { get; set; }
 
     public virtual MediaFolder ParentFolder { get; set; }
+
+
 
     public virtual ICollection<MediaFolder> ChildFolders { get; set; } = new List<MediaFolder>();
 
