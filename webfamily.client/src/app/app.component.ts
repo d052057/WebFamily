@@ -20,18 +20,8 @@ export class AppComponent implements OnInit {
   menuService = inject(MenuService);
   loadingService = inject(LoadingService);
   private sharedService = inject(SharedService);
-  //Admin: string = 'admin';
 
   ngOnInit(): void {
-     // Menus are automatically loaded by the service
-    // You can add any additional initialization here
-
-    // Example: Log when menus are ready
-    //setTimeout(() => {
-    //  const memoryInfo = this.menuService.getMemoryInfo();
-    //  /*console.log('Menu memory info:', memoryInfo);*/
-    //}, 1000);
-
     this.refreshUser();
   }
 

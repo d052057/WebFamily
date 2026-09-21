@@ -11,9 +11,9 @@ public class ApplicationSettings
     // Program.cs's ConfigureMediaFiles). This is a fixed routing constant,
     // NOT tied to MediaDrive - it doesn't change if the physical drive does.
     public const string MediaRequestPath = "/medias";
-    public string AssetSongFolder { get; set; }
+    //public string AssetSongFolder { get; set; }
     public string Download { get; set; }
-    public string ClientURL { get; set; }
+    //public string ClientURL { get; set; }
     public string MediaDrive { get; set; } = @"c:\medias";
     public string ApiKey { get; set; }
     public string AssetAlbumFolder { get; set; }
@@ -21,10 +21,10 @@ public class ApplicationSettings
     public string AssetMovieFolder { get; set; }
     public string AssetBookFolder { get; set; }
     public string AssetPhotoFolder { get; set; }
-    public string AssetEnglishSongFolder { get; set; }
+    //public string AssetEnglishSongFolder { get; set; }
     public string AssetRpmFolder { get; set; }
     public string AssetRpmCoverFolder { get; set; }
-    public string AssetCCFolder { get; set; }
+    //public string AssetCCFolder { get; set; }
 
     public string AssetTextFolder { get; set; }
 

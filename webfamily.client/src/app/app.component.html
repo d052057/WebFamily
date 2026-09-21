@@ -118,16 +118,10 @@
                         <i class='bi bi-record-circle'></i> Medias
                     </a>
                     <ul class="dropdown-menu">
-                        @for (p of menuService.musicMenu(); track p) {
                         <li>
-                            <a class="dropdown-item" [routerLink]="['/musics', p.param]">{{ p.title }}</a>
-                        </li>
-                        }
-                        <li>
-                            <a class="dropdown-item" [routerLink]="['/song', 'musics']">English Songs</a>
+                            <a class="dropdown-item" [routerLink]="['/song', 'musics']">Songs Library</a>
                         </li>
                         <li><a class="dropdown-item" [routerLink]="['/rpm']">រស្មីពានមាស</a></li>
-                        <li><a class="dropdown-item" [routerLink]="['/song', 'musics']" [queryParams]="{ artistName: 'got' }">ก๊อต จักรพรรณ์</a></li>
                     </ul>
                 </li>
 
