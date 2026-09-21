@@ -20,9 +20,10 @@ public interface IMediaFolderScanService
     /// <summary>
     /// Recursively scans every given root and populates MediaFolder/MediaTrack
     /// under the given menu, merging all roots into one tree. A small list of
-    /// known wrapper/category folder names (Songs, Etc, AmericanMusics, ...)
-    /// is peeled through regardless of shape; everything else is treated as a
-    /// real end-item - see MediaFolderScanService.ScanForEndItemsAsync for why
+    /// known pure pass-through wrapper folder names (Songs, Etc, ...) is
+    /// peeled through unconditionally; everything else - including
+    /// multi-level collections like AmericanMusics - is treated as a real
+    /// end-item, see MediaFolderScanService.ScanForEndItemsAsync for why
     /// shape alone can't safely make that call.
     /// </summary>
     Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots);
@@ -53,17 +54,18 @@ public class MediaFolderScanService : IMediaFolderScanService
         "rpm"
     };
 
-    // Folders known to be pure pass-through wrappers or categories (never
-    // artists themselves) - peeled straight through regardless of what they
-    // contain. This can't be inferred from shape alone: an artist with
-    // exactly one album, or an artist with several albums and no loose
-    // top-level songs, is structurally identical to a wrapper/category
-    // folder (no songs directly inside, one-or-more sub-folders). Only a
-    // folder's name reliably tells the two apart - everything NOT in this
-    // list is treated as a real end-item, however many albums it has.
+    // Folders known to be pure pass-through wrappers - no identity of their
+    // own, exactly one collection nested inside, peeled through regardless of
+    // what that one collection contains. This can't be inferred from shape
+    // alone: a folder like this is structurally identical to an artist with
+    // exactly one album (no songs directly inside, one sub-folder) - only the
+    // name reliably tells them apart. Note that what's INSIDE the wrapper
+    // (e.g. AmericanMusics, Variety) is NOT listed here - those are
+    // themselves real multi-level end-items (their own assembly, with every
+    // artist inside as its child), not further wrappers to peel through.
     private static readonly HashSet<string> KnownCollectionFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "Songs", "Etc", "AmericanMusics", "Variety"
+        "Songs", "Etc"
     };
 
     // A stray image directly in a folder is very often intentional cover art,
@@ -148,21 +150,25 @@ public class MediaFolderScanService : IMediaFolderScanService
     }
 
     /// <summary>
-    /// Decides whether physicalPath is a real end-item (an artist) or a
-    /// pass-through folder that should be looked straight through:
-    ///   - Its name is a known wrapper/category (Songs, Etc, AmericanMusics,
-    ///     Variety, ...)? -> peel straight through it, no matter what it
-    ///     contains - each sub-folder is evaluated the same way, and whatever
-    ///     real end-items are found underneath attach directly to
-    ///     parentFolderId, as if this folder were never there.
+    /// Decides whether physicalPath is a real end-item (an artist/assembly) or
+    /// a pure pass-through wrapper that should be looked straight through:
+    ///   - Its name is a known pure wrapper (Songs, Etc, ...)? -> peel
+    ///     straight through it, no matter what it contains - each sub-folder
+    ///     is evaluated the same way, and whatever real end-items are found
+    ///     underneath attach directly to parentFolderId, as if this folder
+    ///     were never there. A wrapper has no identity of its own: it's a
+    ///     single pass-through to exactly one real collection - e.g. "Songs"
+    ///     to "AmericanMusics".
     ///   - Otherwise -> it's confirmed as an end-item, full stop - whether it
-    ///     has songs directly inside, one album, several albums, or discs
-    ///     within albums. Shape alone can't safely make this call: an artist
-    ///     with exactly one album (no loose songs) looks structurally
-    ///     identical to a pure wrapper, and an artist with several albums
-    ///     looks structurally identical to a category of many artists. Only
-    ///     the name reliably tells them apart, which is why the excluded
-    ///     list above exists at all.
+    ///     has songs directly inside (a simple artist like "got"), one album,
+    ///     several albums, or a whole multi-level collection of many artists
+    ///     underneath it (like "AmericanMusics" itself - a legitimate
+    ///     multi-level assembly in its own right, not a wrapper). Shape alone
+    ///     can't safely make this call: an artist with exactly one album (no
+    ///     loose songs) looks structurally identical to a pure wrapper. Only
+    ///     the name reliably tells the two apart, which is why the wrapper
+    ///     list above exists at all - and why it deliberately does NOT
+    ///     include AmericanMusics/Variety, which are end-items, not wrappers.
     ///   - Empty (no files, no sub-folders)? -> nothing here, skipped.
     /// </summary>
     private async Task ScanForEndItemsAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string currentUrlPrefix, List<string> results)
