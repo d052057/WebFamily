@@ -10,7 +10,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 @Injectable({
   providedIn: 'root'
 })
-export class TubeService implements OnInit {
+export class TubeService {
   private http = inject(HttpClient);
   router = inject(Router);
   private appSettings = inject(AppSettingsService);
@@ -25,8 +25,6 @@ export class TubeService implements OnInit {
   public videoListId = signal<string>('');
   public record = new Webtube;
 
-  ngOnInit(): void {
-  }
   // Http Options
   httpOptions = {
     headers: new HttpHeaders({
