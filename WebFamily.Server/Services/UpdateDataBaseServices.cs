@@ -43,7 +43,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         {
             "photos" => await UpdateMediaAsync(folderPaths.PhotoFolder, EnumMsg.EnumMessageUpdate.Photos.ToString()),
             "rpms" => await UpdateRpmAsync(folderPaths.RpmFolder, folderPaths.RpmCoverFolder),
-            "musics" => await UpdateMediaAsync(folderPaths.MusicFolder, EnumMsg.EnumMessageUpdate.Album.ToString()),
             "movies" => await UpdateMediaAsync(folderPaths.MovieFolder, EnumMsg.EnumMessageUpdate.Movies.ToString()),
             "videos" => await UpdateMediaAsync(folderPaths.VideoFolder, EnumMsg.EnumMessageUpdate.Videos.ToString()),
             "books" => await UpdateMediaAsync(folderPaths.BookFolder, EnumMsg.EnumMessageUpdate.Books.ToString()),
@@ -59,7 +58,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
         return new FolderPaths
         {
             MovieFolder = Path.Combine(_mediasDrive, _appSettings.AssetMovieFolder!),
-            MusicFolder = Path.Combine(_mediasDrive, _appSettings.AssetAlbumFolder!),
             VideoFolder = Path.Combine(_mediasDrive, _appSettings.AssetVideoFolder!),
             BookFolder = Path.Combine(_mediasDrive, _appSettings.AssetBookFolder!),
             RpmFolder = Path.Combine(_mediasDrive, _appSettings.AssetRpmFolder!),
@@ -396,7 +394,6 @@ public class UpdateDataBaseServices : IUpdateDataBaseServices
     private class FolderPaths
     {
         public string MovieFolder { get; set; } = string.Empty;
-        public string MusicFolder { get; set; } = string.Empty;
         public string VideoFolder { get; set; } = string.Empty;
         public string BookFolder { get; set; } = string.Empty;
         public string RpmFolder { get; set; } = string.Empty;

@@ -26,8 +26,6 @@ export class UpdatemenuComponent {
   public initDatabaseStatus = signal<any>([]);
   public songsFolderTreeStatus = signal<any>([]);
 
-  public musicUpdateStatus = signal<any>([]);
-  public musicsUpdate = signal(false);
   public booksUpdate = signal(false);
   public moviesUpdate = signal(false);
   public videosUpdate = signal(false);
@@ -113,19 +111,6 @@ export class UpdatemenuComponent {
               error: error => {
                 this.videoUpdateStatus.set(error);
               }
-            }
-          )
-        break;
-      case 'musics':
-        this.musicsUpdate.set(true);
-        this.musicUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.musicsUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any[]) => { this.musicUpdateStatus.set(data); },
-              error: (err) => { this.musicUpdateStatus.update(list => [...list, JSON.stringify(err)]); }
             }
           )
         break;
