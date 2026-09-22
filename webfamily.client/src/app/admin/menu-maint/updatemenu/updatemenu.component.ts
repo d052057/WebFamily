@@ -17,8 +17,6 @@ export class UpdatemenuComponent {
   menuService = inject(MenuService);
   folderTreeService = inject(MediaFolderTreeService);
   public bookUpdateStatus = signal<any>([]);
-  public movieUpdateStatus = signal<any>([]);
-  public videoUpdateStatus = signal<any>([]);
   public photoUpdateStatus = signal<any>([]);
  
   public textUpdateStatus = signal<any>([]);
@@ -29,12 +27,10 @@ export class UpdatemenuComponent {
   public videosFolderTreeStatus = signal<any>([]);
 
   public booksUpdate = signal(false);
-  public moviesUpdate = signal(false);
-  public videosUpdate = signal(false);
   public photosUpdate = signal(false);
-  public songsUpdate = signal(false);
   public textUpdate = signal(false);
   public rpmsUpdate = signal(false);
+
   public initDatabaseUpdate = signal(false);
   public songsFolderTreeUpdate = signal(false);
   public moviesFolderTreeUpdate = signal(false);
@@ -95,37 +91,7 @@ export class UpdatemenuComponent {
               error: error => this.bookUpdateStatus.set(error)
             }
           )
-        break;
-      case 'movies':
-        this.moviesUpdate.set(true);
-        this.movieUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.moviesUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any) => { this.movieUpdateStatus.set(data); },
-              error: error => this.movieUpdateStatus.set(error)
-            }
-          )
-        break;
-      case 'videos':
-        this.videosUpdate.set(true);
-        this.videoUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.videosUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any) => {
-                this.videoUpdateStatus.set(data)
-              },
-              error: error => {
-                this.videoUpdateStatus.set(error);
-              }
-            }
-          )
-        break;
+        break;      
       case 'text':
         this.textUpdate.set(true);
         this.textUpdateStatus.set(['Processing...']);

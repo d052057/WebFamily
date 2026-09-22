@@ -117,55 +117,7 @@
           }
         </td>
 
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('movies')" [disabled]="moviesUpdate()">
-              @if (moviesUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update Movies
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of movieUpdateStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
-
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('videos')" [disabled]="videosUpdate()">
-              @if (videosUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update Videos
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of videoUpdateStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
-
-      </tr>
+      </tr>     
       <tr>
         <td scope="row">
           <div>
