@@ -31,6 +31,8 @@ export class AppComponent implements OnInit {
   // shared single `menu` signal on MediaFolderTreeService can't do.
   readonly movieGroups = toSignal(this.treeService.getTree('movies'), { initialValue: [] });
   readonly videoGroups = toSignal(this.treeService.getTree('videos'), { initialValue: [] });
+  readonly bookGroups = toSignal(this.treeService.getTree('books'), { initialValue: [] });
+  readonly photoGroups = toSignal(this.treeService.getTree('photos'), { initialValue: [] });
 
   ngOnInit(): void {
     this.refreshUser();

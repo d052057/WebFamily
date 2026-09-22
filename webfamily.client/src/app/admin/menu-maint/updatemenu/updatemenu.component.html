@@ -8,189 +8,188 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onInitDatabaseUpdate()" [disabled]="initDatabaseUpdate()">
-              Initial Media Database
-            </button>
-          </div>
-        </td>
-        <td>
-          {{ initDatabaseStatus() }}
-        </td>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onInitDatabaseUpdate()" [disabled]="initDatabaseUpdate()">
+                        Initial Media Database
+                    </button>
+                </div>
+            </td>
+            <td>
+                {{ initDatabaseStatus() }}
+            </td>
 
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('musics')" [disabled]="songsFolderTreeUpdate()">
-              @if (songsFolderTreeUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Regenerate Song Folder Tree
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of songsFolderTreeStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onScanFolderTree('musics')" [disabled]="songsFolderTreeUpdate()">
+                        @if (songsFolderTreeUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Regenerate Song Folder Tree
+                    </button>
+                </div>
+            </td>
+            <td>
+                @for (stat of songsFolderTreeStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('movies')" [disabled]="moviesFolderTreeUpdate()">
-              @if (moviesFolderTreeUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Regenerate Movie Folder Tree
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of moviesFolderTreeStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onScanFolderTree('movies')" [disabled]="moviesFolderTreeUpdate()">
+                        @if (moviesFolderTreeUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Regenerate Movie Folder Tree
+                    </button>
+                </div>
+            </td>
+            <td>
+                @for (stat of moviesFolderTreeStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('videos')" [disabled]="videosFolderTreeUpdate()">
-              @if (videosFolderTreeUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Regenerate Video Folder Tree
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of videosFolderTreeStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onScanFolderTree('videos')" [disabled]="videosFolderTreeUpdate()">
+                        @if (videosFolderTreeUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Regenerate Video Folder Tree
+                    </button>
+                </div>
+            </td>
+            <td>
+                @for (stat of videosFolderTreeStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('books')" [disabled]="booksUpdate()">
-              @if (booksUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update Books
-            </button>
-          </div>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onScanFolderTree('photos')" [disabled]="photosFolderTreeUpdate()">
+                        @if (photosFolderTreeUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Regenerate Photos Folder Tree
+                    </button>
+                </div>
 
-        </td>
-        <td>
-          @for (stat of bookUpdateStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
+            </td>
+            <td>
+                @for (stat of photosFolderTreeStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
-      </tr>     
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('photos')" [disabled]="photosUpdate()">
-              @if (photosUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update Photos
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of photoUpdateStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onScanFolderTree('books')" [disabled]="booksFolderTreeUpdate()">
+                        @if (booksFolderTreeUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Regenerate Books Folder Tree
+                    </button>
+                </div>
 
-      </tr>
+            </td>
+            <td>
+                @for (stat of booksFolderTreeStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate()">
+                        @if (textUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Update Text Files
+                    </button>
+                </div>
+            </td>
+            <td>
+                @for (stat of textUpdateStatus() ; track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
 
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate()">
-              @if (textUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update Text Files
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of textUpdateStatus() ; track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
-
-      </tr>
-      <tr>
-        <td scope="row">
-          <div>
-            <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate()">
-              @if (rpmsUpdate()) {
-              <div class="bouncing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              }
-              Update រស្មីពានមាស
-            </button>
-          </div>
-        </td>
-        <td>
-          @for (stat of rpmUpdateStatus(); track stat; let i = $index) {
-          <ul>
-            <li>{{ stat }}</li>
-          </ul>
-          }
-        </td>
-      </tr>
+        </tr>
+        <tr>
+            <td scope="row">
+                <div>
+                    <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate()">
+                        @if (rpmsUpdate()) {
+                        <div class="bouncing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        }
+                        Update រស្មីពានមាស
+                    </button>
+                </div>
+            </td>
+            <td>
+                @for (stat of rpmUpdateStatus(); track stat; let i = $index) {
+                <ul>
+                    <li>{{ stat }}</li>
+                </ul>
+                }
+            </td>
+        </tr>
     </tbody>
   </table>
 </div>

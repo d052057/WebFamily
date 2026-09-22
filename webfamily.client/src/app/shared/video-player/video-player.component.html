@@ -325,9 +325,9 @@
           </div>
           <div class="text-end ms-2">
             @if (video.duration) {
-            <span class="badge bg-secondary">
-              {{ video.duration }}
-            </span>
+              <span class="badge bg-secondary">
+                  {{ video.duration | timeConversion }}
+              </span>
             }
             @if (currentVideo()?.id === video.id) {
             <div class="small text-muted mt-1">

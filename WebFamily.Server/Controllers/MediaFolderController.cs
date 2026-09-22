@@ -58,7 +58,9 @@ namespace WebFamily.Server.Controllers
             {
                 ["musics"] = s => s.AssetAlbumFolder,
                 ["movies"] = s => s.AssetMovieFolder,
-                ["videos"] = s => s.AssetVideoFolder
+                ["videos"] = s => s.AssetVideoFolder,
+                ["books"] = s => s.AssetBookFolder,
+                ["photos"] = s => s.AssetPhotoFolder
             };
 
         private List<ScanRoot> ResolveScanRoots(string menu)

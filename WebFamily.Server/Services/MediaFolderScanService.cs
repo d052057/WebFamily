@@ -43,7 +43,14 @@ public class MediaFolderScanService : IMediaFolderScanService
     {
         ".mp4", ".mkv", ".mov", ".avi", ".wmv", ".m4v", ".webm", ".flv", ".mpg", ".mpeg", ".3gp"
     };
-
+    private static readonly HashSet<string> BookExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".pdf",".epub", ".mobi", ".azw3", ".djvu", ".cbz", ".cbr",".txt"
+    };
+    private static readonly HashSet<string> PhotoExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff "
+    };
     private static readonly HashSet<string> PlayableExtensions =
         new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
 
@@ -51,7 +58,8 @@ public class MediaFolderScanService : IMediaFolderScanService
     // entirely (rpm has its own dedicated tables/UI) - skipped outright.
     private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "rpm"
+        "rpm",
+        "closecaption"
     };
 
     // Folders known to be pure pass-through wrappers - no identity of their
