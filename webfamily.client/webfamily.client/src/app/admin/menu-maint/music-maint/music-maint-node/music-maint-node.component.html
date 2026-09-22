@@ -1,0 +1,61 @@
+@if (tracks.length) {
+<div class="list-group list-group-flush mb-2">
+  @for (t of tracks; track trackByTrackId($index, t)) {
+  <div class="list-group-item song-row">
+    <i class="bi bi-music-note-beamed"></i>
+    <span class="flex-grow-1 text-start">{{ t.displayTitle }}</span>
+    @if (t.album) {
+    <small class="text-muted me-2">{{ t.album }}</small>
+    }
+    <small class="text-muted me-3">{{ t.duration ?? '--:--' }}</small>
+    <button type="button" class="btn btn-sm btn-outline-secondary me-1"
+            title="Rename"
+            (click)="renameTrack.emit(t)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-danger"
+            title="Delete"
+            (click)="deleteTrack.emit(t)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  }
+</div>
+}
+
+@if (folders.length) {
+<div class="accordion folder-level" [id]="'accordion-' + groupId">
+  @for (f of folders; track trackByFolderId($index, f)) {
+  <div class="accordion-item">
+    <h3 class="accordion-header">
+      <button class="accordion-button collapsed" type="button"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse-' + f.id">
+        <i class="bi bi-folder2 me-2"></i>
+        {{ f.name }}
+      </button>
+    </h3>
+    <div [id]="'collapse-' + f.id"
+         class="accordion-collapse collapse"
+         [attr.data-bs-parent]="'#accordion-' + groupId">
+      <div class="accordion-body p-0 pt-2">
+        <app-music-maint-node
+          [folders]="f.folders"
+          [tracks]="f.tracks"
+          [groupId]="f.id"
+          (renameTrack)="renameTrack.emit($event)"
+          (deleteTrack)="deleteTrack.emit($event)">
+        </app-music-maint-node>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+}
+
+@if (!tracks.length && !folders.length) {
+<div class="empty-state">
+  <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+  Nothing here yet
+</div>
+}

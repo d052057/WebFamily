@@ -15,7 +15,7 @@ public class ApplicationSettings
     public string Download { get; set; }
     //public string ClientURL { get; set; }
     public string MediaDrive { get; set; } = @"c:\medias";
-    //public string ApiKey { get; set; }
+    public string ApiKey { get; set; }
     public string AssetAlbumFolder { get; set; }
     public string AssetVideoFolder { get; set; }
     public string AssetMovieFolder { get; set; }
@@ -29,6 +29,15 @@ public class ApplicationSettings
     public string AssetTextFolder { get; set; }
 
     /// <summary>
+    /// Root folder that deleted files/folders are moved into instead of being
+    /// permanently removed (see MusicMaintenanceController). Mirrors the
+    /// original relative path under this root, with a timestamp prefix on the
+    /// moved item's own name so repeat deletes of the same name never collide.
+    /// Defaults under MediaDrive if not explicitly configured.
+    /// </summary>
+    public string TrashFolder { get; set; }
+
+    /// <summary>
     /// Full path to the JSON artist lookup file (see IArtistLookupService),
     /// generated from the iTunes Library XML export. Optional: if unset or
     /// the file doesn't exist, artist backfill is silently skipped and
@@ -36,8 +45,8 @@ public class ApplicationSettings
     /// </summary>
     public string ArtistLookupFilePath { get; set; }
 
-    //public string GetUrlYoutube()
-    //{
-    //    return "https://www.googleapis.com/youtube/v3/playlistItems?key=" + ApiKey + "&part=snippet&maxResults=12&playlistId=";
-    //}
+    public string GetUrlYoutube()
+    {
+        return "https://www.googleapis.com/youtube/v3/playlistItems?key=" + ApiKey + "&part=snippet&maxResults=12&playlistId=";
+    }
 }

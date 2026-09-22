@@ -1,0 +1,40 @@
+// Progressively indented + toned down per nesting level, so depth reads
+// visually without needing a separate template per depth.
+.folder-level {
+  border-left: 2px solid #e9ecef;
+  padding-left: 1rem;
+  margin-left: .35rem;
+}
+
+.accordion-button {
+  font-size: .95rem;
+  padding: .6rem .9rem;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #eaf2ff;
+  color: #0d6efd;
+}
+
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.song-row .bi-music-note-beamed {
+  color: #adb5bd;
+}
+
+.track-no {
+  color: #adb5bd;
+  width: 1.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty-state {
+  color: #adb5bd;
+  text-align: center;
+  padding: 2rem 1rem;
+}

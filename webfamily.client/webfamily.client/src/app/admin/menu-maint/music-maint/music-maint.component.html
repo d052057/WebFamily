@@ -1,0 +1,74 @@
+@if (isLoading()) {
+<div class="text-center text-muted py-5">
+  <div class="spinner-border spinner-border-sm me-2"></div>
+  Loading library&hellip;
+</div>
+} @else if (!tree().length) {
+<div class="text-center text-muted py-5">
+  <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+  No folders found for this library yet.
+</div>
+} @else {
+<div class="row g-4">
+  <!-- Artist list: search lives here only, matches artist names AND songs -->
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="h6 text-muted mb-3">Artists</h2>
+        <app-search-box label="Search artists or songs" (searchChange)="onSearch($event)"></app-search-box>
+        <div class="nav flex-column nav-pills artist-nav" role="tablist" aria-orientation="vertical">
+          @for (artist of filteredArtists(); track artist.id) {
+          <div class="nav-link artist-row" [class.active]="artist.id === selectedArtist()?.id">
+            <a href="javascript:void(0)" class="artist-link" (click)="selectArtist(artist)">
+              <i class="bi bi-person-circle"></i>
+              <span>{{ artist.name }}</span>
+              <span class="badge text-bg-secondary">{{ countTracks(artist) }}</span>
+            </a>
+            <span class="artist-actions">
+              <button type="button" class="btn btn-sm btn-outline-secondary me-1"
+                      title="Rename artist"
+                      (click)="openRenameArtist(artist, $event)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger"
+                      title="Delete artist"
+                      (click)="deleteArtist(artist, $event)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </span>
+          </div>
+          }
+          @if (!filteredArtists().length) {
+          <div class="text-muted small px-2 py-3">No artists or songs match "{{ searchVal() }}"</div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected artist's content - no player, rename/delete on tracks only -->
+  <div class="col-md-9">
+    <div class="card content-card">
+      <div class="card-body">
+        @if (selectedArtist(); as artist) {
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h2 class="h6 text-muted mb-0">{{ artist.name }}</h2>
+          <span class="badge text-bg-light">
+            {{ query() ? (rootTracks().length + ' matching song(s)') : (countTracks(artist) + ' songs') }}
+          </span>
+        </div>
+        <app-music-maint-node
+          [folders]="rootFolders()"
+          [tracks]="rootTracks()"
+          [groupId]="artist.id"
+          (renameTrack)="onRenameTrack($event)"
+          (deleteTrack)="onDeleteTrack($event)">
+        </app-music-maint-node>
+        } @else {
+        <div class="text-muted text-center py-5">Select an artist to see its songs.</div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+}

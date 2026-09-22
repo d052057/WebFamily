@@ -1,0 +1,53 @@
+.artist-nav {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+}
+
+.artist-row {
+  color: #333;
+  border-radius: .5rem;
+  display: flex;
+  align-items: center;
+  padding: .4rem .5rem .4rem .8rem;
+}
+
+.artist-row.active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.artist-row:not(.active):hover {
+  background-color: #eef1f5;
+}
+
+.artist-link {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  flex-grow: 1;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.artist-link span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.artist-link .badge {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.artist-actions {
+  display: flex;
+  flex-shrink: 0;
+  margin-left: .5rem;
+}
+
+.content-card {
+  min-height: 320px;
+}
