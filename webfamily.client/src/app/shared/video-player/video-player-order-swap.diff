@@ -1,0 +1,20 @@
+diff --git a/webfamily.client/src/app/shared/video-player/video-player.component.html b/webfamily.client/src/app/shared/video-player/video-player.component.html
+index 8126aa3..b47d885 100644
+--- a/webfamily.client/src/app/shared/video-player/video-player.component.html
++++ b/webfamily.client/src/app/shared/video-player/video-player.component.html
+@@ -1,5 +1,5 @@
+ <div class="row">
+-  <div class="col-md-8 order-md-2">
++  <div class="col-md-8 order-md-1">
+     <figure #figure class="video-container">
+         <video #videoPlayer preload="metadata" crossorigin="anonymous" playsinline>
+             <!-- Use trackBy for better performance with captions -->
+@@ -272,7 +272,7 @@
+   </div>
+ 
+   <!-- Optimized Video playlist -->
+-  <div class="col-md-4 order-md-1">
++  <div class="col-md-4 order-md-2">
+     <div class="playlist-container">
+       <h3>Playlist</h3>
+       <div class="row">

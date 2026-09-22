@@ -52,14 +52,17 @@ public class MediaFolderScanService : IMediaFolderScanService
         ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff "
     };
     private static readonly HashSet<string> PlayableExtensions =
-        new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
+    new([.. BookExtensions, .. PhotoExtensions, .. AudioExtensions, .. VideoExtensions],
+        StringComparer.OrdinalIgnoreCase);
+
+    //private static readonly HashSet<string> PlayableExtensions =
+    //    new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
 
     // Folders that belong to a different, already-existing app feature
     // entirely (rpm has its own dedicated tables/UI) - skipped outright.
     private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "rpm",
-        "closecaption"
+        "rpm"
     };
 
     // Folders known to be pure pass-through wrappers - no identity of their
@@ -288,6 +291,13 @@ public class MediaFolderScanService : IMediaFolderScanService
 
         foreach (var subDirectory in Directory.GetDirectories(physicalPath))
         {
+            var subName = Path.GetFileName(subDirectory.TrimEnd(Path.DirectorySeparatorChar));
+            if (ExcludedFolderNames.Contains(subName))
+            {
+                results.Add($"{subName}: skipped (belongs to a different feature)");
+                continue;
+            }
+
             await ScanFolderAsync(subDirectory, menuId, folder.RecordId, null, results);
         }
 

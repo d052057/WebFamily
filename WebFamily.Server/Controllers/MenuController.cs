@@ -379,7 +379,12 @@ namespace WebFamily.Server.Controllers
                 foreach (var subfolder in subfolders)
                 {
                     var folderName = Path.GetFileName(subfolder);
-                    if (folderName != "rpm")
+                    // "closecaption" holds subtitle files for whatever movie/video
+                    // they belong to (see Helpers/ClosedCaption.cs) - not a movie of
+                    // its own. Without this exclusion it gets added as if it were one:
+                    // a selectable Title in Rename File, with its subtitle files
+                    // pulled in as if they were that "movie"'s own files.
+                    if (folderName != "rpm" && folderName != "closecaption")
                     {
 
                         var directory = new MediaDirectory
