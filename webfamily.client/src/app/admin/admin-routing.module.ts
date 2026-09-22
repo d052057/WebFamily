@@ -56,6 +56,16 @@ const routes: Routes = [
             data: { menu: 'videos' }
           },
           {
+            path: 'bookmaint',
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
+            data: { menu: 'books' }
+          },
+          {
+            path: 'photomaint',
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
+            data: { menu: 'photos' }
+          },
+          {
             path: 'updatemenu',
             loadComponent: () => import('./menu-maint/updatemenu/updatemenu.component').then(mod => mod.UpdatemenuComponent)
           },

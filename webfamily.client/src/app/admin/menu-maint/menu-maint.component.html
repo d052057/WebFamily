@@ -3,27 +3,25 @@
     <div class="col-auto px-0">
       <div id="sidebar" class="collapse collapse-horizontal show border-end">
         <div id="sidebar-nav" class="list-group border-0 rounded-0 text-sm-start min-vh-100">
-          <ul class="list-group list-group-flush">
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="delmenu">Delete Menu</li>
+            <ul class="list-group list-group-flush">
 
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="addmenu">Add Menu</li>
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="renamefile">Rename File</li>
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="musicmaint">Music Maintenance</li>
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="moviemaint">Movie Maintenance</li>
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="videomaint">Video Maintenance</li>
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  routerLink="updatemenu">Update Menu (SQL)</li>
-            @for (m of menus; track m) {
-              <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                  [routerLink]="[m]">{{ m }} - Update Duration</li>
-            }
-          </ul>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="musicmaint">Music Maintenance</li>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="moviemaint">Movie Maintenance</li>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="videomaint">Video Maintenance</li>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="photomaint">Photo Maintenance</li>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="bookmaint">Book Maintenance</li>
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    routerLink="updatemenu">Update Menu (SQL)</li>
+                @for (m of menus; track m) {
+                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
+                    [routerLink]="[m]">{{ m }} - Update Duration</li>
+                }
+            </ul>
         </div>
       </div>
     </div>

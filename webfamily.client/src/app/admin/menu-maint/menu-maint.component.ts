@@ -10,6 +10,6 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 export class MenuMaintComponent {
 
   menus = [
-    'videos','movies','musics'
+    'videos', 'movies', 'musics', 'books', 'photos'
   ]
 }
