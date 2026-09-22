@@ -25,6 +25,8 @@ export class UpdatemenuComponent {
   public rpmUpdateStatus = signal<any>([]);
   public initDatabaseStatus = signal<any>([]);
   public songsFolderTreeStatus = signal<any>([]);
+  public moviesFolderTreeStatus = signal<any>([]);
+  public videosFolderTreeStatus = signal<any>([]);
 
   public booksUpdate = signal(false);
   public moviesUpdate = signal(false);
@@ -35,19 +37,29 @@ export class UpdatemenuComponent {
   public rpmsUpdate = signal(false);
   public initDatabaseUpdate = signal(false);
   public songsFolderTreeUpdate = signal(false);
+  public moviesFolderTreeUpdate = signal(false);
+  public videosFolderTreeUpdate = signal(false);
 
-  // Regenerates MediaFolder/MediaTrack from disk for the "songs" menu -
-  // the new recursive folder-tree scan, separate from the legacy
-  // updateMetaData path the buttons below still use for other menus.
-  onScanFolderTree() {
-    this.songsFolderTreeUpdate.set(true);
-    this.songsFolderTreeStatus.set(['Processing...']);
-    this.folderTreeService.scanFolderTree('musics')
+  // Regenerates MediaFolder/MediaTrack from disk for one menu - the new
+  // recursive folder-tree scan, separate from the legacy updateMetaData path
+  // the buttons below still use for other menus (books, photos, text, rpms,
+  // and the legacy single-level "BOM" data movies/videos also still have).
+  onScanFolderTree(menu: 'musics' | 'movies' | 'videos') {
+    const updateSignal = menu === 'musics' ? this.songsFolderTreeUpdate
+      : menu === 'movies' ? this.moviesFolderTreeUpdate
+      : this.videosFolderTreeUpdate;
+    const statusSignal = menu === 'musics' ? this.songsFolderTreeStatus
+      : menu === 'movies' ? this.moviesFolderTreeStatus
+      : this.videosFolderTreeStatus;
+
+    updateSignal.set(true);
+    statusSignal.set(['Processing...']);
+    this.folderTreeService.scanFolderTree(menu)
       .pipe(first())
-      .pipe(finalize(() => this.songsFolderTreeUpdate.set(false)))
+      .pipe(finalize(() => updateSignal.set(false)))
       .subscribe({
-        next: (data: string[]) => { this.songsFolderTreeStatus.set(data); },
-        error: (err) => { this.songsFolderTreeStatus.set([JSON.stringify(err)]); }
+        next: (data: string[]) => { statusSignal.set(data); },
+        error: (err) => { statusSignal.set([JSON.stringify(err)]); }
       });
   }
 

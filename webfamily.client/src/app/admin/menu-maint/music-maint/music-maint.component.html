@@ -10,11 +10,11 @@
 </div>
 } @else {
 <div class="row g-4">
-  <!-- Artist list: plain, unfiltered nav - search now lives with the song tree, see right column -->
+  <!-- Group list: plain, unfiltered nav - search now lives with the tree, see right column -->
   <div class="col-md-3">
     <div class="card">
       <div class="card-body">
-        <h2 class="h6 text-muted mb-3">Artists</h2>
+        <h2 class="h6 text-muted mb-3">{{ groupLabelPlural }}</h2>
         <div class="nav flex-column nav-pills artist-nav" role="tablist" aria-orientation="vertical">
           @for (artist of filteredArtists(); track artist.id) {
           <div class="nav-link artist-row" [class.active]="artist.id === selectedArtist()?.id">
@@ -25,12 +25,12 @@
             </a>
             <span class="artist-actions">
               <button type="button" class="btn btn-sm btn-outline-secondary me-1"
-                      title="Rename artist"
+                      title="Rename {{ groupLabel }}"
                       (click)="openRenameArtist(artist, $event)">
                 <i class="bi bi-pencil"></i>
               </button>
               <button type="button" class="btn btn-sm btn-outline-danger"
-                      title="Delete artist"
+                      title="Delete {{ groupLabel }}"
                       (click)="deleteArtist(artist, $event)">
                 <i class="bi bi-trash"></i>
               </button>
@@ -42,9 +42,9 @@
     </div>
   </div>
 
-  <!-- Selected artist's content - search sits above the tree, since it's the
-       tool for finding a song buried several folders deep, once you're
-       already looking at one artist. -->
+  <!-- Selected group's content - search sits above the tree, since it's the
+       tool for finding an item buried several folders deep, once you're
+       already looking at one group. -->
   <div class="col-md-9">
     <div class="card content-card">
       <div class="card-body">
@@ -52,10 +52,10 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="h6 text-muted mb-0">{{ artist.name }}</h2>
           <span class="badge text-bg-light">
-            {{ query() ? (rootTracks().length + ' matching song(s)') : (countTracks(artist) + ' songs') }}
+            {{ query() ? (rootTracks().length + ' matching ' + itemLabel + '(s)') : (countTracks(artist) + ' ' + itemLabelPlural) }}
           </span>
         </div>
-        <app-search-box label="Search songs in this artist" (searchChange)="onSearch($event)"></app-search-box>
+        <app-search-box label="Search {{ itemLabelPlural }} in this {{ groupLabel.toLowerCase() }}" (searchChange)="onSearch($event)"></app-search-box>
         <div class="tree-scroll mt-3">
           <app-music-maint-node
             [folders]="rootFolders()"
@@ -66,7 +66,7 @@
           </app-music-maint-node>
         </div>
         } @else {
-        <div class="text-muted text-center py-5">Select an artist to see its songs.</div>
+        <div class="text-muted text-center py-5">Select a {{ groupLabel.toLowerCase() }} to see its {{ itemLabelPlural }}.</div>
         }
       </div>
     </div>

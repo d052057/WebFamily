@@ -28,6 +28,11 @@ public class MediaTrackDto
     public int? TrackNumber { get; set; }
     public string Duration { get; set; }
 
+    // MIME type (e.g. "video/mp4"), same value the legacy play-audio/play-media
+    // pipeline already exposes - needed for a <video>/<audio> element's
+    // <source type="">, mainly relevant for video playback.
+    public string Type { get; set; }
+
     // Ready-to-use URL for playback - built server-side so the client never
     // has to reconstruct paths from folder names (which may contain
     // special characters).

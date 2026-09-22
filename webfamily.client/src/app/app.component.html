@@ -44,21 +44,12 @@
                         <i class='bi bi-camera-reels'></i> Movies
                     </a>
                     <ul class="dropdown-menu">
-                        @for (p of  menuService.movieMenu(); track p) {
+                        @for (g of movieGroups(); track g.id) {
                         <li>
-                            @if (p.param !== 'bob') {
-                            <a class="dropdown-item" [routerLink]="['/movies', p.param]">{{ p.title }}</a>
+                            @if (g.name !== 'bob' || accountService.isAdminUser) {
+                            <a class="dropdown-item" [routerLink]="['/movies', g.name]">{{ g.name }}</a>
                             }
                         </li>
-                        }
-                        @if (accountService.user$ | async) {
-                        @for (p of menuService.movieMenu(); track p) {
-                        <li>
-                            @if (isViewAble(p.param)) {
-                            <a class="dropdown-item" [routerLink]="['/movies', p.param]">{{ p.title }}</a>
-                            }
-                        </li>
-                        }
                         }
                     </ul>
                 </li>
@@ -67,9 +58,9 @@
                         <i class='bi bi-camera-video'></i> Videos
                     </a>
                     <ul class="dropdown-menu">
-                        @for (p of menuService.videoMenu(); track p) {
+                        @for (g of videoGroups(); track g.id) {
                         <li>
-                            <a class="dropdown-item" [routerLink]="['/videos', p.param]">{{ p.title }}</a>
+                            <a class="dropdown-item" [routerLink]="['/videos', g.name]">{{ g.name }}</a>
                         </li>
                         }
                     </ul>
@@ -80,9 +71,11 @@
                         <i class='bi bi-camera-video'></i> Frames
                     </a>
                     <ul class="dropdown-menu">
-                        @for (p of menuService.movieMenu(); track p) {
+                        @for (g of movieGroups(); track g.id) {
                         <li>
-                            <a class="dropdown-item" [routerLink]="['/frames', p.param]">{{ p.title }}</a>
+                            @if (g.name !== 'bob' || accountService.isAdminUser) {
+                            <a class="dropdown-item" [routerLink]="['/frames', g.name]">{{ g.name }}</a>
+                            }
                         </li>
                         }
                     </ul>

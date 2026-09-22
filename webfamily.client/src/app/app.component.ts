@@ -7,6 +7,8 @@ import { UserHasRoleDirective } from './shared/directives/user-has-role.directiv
 import { MatIconModule } from '@angular/material/icon';
 import { MenuService } from './shared/services/menu.service';
 import { LoadingService } from './shared/services/loading.service';
+import { MediaFolderTreeService } from './shared/services/media-folder-tree.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-root',
@@ -20,6 +22,15 @@ export class AppComponent implements OnInit {
   menuService = inject(MenuService);
   loadingService = inject(LoadingService);
   private sharedService = inject(SharedService);
+  private treeService = inject(MediaFolderTreeService);
+
+  // Top-level folders (movie/video groups) for the Movies/Videos/Frames
+  // dropdowns. One-shot fetches, independent of each other and of whatever
+  // menu song-browser/Music Maintenance/play-media currently have selected -
+  // the nav bar needs both lists available at the same time, which the
+  // shared single `menu` signal on MediaFolderTreeService can't do.
+  readonly movieGroups = toSignal(this.treeService.getTree('movies'), { initialValue: [] });
+  readonly videoGroups = toSignal(this.treeService.getTree('videos'), { initialValue: [] });
 
   ngOnInit(): void {
     this.refreshUser();
@@ -38,9 +49,6 @@ export class AppComponent implements OnInit {
     } else {
       this.accountService.refreshUser(null).subscribe();
     }
-  }
-  isViewAble(folder: string): boolean {
-    return (this.accountService.isAdminUser && folder == 'bob');
   }
   logout() {
     this.accountService.logout();

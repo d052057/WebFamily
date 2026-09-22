@@ -42,7 +42,18 @@ const routes: Routes = [
           },
           {
             path: 'musicmaint',
-            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent)
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
+            data: { menu: 'musics' }
+          },
+          {
+            path: 'moviemaint',
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
+            data: { menu: 'movies' }
+          },
+          {
+            path: 'videomaint',
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
+            data: { menu: 'videos' }
           },
           {
             path: 'updatemenu',

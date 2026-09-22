@@ -10,6 +10,9 @@ export interface MediaTrackDto {
   album?: string | null;
   trackNumber?: number | null;
   duration?: string | null; // "hh:mm:ss", or null if unreadable
+  // MIME type (e.g. "video/mp4") - needed for a <video>/<audio> element's
+  // <source type="">, mainly relevant for video playback.
+  type?: string | null;
   // Relative to the media root (e.g. "songs/Elena Vasquez/Copper Skies/Copper Skies.mp3") -
   // prepend AppSettingsService.mediaBasePath before use.
   url: string;

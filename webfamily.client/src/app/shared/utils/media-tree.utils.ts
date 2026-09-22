@@ -1,4 +1,5 @@
 import { AudioItem } from '../audio-player/models/audio.model';
+import { VideoSource } from '../video-player/models/video.model';
 import { MediaFolderTreeDto, MediaTrackDto } from '../../models/media-folder-tree.model';
 
 /**
@@ -36,4 +37,17 @@ export function toAudioItems(tracks: MediaTrackDto[], mediaBasePath: string): Au
     trackNumber: t.trackNumber ?? null,
     artist: t.artist ?? null
   }));
+}
+
+/**
+ * Converts server track DTOs into the shape app-video-player expects.
+ * mediaBasePath is prepended to each track's (root-relative) url.
+ */
+export function toVideoItems(tracks: MediaTrackDto[], mediaBasePath: string): VideoSource[] {
+  return tracks.map((t, index) => new VideoSource({
+    title: t.displayTitle,
+    src: `${mediaBasePath}/${t.url}`,
+    type: t.type ?? '',
+    duration: parseDurationToSeconds(t.duration)
+  }, index + 1));
 }

@@ -28,5 +28,13 @@ export class MediaFolderTreeService {
   scanFolderTree(menu: string): Observable<string[]> {
     return this.http.post<string[]>(`/MediaFolder/Scan?menu=${menu}`, null);
   }
+
+  // One-shot fetch, independent of the `menu` signal/treeResource above.
+  // Use this when more than one menu's tree is needed at the same time (e.g.
+  // the nav bar showing Movies and Videos dropdowns simultaneously) - the
+  // shared `menu` signal only ever tracks one "current" library at a time.
+  getTree(menu: string): Observable<MediaFolderTreeDto[]> {
+    return this.http.get<MediaFolderTreeDto[]>(`/MediaFolder/Tree/${menu}`);
+  }
 }
 

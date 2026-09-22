@@ -80,6 +80,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                                 Album = t.Album,
                                 TrackNumber = t.TrackNumber,
                                 Duration = t.Duration,
+                                Type = t.Type,
                                 // Relative to the media root; the client already knows
                                 // its own base media URL and prepends it (same pattern
                                 // as the existing play-media/play-audio components).

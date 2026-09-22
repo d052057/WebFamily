@@ -56,7 +56,9 @@ namespace WebFamily.Server.Controllers
         private static readonly Dictionary<string, Func<ApplicationSettings, string?>> MenuRootMap =
             new(StringComparer.OrdinalIgnoreCase)
             {
-                ["musics"] = s => s.AssetAlbumFolder
+                ["musics"] = s => s.AssetAlbumFolder,
+                ["movies"] = s => s.AssetMovieFolder,
+                ["videos"] = s => s.AssetVideoFolder
             };
 
         private List<ScanRoot> ResolveScanRoots(string menu)

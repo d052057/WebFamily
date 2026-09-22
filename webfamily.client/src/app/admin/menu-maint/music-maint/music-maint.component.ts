@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed, effect, inject, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { MediaFolderTreeService } from '../../../shared/services/media-folder-tree.service';
 import { MusicMaintenanceService } from '../../../shared/services/music-maintenance.service';
 import { SnackService } from '../../../shared/services/snack.service';
@@ -17,6 +18,12 @@ import { RenameNodeComponent, RenameNodeDialogData } from './rename-node/rename-
 // song buried several folders deep within the artist you're already looking
 // at, not to filter the artist list itself. A match hides everything else in
 // that artist's tree and shows only the matching song(s).
+//
+// Reused as-is for Movie Maintenance and Video Maintenance - the underlying
+// MediaFolder/MediaTrack tree and the rename/delete endpoints are both
+// menu-agnostic, so only the `menu` route data differs between the three
+// sidebar entries (see admin-routing.module.ts). "Artist"/"song" wording
+// below is generalized via groupLabel/itemLabel, which switch based on menu.
 @Component({
   selector: 'app-music-maint',
   standalone: true,
@@ -30,10 +37,20 @@ export class MusicMaintComponent {
   private musicMaintenanceService = inject(MusicMaintenanceService);
   private toastr = inject(SnackService);
   private _dialog = inject(MatDialog);
+  private activatedRoute = inject(ActivatedRoute);
+
+  // "musics", "movies" or "videos" - set via route data (see
+  // admin-routing.module.ts), defaulting to "musics" so this still works if
+  // ever used without route data (e.g. a unit test harness).
+  private readonly menu = this.activatedRoute.snapshot.data['menu'] ?? 'musics';
+
+  readonly groupLabel = this.menu === 'musics' ? 'Artist' : 'Group';
+  readonly groupLabelPlural = this.menu === 'musics' ? 'Artists' : 'Groups';
+  readonly itemLabel = this.menu === 'musics' ? 'song' : this.menu === 'movies' ? 'movie' : 'video';
+  readonly itemLabelPlural = this.itemLabel + 's';
 
   constructor() {
-    // Fixed to the "musics" menu - this screen is Music Maintenance only.
-    effect(() => this.treeService.menu.set('musics'));
+    effect(() => this.treeService.menu.set(this.menu));
   }
 
   readonly tree = computed<MediaFolderTreeDto[]>(() => this.treeService.treeResource.value() ?? []);

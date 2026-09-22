@@ -24,7 +24,7 @@
       <tr>
         <td scope="row">
           <div>
-            <button type="button" class="btn btn-primary" (click)="onScanFolderTree()" [disabled]="songsFolderTreeUpdate()">
+            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('musics')" [disabled]="songsFolderTreeUpdate()">
               @if (songsFolderTreeUpdate()) {
               <div class="bouncing-dots">
                 <span></span>
@@ -38,6 +38,54 @@
         </td>
         <td>
           @for (stat of songsFolderTreeStatus(); track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('movies')" [disabled]="moviesFolderTreeUpdate()">
+              @if (moviesFolderTreeUpdate()) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Regenerate Movie Folder Tree
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of moviesFolderTreeStatus(); track stat; let i = $index) {
+          <ul>
+            <li>{{ stat }}</li>
+          </ul>
+          }
+        </td>
+
+      </tr>
+      <tr>
+        <td scope="row">
+          <div>
+            <button type="button" class="btn btn-primary" (click)="onScanFolderTree('videos')" [disabled]="videosFolderTreeUpdate()">
+              @if (videosFolderTreeUpdate()) {
+              <div class="bouncing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              }
+              Regenerate Video Folder Tree
+            </button>
+          </div>
+        </td>
+        <td>
+          @for (stat of videosFolderTreeStatus(); track stat; let i = $index) {
           <ul>
             <li>{{ stat }}</li>
           </ul>
