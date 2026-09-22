@@ -12,10 +12,11 @@ import { RenameNodeComponent, RenameNodeDialogData } from './rename-node/rename-
 // Same two-pane shape as song-browser (artist list left, content right), but
 // for maintenance instead of playback: no audio player, rename/delete
 // buttons on the artist row and on every track row (not on intermediate
-// album/disc folders), and the single search box - living in the artist
-// list pane, same spot as song-browser - matches against BOTH artist names
-// and song names. When a song match drives the result, the right pane shows
-// only the matching song(s) for that artist, not the full tree.
+// album/disc folders). Unlike song-browser, the search box lives above the
+// song tree in the right pane, not on the artist list - it's there to find a
+// song buried several folders deep within the artist you're already looking
+// at, not to filter the artist list itself. A match hides everything else in
+// that artist's tree and shows only the matching song(s).
 @Component({
   selector: 'app-music-maint',
   standalone: true,
@@ -43,17 +44,9 @@ export class MusicMaintComponent {
 
   private readonly selectedArtistId = signal<string | null>(null);
 
-  // An artist matches if its own name matches, OR any song anywhere in its
-  // tree matches - so typing a song title surfaces the artist that owns it.
-  readonly filteredArtists = computed<MediaFolderTreeDto[]>(() => {
-    const q = this.query();
-    const list = this.tree();
-    if (!q) return list;
-    return list.filter(a =>
-      a.name.toLowerCase().includes(q) ||
-      flattenTracks(a).some(t => this.trackMatches(t, q))
-    );
-  });
+  // Plain, unfiltered - the search box no longer touches this list, it only
+  // scopes the selected artist's tree in the right pane (see rootTracks).
+  readonly filteredArtists = computed<MediaFolderTreeDto[]>(() => this.tree());
 
   readonly selectedArtist = computed<MediaFolderTreeDto | null>(() => {
     const list = this.filteredArtists();
@@ -91,6 +84,10 @@ export class MusicMaintComponent {
 
   selectArtist(artist: MediaFolderTreeDto): void {
     this.selectedArtistId.set(artist.id);
+    // Clear any in-progress search from the previously selected artist - it
+    // scopes to one artist's tree, so carrying it over would silently filter
+    // the newly selected artist without an obvious reason why.
+    this.searchVal.set('');
   }
 
   onSearch(searchStr: string): void {

@@ -27,7 +27,7 @@ public class ApplicationSettings
     //public string AssetCCFolder { get; set; }
 
     public string AssetTextFolder { get; set; }
-
+    public string TrashFolder { get; set; }
     /// <summary>
     /// Full path to the JSON artist lookup file (see IArtistLookupService),
     /// generated from the iTunes Library XML export. Optional: if unset or

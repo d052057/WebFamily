@@ -10,12 +10,11 @@
 </div>
 } @else {
 <div class="row g-4">
-  <!-- Artist list: search lives here only, matches artist names AND songs -->
+  <!-- Artist list: plain, unfiltered nav - search now lives with the song tree, see right column -->
   <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h2 class="h6 text-muted mb-3">Artists</h2>
-        <app-search-box label="Search artists or songs" (searchChange)="onSearch($event)"></app-search-box>
         <div class="nav flex-column nav-pills artist-nav" role="tablist" aria-orientation="vertical">
           @for (artist of filteredArtists(); track artist.id) {
           <div class="nav-link artist-row" [class.active]="artist.id === selectedArtist()?.id">
@@ -38,15 +37,14 @@
             </span>
           </div>
           }
-          @if (!filteredArtists().length) {
-          <div class="text-muted small px-2 py-3">No artists or songs match "{{ searchVal() }}"</div>
-          }
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Selected artist's content - no player, rename/delete on tracks only -->
+  <!-- Selected artist's content - search sits above the tree, since it's the
+       tool for finding a song buried several folders deep, once you're
+       already looking at one artist. -->
   <div class="col-md-9">
     <div class="card content-card">
       <div class="card-body">
@@ -57,13 +55,16 @@
             {{ query() ? (rootTracks().length + ' matching song(s)') : (countTracks(artist) + ' songs') }}
           </span>
         </div>
-        <app-music-maint-node
-          [folders]="rootFolders()"
-          [tracks]="rootTracks()"
-          [groupId]="artist.id"
-          (renameTrack)="onRenameTrack($event)"
-          (deleteTrack)="onDeleteTrack($event)">
-        </app-music-maint-node>
+        <app-search-box label="Search songs in this artist" (searchChange)="onSearch($event)"></app-search-box>
+        <div class="tree-scroll mt-3">
+          <app-music-maint-node
+            [folders]="rootFolders()"
+            [tracks]="rootTracks()"
+            [groupId]="artist.id"
+            (renameTrack)="onRenameTrack($event)"
+            (deleteTrack)="onDeleteTrack($event)">
+          </app-music-maint-node>
+        </div>
         } @else {
         <div class="text-muted text-center py-5">Select an artist to see its songs.</div>
         }

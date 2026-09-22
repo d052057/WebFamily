@@ -51,3 +51,11 @@
 .content-card {
   min-height: 320px;
 }
+
+// Same fixed-height, internal-scroll treatment as .artist-nav - the song
+// tree scrolls in place instead of growing the whole page, however deep the
+// selected artist's folders go.
+.tree-scroll {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+}

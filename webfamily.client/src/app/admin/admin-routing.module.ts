@@ -41,6 +41,10 @@ const routes: Routes = [
             loadComponent: () => import('./menu-maint/rename-media/rename-media.component').then(mod => mod.RenameMediaComponent)
           },
           {
+            path: 'musicmaint',
+            loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent)
+          },
+          {
             path: 'updatemenu',
             loadComponent: () => import('./menu-maint/updatemenu/updatemenu.component').then(mod => mod.UpdatemenuComponent)
           },
