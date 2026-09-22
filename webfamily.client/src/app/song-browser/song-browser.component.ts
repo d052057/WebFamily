@@ -56,16 +56,15 @@ export class SongBrowserComponent {
   readonly tree = computed<MediaFolderTreeDto[]>(() => this.treeService.treeResource.value() ?? []);
   readonly isLoading = computed(() => this.treeService.treeResource.isLoading());
 
-  // Filters the artist nav list only - doesn't touch which artist is
-  // currently selected/playing. Text comes from the shared SearchBoxComponent
-  // (typed or dictated) via its (searchChange) output.
+  // Filters nothing directly - it scopes the selected artist's tree below
+  // (see rootTracks/rootFolders), not the artist nav list. Text comes from
+  // the shared SearchBoxComponent (typed or dictated) via its (searchChange)
+  // output.
   readonly searchVal = signal('');
+  readonly query = computed(() => this.searchVal().trim().toLowerCase());
 
-  readonly filteredArtists = computed<MediaFolderTreeDto[]>(() => {
-    const query = this.searchVal().trim().toLowerCase();
-    const list = this.tree();
-    return query ? list.filter(a => a.name.toLowerCase().includes(query)) : list;
-  });
+  // Plain, unfiltered - the search box no longer touches the artist list.
+  readonly filteredArtists = computed<MediaFolderTreeDto[]>(() => this.tree());
 
   readonly selectedArtist = computed<MediaFolderTreeDto | null>(() => {
     const list = this.tree();
@@ -88,6 +87,8 @@ export class SongBrowserComponent {
 
   // Every track under the selected artist, however many albums/discs deep -
   // this is what actually gets handed to the audio player as one playlist.
+  // Always the full artist, regardless of any search below - search only
+  // narrows what's displayed for browsing, not what's queued to play.
   readonly playlistTracks = computed<MediaTrackDto[]>(() => {
     const artist = this.selectedArtist();
     return artist ? flattenTracks(artist) : [];
@@ -97,16 +98,47 @@ export class SongBrowserComponent {
     toAudioItems(this.playlistTracks(), this.appSettings.mediaBasePath)
   );
 
+  // What's rendered in the folder tree below, for browsing/finding a song.
+  // No search: the artist's tree as-is (folders for navigation, direct
+  // tracks at this level - nested tracks come through folder-node's own
+  // recursion). With a search: flatten the whole artist and keep only
+  // matching tracks, dropping folder structure entirely, so a song several
+  // albums deep surfaces immediately.
+  readonly rootFolders = computed<MediaFolderTreeDto[]>(() => {
+    if (this.query()) return [];
+    return this.selectedArtist()?.folders ?? [];
+  });
+
+  readonly rootTracks = computed<MediaTrackDto[]>(() => {
+    const artist = this.selectedArtist();
+    if (!artist) return [];
+    const q = this.query();
+    if (!q) return artist.tracks;
+    return flattenTracks(artist).filter(t => this.trackMatches(t, q));
+  });
+
+  private trackMatches(t: MediaTrackDto, q: string): boolean {
+    return t.displayTitle.toLowerCase().includes(q) || t.fileName.toLowerCase().includes(q);
+  }
+
   // Relative url of whatever's currently loaded, so the folder tree can
   // highlight the right row at whatever depth it lives.
   readonly currentTrackUrl = signal<string | null>(null);
 
   selectArtist(folder: MediaFolderTreeDto): void {
+    // Clear any in-progress search from the previously selected artist - it
+    // scopes to one artist's tree, so carrying it over would silently filter
+    // the newly selected artist without an obvious reason why.
+    this.searchVal.set('');
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { artist: folder.id },
       queryParamsHandling: 'merge'
     });
+  }
+
+  onSearch(searchStr: string): void {
+    this.searchVal.set(searchStr);
   }
 
   onTrackSelected(track: MediaTrackDto): void {

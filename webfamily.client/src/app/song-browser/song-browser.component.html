@@ -10,12 +10,12 @@
 </div>
 } @else {
 <div class="row g-4">
-  <!-- Top-level nav (artists) -->
+  <!-- Top-level nav (artists) - plain, unfiltered. Search now lives with the
+       song tree, see right column. -->
   <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h2 class="h6 text-muted mb-3">Artists</h2>
-        <app-search-box label="Search artists" (searchChange)="searchVal.set($event)"></app-search-box>
         <div class="nav flex-column nav-pills artist-nav" role="tablist" aria-orientation="vertical">
           @for (artist of filteredArtists(); track artist.id) {
           <a href="javascript:void(0)"
@@ -27,15 +27,15 @@
             <span class="badge text-bg-secondary">{{ countTracks(artist) }}</span>
           </a>
           }
-          @if (!filteredArtists().length) {
-          <div class="text-muted small px-2 py-3">No artists match "{{ searchVal() }}"</div>
-          }
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Player + whatever's inside the selected artist, at whatever depth -->
+  <!-- Player + whatever's inside the selected artist, at whatever depth.
+       Search sits above the tree, since it's the tool for finding a song
+       buried several folders deep, once you're already looking at one
+       artist - it doesn't touch the playlist, only what's shown for browsing. -->
   <div class="col-md-9">
     @if (audioItems().length) {
     <app-audio-player
@@ -51,15 +51,20 @@
         @if (selectedArtist(); as artist) {
         <div class="d-flex align-items-center justify-content-between mb-3">
           <h2 class="h6 text-muted mb-0">{{ artist.name }}</h2>
-          <span class="badge text-bg-light">{{ countTracks(artist) }} songs</span>
+          <span class="badge text-bg-light">
+            {{ query() ? (rootTracks().length + ' matching song(s)') : (countTracks(artist) + ' songs') }}
+          </span>
         </div>
-        <app-folder-node
-          [folders]="artist.folders"
-          [tracks]="artist.tracks"
-          [groupId]="artist.id"
-          [playingUrl]="currentTrackUrl()"
-          (trackSelected)="onTrackSelected($event)">
-        </app-folder-node>
+        <app-search-box label="Search songs in this artist" (searchChange)="onSearch($event)"></app-search-box>
+        <div class="tree-scroll mt-3">
+          <app-folder-node
+            [folders]="rootFolders()"
+            [tracks]="rootTracks()"
+            [groupId]="artist.id"
+            [playingUrl]="currentTrackUrl()"
+            (trackSelected)="onTrackSelected($event)">
+          </app-folder-node>
+        </div>
         }
       </div>
     </div>
