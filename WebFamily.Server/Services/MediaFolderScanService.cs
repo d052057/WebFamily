@@ -51,8 +51,9 @@ public class MediaFolderScanService : IMediaFolderScanService
     {
         ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff "
     };
+
     private static readonly HashSet<string> PlayableExtensions =
-    new([.. BookExtensions, .. PhotoExtensions, .. AudioExtensions, .. VideoExtensions],
+    new([.. AudioExtensions, .. VideoExtensions],
         StringComparer.OrdinalIgnoreCase);
 
     //private static readonly HashSet<string> PlayableExtensions =
@@ -206,8 +207,15 @@ public class MediaFolderScanService : IMediaFolderScanService
             return;
         }
 
-        var hasPlayableFiles = Directory.GetFiles(physicalPath)
-            .Any(f => PlayableExtensions.Contains(Path.GetExtension(f)));
+        var hasPlayableFiles = currentUrlPrefix switch
+        {
+            "books" => Directory.EnumerateFiles(physicalPath).Any(f => BookExtensions.Contains(Path.GetExtension(f))),
+            "photos" => Directory.EnumerateFiles(physicalPath).Any(f => PhotoExtensions.Contains(Path.GetExtension(f))),
+            _ => Directory.EnumerateFiles(physicalPath).Any(f => PlayableExtensions.Contains(Path.GetExtension(f)))
+        };
+
+        //var hasPlayableFiles = Directory.GetFiles(physicalPath)
+        //    .Any(f => PlayableExtensions.Contains(Path.GetExtension(f)));
         var hasSubDirectories = Directory.GetDirectories(physicalPath).Length > 0;
 
         if (!hasPlayableFiles && !hasSubDirectories)
