@@ -45,10 +45,18 @@ public class MediaFolderTreeService : IMediaFolderTreeService
         var foldersByParent = folders.ToLookup(f => f.ParentFolderId);
         var tracksByFolder = tracks.ToLookup(t => t.FolderId);
 
-        List<MediaFolderTreeDto> BuildLevel(Guid? parentId, string? parentRelativePath)
+        List<MediaFolderTreeDto> BuildLevel(Guid? parentId, string? parentRelativePath, HashSet<Guid> ancestors)
         {
             return foldersByParent[parentId]
                 .OrderBy(f => f.Name)
+                // Guards against a corrupted/cyclic ParentFolderId chain (a
+                // folder pointing back to one of its own ancestors, directly or
+                // indirectly). Without this, BuildLevel would recurse forever -
+                // unbounded recursion crashes the whole process outright in
+                // .NET (StackOverflowException can't be caught), which looks
+                // to a caller like a request that never returns at all. Normal,
+                // non-cyclic data is completely unaffected by this check.
+                .Where(f => !ancestors.Contains(f.RecordId))
                 .Select(f =>
                 {
                     // Top-level folders (parentId is null) start from their OWN
@@ -60,6 +68,8 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                         ? $"{f.RootPath}/{f.Name}"
                         : $"{parentRelativePath}/{f.Name}";
 
+                    var childAncestors = new HashSet<Guid>(ancestors) { f.RecordId };
+
                     return new MediaFolderTreeDto
                     {
                         Id = f.RecordId,
@@ -67,7 +77,7 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                         CoverImagePath = f.CoverImagePath is null
                             ? null
                             : $"{relativePath}/{f.CoverImagePath}",
-                        Folders = BuildLevel(f.RecordId, relativePath),
+                        Folders = BuildLevel(f.RecordId, relativePath, childAncestors),
                         Tracks = tracksByFolder[f.RecordId]
                             .OrderBy(t => t.TrackNumber ?? int.MaxValue)
                             .ThenBy(t => t.FileName)
@@ -90,6 +100,6 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                 }).ToList();
         }
 
-        return BuildLevel(null, null);
+        return BuildLevel(null, null, new HashSet<Guid>());
     }
 }

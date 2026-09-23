@@ -49,7 +49,7 @@ public class MediaFolderScanService : IMediaFolderScanService
     };
     private static readonly HashSet<string> PhotoExtensions = new(StringComparer.OrdinalIgnoreCase)
     {
-        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff "
+        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"
     };
 
     private static readonly HashSet<string> PlayableExtensions =
@@ -76,10 +76,10 @@ public class MediaFolderScanService : IMediaFolderScanService
     // (e.g. AmericanMusics, Variety) is NOT listed here - those are
     // themselves real multi-level end-items (their own assembly, with every
     // artist inside as its child), not further wrappers to peel through.
-    private static readonly HashSet<string> KnownCollectionFolderNames = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "Songs", "Etc"
-    };
+    //private static readonly HashSet<string> KnownCollectionFolderNames = new(StringComparer.OrdinalIgnoreCase)
+    //{
+    //    "Songs", "Etc"
+    //};
 
     // A stray image directly in a folder is very often intentional cover art,
     // not junk - the first name+extension combo found here is captured.
@@ -162,28 +162,6 @@ public class MediaFolderScanService : IMediaFolderScanService
         return results;
     }
 
-    /// <summary>
-    /// Decides whether physicalPath is a real end-item (an artist/assembly) or
-    /// a pure pass-through wrapper that should be looked straight through:
-    ///   - Its name is a known pure wrapper (Songs, Etc, ...)? -> peel
-    ///     straight through it, no matter what it contains - each sub-folder
-    ///     is evaluated the same way, and whatever real end-items are found
-    ///     underneath attach directly to parentFolderId, as if this folder
-    ///     were never there. A wrapper has no identity of its own: it's a
-    ///     single pass-through to exactly one real collection - e.g. "Songs"
-    ///     to "AmericanMusics".
-    ///   - Otherwise -> it's confirmed as an end-item, full stop - whether it
-    ///     has songs directly inside (a simple artist like "got"), one album,
-    ///     several albums, or a whole multi-level collection of many artists
-    ///     underneath it (like "AmericanMusics" itself - a legitimate
-    ///     multi-level assembly in its own right, not a wrapper). Shape alone
-    ///     can't safely make this call: an artist with exactly one album (no
-    ///     loose songs) looks structurally identical to a pure wrapper. Only
-    ///     the name reliably tells the two apart, which is why the wrapper
-    ///     list above exists at all - and why it deliberately does NOT
-    ///     include AmericanMusics/Variety, which are end-items, not wrappers.
-    ///   - Empty (no files, no sub-folders)? -> nothing here, skipped.
-    /// </summary>
     private async Task ScanForEndItemsAsync(string physicalPath, Guid menuId, Guid? parentFolderId, string currentUrlPrefix, List<string> results)
     {
         var name = Path.GetFileName(physicalPath.TrimEnd(Path.DirectorySeparatorChar));
@@ -194,26 +172,48 @@ public class MediaFolderScanService : IMediaFolderScanService
             return;
         }
 
-        if (KnownCollectionFolderNames.Contains(name))
+        //if (KnownCollectionFolderNames.Contains(name))
+        //{
+        //    // Peeled through, but its name is still a real folder on disk -
+        //    // the URL has to include it even though no MediaFolder row does,
+        //    // or every file underneath ends up pointing one folder short of
+        //    // where it actually lives.
+        //    var nextUrlPrefix = $"{currentUrlPrefix}/{name}";
+        //    foreach (var sub in Directory.GetDirectories(physicalPath))
+        //    {
+        //        await ScanForEndItemsAsync(sub, menuId, parentFolderId, nextUrlPrefix, results);
+        //    }
+        //    return;
+        //}
+      
+        // Define the boolean flag out here first
+        bool hasPlayableFiles;
+
+        // FIX: Using regular comparison handles the logic cleanly without CS0176 compiler errors
+        if (currentUrlPrefix == "books")
         {
-            // Peeled through, but its name is still a real folder on disk -
-            // the URL has to include it even though no MediaFolder row does,
-            // or every file underneath ends up pointing one folder short of
-            // where it actually lives.
-            var nextUrlPrefix = $"{currentUrlPrefix}/{name}";
-            foreach (var sub in Directory.GetDirectories(physicalPath))
-            {
-                await ScanForEndItemsAsync(sub, menuId, parentFolderId, nextUrlPrefix, results);
-            }
-            return;
+            hasPlayableFiles = Directory.GetFiles(physicalPath)
+                .Any(f => BookExtensions.Contains(Path.GetExtension(f)));
+        }
+        else if (currentUrlPrefix == "photos")
+        {
+            hasPlayableFiles = Directory.GetFiles(physicalPath)
+                .Any(f => PhotoExtensions.Contains(Path.GetExtension(f)));
+        }
+        else
+        {
+            // Default fallback for musics/videos
+            hasPlayableFiles = Directory.GetFiles(physicalPath)
+                .Any(f => PlayableExtensions.Contains(Path.GetExtension(f)));
         }
 
-        var hasPlayableFiles = currentUrlPrefix switch
-        {
-            "books" => Directory.EnumerateFiles(physicalPath).Any(f => BookExtensions.Contains(Path.GetExtension(f))),
-            "photos" => Directory.EnumerateFiles(physicalPath).Any(f => PhotoExtensions.Contains(Path.GetExtension(f))),
-            _ => Directory.EnumerateFiles(physicalPath).Any(f => PlayableExtensions.Contains(Path.GetExtension(f)))
-        };
+        // CRITICAL FIX: If this immediate folder has zero valid files, skip creating 
+        // a database record for it and exit the function early.
+        //if (!hasPlayableFiles)
+        //{
+        //    return;
+        //}
+
 
         //var hasPlayableFiles = Directory.GetFiles(physicalPath)
         //    .Any(f => PlayableExtensions.Contains(Path.GetExtension(f)));
@@ -274,10 +274,33 @@ public class MediaFolderScanService : IMediaFolderScanService
             .Select(candidate => Path.Combine(physicalPath, candidate))
             .FirstOrDefault(candidate => allFiles.Contains(candidate, StringComparer.OrdinalIgnoreCase));
         folder.CoverImagePath = coverFile is null ? null : Path.GetFileName(coverFile);
+        // Define the list to hold the filtered files
+        List<string> playableFiles;
 
-        var playableFiles = allFiles
-            .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
-            .ToList();
+        // FIX: Dynamically filter files based on the current context type
+        if (rootUrlPrefix == "books")
+        {
+            playableFiles = allFiles
+                .Where(f => BookExtensions.Contains(Path.GetExtension(f)))
+                .ToList();
+        }
+        else if (rootUrlPrefix == "photos")
+        {
+            playableFiles = allFiles
+                .Where(f => PhotoExtensions.Contains(Path.GetExtension(f)))
+                .ToList();
+        }
+        else
+        {
+            // Default fallback for musics/videos
+            playableFiles = allFiles
+                .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
+                .ToList();
+        }
+
+        //var playableFiles = allFiles
+        //    .Where(f => PlayableExtensions.Contains(Path.GetExtension(f)))
+        //    .ToList();
 
         // Filenames only need to be unique within this one folder - scoped
         // locally per call, unlike top-level names which persist across the
