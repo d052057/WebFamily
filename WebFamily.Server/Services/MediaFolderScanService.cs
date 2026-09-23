@@ -63,7 +63,8 @@ public class MediaFolderScanService : IMediaFolderScanService
     // entirely (rpm has its own dedicated tables/UI) - skipped outright.
     private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
-        "rpm"
+        "rpm",
+        "closecaption"
     };
 
     // Folders known to be pure pass-through wrappers - no identity of their

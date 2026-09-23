@@ -15,7 +15,7 @@
            [class.visible]="visibleImages()[i]"
            (click)="openModal(i)">
 
-        <img [src]="fileFolder() + image.title | safe: 'resourceUrl'"
+        <img [src]="(image.url ?? (fileFolder() + image.title)) | safe: 'resourceUrl'"
              [alt]="image.title"
              class="img-fluid gallery-image"
              loading="lazy">
@@ -56,7 +56,7 @@
     </button>
 
     <div class="modal-image-container">
-      <img [src]="fileFolder() + currentPhoto().title | safe: 'resourceUrl'"
+      <img [src]="(currentPhoto().url ?? (fileFolder() + currentPhoto().title)) | safe: 'resourceUrl'"
            [alt]="currentPhoto().title"
            class="modal-image img-fluid">
     </div>

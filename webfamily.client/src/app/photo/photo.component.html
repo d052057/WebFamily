@@ -1,6 +1,4 @@
-<app-photo-gallery [images]="dataResource.value() || []"
-                   [fileFolder]="fileFolder"
-                   [folderName]="val.photoFolder"
-                   [isLoading]="dataResource.isLoading()">
+<app-photo-gallery [images]="images()"
+                   [folderName]="folderTitle()"
+                   [isLoading]="isLoading()">
 </app-photo-gallery>
-
