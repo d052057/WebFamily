@@ -55,4 +55,7 @@ export class PlayMediaComponent {
     if (!group) return [];
     return toVideoItems(flattenTracks(group), this.appSettings.mediaBasePath);
   });
+
+  // Matches the nav bar's own icon choice for each menu.
+  readonly itemIcon = computed(() => this.menu() === 'movies' ? 'bi-camera-reels' : 'bi-camera-video');
 }

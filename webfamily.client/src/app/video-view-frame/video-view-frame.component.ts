@@ -1,81 +1,85 @@
-import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { VideoViewerComponent } from './video-viewer/video-viewer.component';
 import { VideoSource } from './models/video.model';
 
-import { MediaService } from '../shared/services/media.service';
 import { AppSettingsService } from '../shared/services/app-settings.service';
 import { ActivatedRoute } from '@angular/router';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { VideoRouteParams } from './interfaces/video.interface'; 
+import { MediaFolderTreeService } from '../shared/services/media-folder-tree.service';
+import { MediaFolderTreeDto } from '../models/media-folder-tree.model';
+import { flattenTracks } from '../shared/utils/media-tree.utils';
+import { MediaListComponent, MediaListItem } from '../shared/media-list/media-list.component';
 
-export interface videoInterface {
-  url: string,
-  title: string,
-  duration: number
-}
+// Frame-by-frame viewer for one movie/video group (frames/:menu/:folder).
+// Built on the same MediaFolder/MediaTrack tree as song-browser/play-media,
+// not the legacy MediaMetaData pipeline this used to read from - the nav
+// bar's Frames dropdown already lists group names sourced from that same
+// new tree, so this needed to match or a stale/missing legacy row would
+// show up empty.
+//
+// :menu is an explicit route param, not inferred from the URL like
+// play-media does - the literal first URL segment here is "frames", which
+// isn't a real menu name, unlike movies/:folder or videos/:folder where the
+// first segment IS the menu. This is also what lets Frames work for both
+// movies and videos, not just movies.
+//
+// The movie/video picker list is the shared song-list-style component, same
+// as Movies/Videos/Documents.
 @Component({
   selector: 'app-video-view-frame',
-  imports: [VideoViewerComponent],
+  imports: [VideoViewerComponent, MediaListComponent],
   templateUrl: './video-view-frame.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './video-view-frame.component.scss'
 })
 export class VideoViewFrameComponent {
-  private mediaService = inject(MediaService);
   private activatedRoute = inject(ActivatedRoute);
-  selectedVideo: VideoSource | null = null;
   private appSettings = inject(AppSettingsService);
-  readonly medias = this.appSettings.mediaBasePath;
+  private treeService = inject(MediaFolderTreeService);
+  selectedVideo: VideoSource | null = null;
 
-  routeParamsResource = rxResource({
-    params: () => ({}),
-    stream: () => this.activatedRoute.paramMap.pipe(
-      map(params => {
-        const menuFolder = params.get('folder');
-        const menu = 'movies'; // Hardcoded for now, can be dynamic based on your routing logic'
-        const fileFolder = `${this.medias}/${menu}/${menuFolder || ''}`;
-        if (menuFolder && menu) {
-          this.mediaService.menu.set(menu);
-          this.mediaService.folder.set(menuFolder);
-          this.mediaService.fileFolder.set(fileFolder);
-        }
-        return {
-          menuFolder: menuFolder,
-          menu: menu,
-          fileFolder: fileFolder
-        } as VideoRouteParams;
-      })
-    )
-  });
+  // "movies" or "videos" - the explicit :menu route param.
+  private readonly menu = toSignal(
+    this.activatedRoute.paramMap.pipe(map(p => p.get('menu') ?? '')),
+    { initialValue: this.activatedRoute.snapshot.paramMap.get('menu') ?? '' }
+  );
 
-  // Single computed property returning RouteParams interface
-  routeParams = computed<VideoRouteParams | undefined>(() => { return this.routeParamsResource.value(); });
-
-  // Computed property for processed video data
-  videoSources = computed(() => {
-    const mediaData = this.mediaService.getMediaRecordRS.value();
-    if (!mediaData) return [];
-   
-    const result: VideoSource[] = [];
-    for (let v of mediaData) {
-      const tmp = {
-        title: v.title,
-        src: v.url,
-        type: v.type,
-        duration: v.duration,
-        captions: v.captions,
-        chapters: v.chapters,
-        audioTracks: v.audioTracks
-      };
-      result.push(new VideoSource(tmp, v.id));
-    }
-    return result;
-  });
+  private readonly folderName = toSignal(
+    this.activatedRoute.paramMap.pipe(map(p => p.get('folder') ?? '')),
+    { initialValue: this.activatedRoute.snapshot.paramMap.get('folder') ?? '' }
+  );
 
   constructor() {
+    effect(() => this.treeService.menu.set(this.menu()));
   }
-  selectVideo(video: VideoSource) {
-    this.selectedVideo = video;
+
+  private readonly tree = computed<MediaFolderTreeDto[]>(() => this.treeService.treeResource.value() ?? []);
+
+  private readonly selectedGroup = computed<MediaFolderTreeDto | null>(() => {
+    const name = this.folderName().toLowerCase();
+    if (!name) return null;
+    return this.tree().find(g => g.name.toLowerCase() === name) ?? null;
+  });
+
+  videoSources = computed<VideoSource[]>(() => {
+    const group = this.selectedGroup();
+    if (!group) return [];
+    return flattenTracks(group).map((t, index) => new VideoSource({
+      title: t.displayTitle,
+      src: `${this.appSettings.mediaBasePath}/${t.url}`,
+      type: t.type ?? ''
+    }, index + 1));
+  });
+
+  // Matches the nav bar's own icon choice for each menu.
+  readonly itemIcon = computed(() => this.menu() === 'movies' ? 'bi-camera-reels' : 'bi-camera-video');
+
+  listItems = computed<MediaListItem[]>(() =>
+    this.videoSources().map(v => ({ id: v.id, title: v.title }))
+  );
+
+  selectVideo(item: MediaListItem) {
+    this.selectedVideo = this.videoSources().find(v => v.id === item.id) ?? null;
   }
 }

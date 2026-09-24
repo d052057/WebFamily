@@ -33,13 +33,6 @@ export class SongBrowserComponent {
     { initialValue: '' }
   );
 
-  // Which top-level folder (artist) is selected, kept in the URL so it's
-  // bookmarkable/shareable - not just component-local state. Supports two
-  // ways in: ?artist=<guid> (used by in-page nav-pills clicks - fine there,
-  // since the tree and its GUIDs are freshly fetched together in that same
-  // session) and ?artistName=<name> (for permanent links like the nav bar -
-  // GUIDs are reassigned on every rescan, so a hardcoded GUID would break the
-  // next time the library gets regenerated; a name survives that).
   private readonly selectedIdFromQuery = toSignal(
     this.route.queryParamMap.pipe(map(p => p.get('artist'))),
     { initialValue: null as string | null }

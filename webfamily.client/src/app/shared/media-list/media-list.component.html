@@ -1,0 +1,24 @@
+@if (items.length) {
+<div class="list-group list-group-flush mb-2">
+  @for (item of items; track trackById($index, item)) {
+  <button type="button"
+          class="list-group-item list-group-item-action song-row"
+          [class.active]="item.id === selectedId"
+          (click)="select.emit(item)">
+    <i class="bi" [class]="icon"></i>
+    <span class="flex-grow-1 text-start">{{ item.title }}</span>
+    @if (item.subtitle) {
+    <small class="text-muted me-2">{{ item.subtitle }}</small>
+    }
+    @if (showDuration) {
+    <small class="text-muted">{{ item.duration ?? '--:--' }}</small>
+    }
+  </button>
+  }
+</div>
+} @else {
+<div class="empty-state">
+  <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+  {{ emptyMessage }}
+</div>
+}

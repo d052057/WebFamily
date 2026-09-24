@@ -143,34 +143,11 @@
             </td>
 
         </tr>
+        
         <tr>
             <td scope="row">
                 <div>
-                    <button type="button" class="btn btn-primary" (click)='onUpdate("text")' [disabled]="textUpdate()">
-                        @if (textUpdate()) {
-                        <div class="bouncing-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        }
-                        Update Text Files
-                    </button>
-                </div>
-            </td>
-            <td>
-                @for (stat of textUpdateStatus() ; track stat; let i = $index) {
-                <ul>
-                    <li>{{ stat }}</li>
-                </ul>
-                }
-            </td>
-
-        </tr>
-        <tr>
-            <td scope="row">
-                <div>
-                    <button type="button" class="btn btn-primary" (click)="onUpdate('rpms')" [disabled]="rpmsUpdate()">
+                    <button type="button" class="btn btn-primary" [disabled]="rpmsUpdate()">
                         @if (rpmsUpdate()) {
                         <div class="bouncing-dots">
                             <span></span>

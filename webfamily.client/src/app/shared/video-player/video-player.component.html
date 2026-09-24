@@ -316,7 +316,7 @@
                 (click)="playVideo(video)"
                 [attr.aria-label]="'Play ' + video.title">
           <div class="flex-grow-1">
-            <div class="fw-medium">{{ video.title }}</div>
+            <div class="fw-medium"><i class="bi" [class]="itemIcon"></i> {{ video.title }}</div>
             @if (video.description) {
             <small class="text-muted">
               {{ video.description | slice:0:50 }}{{ video.description && video.description.length > 50 ? '...' : '' }}

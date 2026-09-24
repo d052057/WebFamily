@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
 using WebFamily.Server.Models;
 
@@ -31,35 +32,31 @@ public interface IMediaFolderScanService
 
 public class MediaFolderScanService : IMediaFolderScanService
 {
-    // Allowlist: only these are ever turned into MediaTrack rows. Anything else
-    // found in a media folder (cover art, .nfo, playlists, Thumbs.db, ...) is
-    // simply skipped rather than needing to be named on a junk-file blocklist.
-    private static readonly HashSet<string> AudioExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".mp3", ".flac", ".m4a", ".aac", ".wav", ".ogg", ".wma", ".aiff"
-    };
+    // Built once per instance from ApplicationSettings.MediaScanExtensions
+    // (see the constructor) instead of being hard-coded here - adding or
+    // removing an extension is then just an appsettings.json edit and a
+    // restart, no recompile. A missing/empty config falls back to the same
+    // defaults appsettings.json ships with, so a stripped-down config file
+    // (e.g. in a test host) doesn't silently disable scanning entirely.
+    private static readonly string[] DefaultAudioExtensions =
+        { ".mp3", ".flac", ".m4a", ".aac", ".wav", ".ogg", ".wma", ".aiff" };
+    private static readonly string[] DefaultVideoExtensions =
+        { ".mp4", ".mkv", ".mov", ".avi", ".wmv", ".m4v", ".webm", ".flv", ".mpg", ".mpeg", ".3gp" };
+    private static readonly string[] DefaultBookExtensions =
+        { ".pdf", ".epub", ".mobi", ".azw3", ".djvu", ".cbz", ".cbr", ".txt" };
+    private static readonly string[] DefaultPhotoExtensions =
+        { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff" };
 
-    private static readonly HashSet<string> VideoExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".mp4", ".mkv", ".mov", ".avi", ".wmv", ".m4v", ".webm", ".flv", ".mpg", ".mpeg", ".3gp"
-    };
-
-    private static readonly HashSet<string> BookExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".pdf", ".epub", ".mobi", ".azw3", ".djvu", ".cbz", ".cbr", ".txt"
-    };
-
-    private static readonly HashSet<string> PhotoExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff"
-    };
+    private readonly HashSet<string> _audioExtensions;
+    private readonly HashSet<string> _videoExtensions;
+    private readonly HashSet<string> _bookExtensions;
+    private readonly HashSet<string> _photoExtensions;
 
     // Audio+video only - "books" and "photos" are resolved to their own sets
     // by ExtensionsForMenu below, keyed on the menu itself (not URL prefixes,
     // which reset to null on every recursive call and can't be relied on
     // below the top level - see ExtensionsForMenu's own comment).
-    private static readonly HashSet<string> PlayableExtensions =
-        new(AudioExtensions.Union(VideoExtensions), StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _playableExtensions;
 
     // Folders that belong to a different, already-existing app feature
     // entirely (rpm has its own dedicated tables/UI) - skipped outright.
@@ -106,10 +103,23 @@ public class MediaFolderScanService : IMediaFolderScanService
     // every ScanAsync call.
     private readonly HashSet<string> _usedTopLevelNames = new(StringComparer.OrdinalIgnoreCase);
 
-    public MediaFolderScanService(WebFamilyDbContext context, ILogger<MediaFolderScanService>? logger = null)
+    public MediaFolderScanService(WebFamilyDbContext context, IOptions<ApplicationSettings> appSettings, ILogger<MediaFolderScanService>? logger = null)
     {
         _context = context;
         _logger = logger;
+
+        var configured = appSettings.Value?.MediaScanExtensions;
+        _audioExtensions = BuildExtensionSet(configured?.Audio, DefaultAudioExtensions);
+        _videoExtensions = BuildExtensionSet(configured?.Video, DefaultVideoExtensions);
+        _bookExtensions = BuildExtensionSet(configured?.Book, DefaultBookExtensions);
+        _photoExtensions = BuildExtensionSet(configured?.Photo, DefaultPhotoExtensions);
+        _playableExtensions = new HashSet<string>(_audioExtensions.Union(_videoExtensions), StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static HashSet<string> BuildExtensionSet(List<string>? configured, string[] defaults)
+    {
+        IEnumerable<string> source = configured is { Count: > 0 } ? configured : defaults;
+        return new HashSet<string>(source, StringComparer.OrdinalIgnoreCase);
     }
 
     // Which extensions count as "playable" depends on the MENU being
@@ -121,11 +131,11 @@ public class MediaFolderScanService : IMediaFolderScanService
     // first call and resets to null on every recursive call below that -
     // relying on it for this caused books/photos below the top level to
     // silently fall back to the audio/video set and get skipped.
-    private static HashSet<string> ExtensionsForMenu(string menu) => menu switch
+    private HashSet<string> ExtensionsForMenu(string menu) => menu switch
     {
-        "books" => BookExtensions,
-        "photos" => PhotoExtensions,
-        _ => PlayableExtensions
+        "books" => _bookExtensions,
+        "photos" => _photoExtensions,
+        _ => _playableExtensions
     };
 
     public async Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots)
@@ -389,7 +399,7 @@ public class MediaFolderScanService : IMediaFolderScanService
         // every one of them would hit the catch below and log a warning for
         // no reason. Skipped outright rather than let it fail every time;
         // Title/Artist/etc. simply stay null, same as they'd end up anyway.
-        if (BookExtensions.Contains(Path.GetExtension(filePath)))
+        if (_bookExtensions.Contains(Path.GetExtension(filePath)))
         {
             return;
         }

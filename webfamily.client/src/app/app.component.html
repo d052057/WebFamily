@@ -71,11 +71,19 @@
                         <i class='bi bi-camera-video'></i> Frames
                     </a>
                     <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header">Movies</h6></li>
                         @for (g of movieGroups(); track g.id) {
                         <li>
                             @if (g.name !== 'bob' || accountService.isAdminUser) {
-                            <a class="dropdown-item" [routerLink]="['/frames', g.name]">{{ g.name }}</a>
+                            <a class="dropdown-item" [routerLink]="['/frames', 'movies', g.name]">{{ g.name }}</a>
                             }
+                        </li>
+                        }
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">Videos</h6></li>
+                        @for (g of videoGroups(); track g.id) {
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['/frames', 'videos', g.name]">{{ g.name }}</a>
                         </li>
                         }
                     </ul>

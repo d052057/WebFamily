@@ -143,6 +143,12 @@ export class VideoPlayerComponent implements OnInit, AfterViewInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly eventService = inject(EventListenerService);
 
+  // Bootstrap Icons class shown in front of each playlist row - the caller
+  // (play-media.component) sets this per menu so a movie and a plain video
+  // don't look identical in the list, matching the nav bar's own icon choice
+  // for each ("bi-camera-reels" for Movies, "bi-camera-video" for Videos).
+  @Input() itemIcon = 'bi-camera-video';
+
   @Input()
   set dataSource(value: VideoSource[]) {
     if (value?.length && value !== this._videos()) {

@@ -1,0 +1,15 @@
+.song-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.song-row .bi {
+  color: #adb5bd;
+}
+
+.empty-state {
+  color: #adb5bd;
+  text-align: center;
+  padding: 2rem 1rem;
+}

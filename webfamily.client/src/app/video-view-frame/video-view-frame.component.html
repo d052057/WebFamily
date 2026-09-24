@@ -9,15 +9,13 @@
 
     <div class="video-list">
       <h2>Available Videos</h2>
-      <ul>
-        @for (video of videoSources(); track video) {
-          <li
-            [class.active]="selectedVideo?.id === video.id"
-            (click)="selectVideo(video)">
-            {{ video.title }}
-          </li>
-        }
-      </ul>
+      <app-media-list [items]="listItems()"
+                      [icon]="itemIcon()"
+                      [showDuration]="false"
+                      [selectedId]="selectedVideo?.id ?? null"
+                      emptyMessage="No videos here yet"
+                      (select)="selectVideo($event)">
+      </app-media-list>
     </div>
   </div>
 </div>

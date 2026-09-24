@@ -24,11 +24,6 @@ export class AppComponent implements OnInit {
   private sharedService = inject(SharedService);
   private treeService = inject(MediaFolderTreeService);
 
-  // Top-level folders (movie/video groups) for the Movies/Videos/Frames
-  // dropdowns. One-shot fetches, independent of each other and of whatever
-  // menu song-browser/Music Maintenance/play-media currently have selected -
-  // the nav bar needs both lists available at the same time, which the
-  // shared single `menu` signal on MediaFolderTreeService can't do.
   readonly movieGroups = toSignal(this.treeService.getTree('movies'), { initialValue: [] });
   readonly videoGroups = toSignal(this.treeService.getTree('videos'), { initialValue: [] });
   readonly bookGroups = toSignal(this.treeService.getTree('books'), { initialValue: [] });

@@ -34,7 +34,11 @@ export const routes: Routes = [
       .then(mod => mod.PlayMediaComponent)
   },
   {
-    path: 'frames/:folder',
+    // :menu is explicit ("movies" or "videos") rather than inferred from the
+    // URL, because the literal first segment here is "frames" - not a real
+    // menu name - unlike movies/:folder or videos/:folder where the first
+    // segment IS the menu.
+    path: 'frames/:menu/:folder',
     loadComponent: () => import('./video-view-frame/video-view-frame.component')
       .then(mod => mod.VideoViewFrameComponent)
   },

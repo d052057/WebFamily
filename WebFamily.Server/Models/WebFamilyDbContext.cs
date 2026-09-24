@@ -12,23 +12,30 @@ public partial class WebFamilyDbContext : DbContext
         : base(options)
     {
     }
+
+    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
+
+    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
+
+    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+
+    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
+
+    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
+
+    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+
+    public virtual DbSet<MediaEndItemView> MediaEndItemViews { get; set; }
+
     public virtual DbSet<MediaFolder> MediaFolders { get; set; }
 
-    public virtual DbSet<MediaTrack> MediaTracks { get; set; }
-
-    public virtual DbSet<MediaDirectory> MediaDirectories { get; set; }
+    public virtual DbSet<MediaFolderListView> MediaFolderListViews { get; set; }
 
     public virtual DbSet<MediaMenu> MediaMenus { get; set; }
 
-    public virtual DbSet<MediaMetaDatum> MediaMetaData { get; set; }
-
     public virtual DbSet<MediaSubtitle> MediaSubtitles { get; set; }
 
-    public virtual DbSet<MediaView> MediaViews { get; set; }
-
-    public virtual DbSet<MoviesView> MoviesViews { get; set; }
-
-    public virtual DbSet<MusicsView> MusicsViews { get; set; }
+    public virtual DbSet<MediaTrack> MediaTracks { get; set; }
 
     public virtual DbSet<Rpm> Rpms { get; set; }
 
@@ -36,118 +43,146 @@ public partial class WebFamilyDbContext : DbContext
 
     public virtual DbSet<TodoList> TodoLists { get; set; }
 
-    public virtual DbSet<VideosView> VideosViews { get; set; }
-
     public virtual DbSet<WebTube> WebTubes { get; set; }
 
     public virtual DbSet<WebTubeSeries> WebTubeSeries { get; set; }
-    public virtual DbSet<MediaEndItem> MediaEndItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<AspNetRole>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedName] IS NOT NULL)");
+
+            entity.Property(e => e.Name).HasMaxLength(256);
+            entity.Property(e => e.NormalizedName).HasMaxLength(256);
+        });
+
+        modelBuilder.Entity<AspNetRoleClaim>(entity =>
+        {
+            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
+        });
+
+        modelBuilder.Entity<AspNetUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+            entity.Property(e => e.Email).HasMaxLength(256);
+            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+            entity.Property(e => e.UserName).HasMaxLength(256);
+
+            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AspNetUserRole",
+                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+                    j =>
+                    {
+                        j.HasKey("UserId", "RoleId");
+                        j.ToTable("AspNetUserRoles");
+                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+                    });
+        });
+
+        modelBuilder.Entity<AspNetUserClaim>(entity =>
+        {
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserLogin>(entity =>
+        {
+            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
+
+            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<AspNetUserToken>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
+
+            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
+        });
+
+        modelBuilder.Entity<MediaEndItemView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("MediaEndItemView");
+
+            entity.Property(e => e.CoverImagePath)
+                .HasMaxLength(500)
+                .HasColumnName("coverImagePath");
+            entity.Property(e => e.FolderId).HasColumnName("folderId");
+            entity.Property(e => e.MenuId).HasColumnName("menuId");
+            entity.Property(e => e.Name)
+                .HasMaxLength(250)
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<MediaFolder>(entity =>
         {
             entity.HasKey(e => e.RecordId).HasName("PK_folder");
 
             entity.ToTable("MediaFolder");
 
+            entity.HasIndex(e => e.ParentFolderId, "IX_folder_parentFolderId");
+
+            entity.HasIndex(e => new { e.MenuId, e.ParentFolderId, e.Name }, "UX_folder_parent_name").IsUnique();
+
             entity.Property(e => e.RecordId)
                 .HasDefaultValueSql("(newid())")
                 .HasAnnotation("Relational:DefaultConstraintName", "DF_folder_recordId")
                 .HasColumnName("recordId");
+            entity.Property(e => e.CoverImagePath)
+                .HasMaxLength(500)
+                .UseCollation("Latin1_General_100_BIN2")
+                .HasColumnName("coverImagePath");
             entity.Property(e => e.Datetime)
                 .HasDefaultValueSql("(getdate())")
                 .HasAnnotation("Relational:DefaultConstraintName", "DF_folder_datetime")
                 .HasColumnType("datetime")
                 .HasColumnName("datetime");
+            entity.Property(e => e.MenuId).HasColumnName("menuId");
             entity.Property(e => e.Name)
                 .HasMaxLength(250)
+                .UseCollation("Latin1_General_100_BIN2")
                 .HasColumnName("name");
-            entity.Property(e => e.CoverImagePath)
-                .HasMaxLength(500)
-                .HasColumnName("coverImagePath");
+            entity.Property(e => e.ParentFolderId).HasColumnName("parentFolderId");
             entity.Property(e => e.RootPath)
                 .HasMaxLength(500)
                 .HasColumnName("rootPath");
-            entity.Property(e => e.MenuId).HasColumnName("menuId");
-            entity.Property(e => e.ParentFolderId).HasColumnName("parentFolderId");
 
-            entity.HasOne(d => d.Menu).WithMany()
+            entity.HasOne(d => d.Menu).WithMany(p => p.MediaFolders)
                 .HasForeignKey(d => d.MenuId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MediaFolder_MediaMenu");
 
-            entity.HasOne(d => d.ParentFolder).WithMany(p => p.ChildFolders)
+            entity.HasOne(d => d.ParentFolder).WithMany(p => p.InverseParentFolder)
                 .HasForeignKey(d => d.ParentFolderId)
                 .HasConstraintName("FK_MediaFolder_MediaFolder_Parent");
         });
 
-        modelBuilder.Entity<MediaTrack>(entity =>
+        modelBuilder.Entity<MediaFolderListView>(entity =>
         {
-            entity.HasKey(e => e.RecordId).HasName("PK_track");
+            entity
+                .HasNoKey()
+                .ToView("MediaFolderListView");
 
-            entity.ToTable("MediaTrack");
-
-            entity.Property(e => e.RecordId)
-                .HasDefaultValueSql("(newid())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_recordId")
-                .HasColumnName("recordId");
-            entity.Property(e => e.Datetime)
-                .HasDefaultValueSql("(getdate())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_datetime")
-                .HasColumnType("datetime")
-                .HasColumnName("datetime");
-            entity.Property(e => e.FileName)
-                .HasMaxLength(260)
-                .HasColumnName("fileName");
-            entity.Property(e => e.Title)
+            entity.Property(e => e.Name)
                 .HasMaxLength(250)
-                .HasColumnName("title");
-            entity.Property(e => e.Artist)
-                .HasMaxLength(250)
-                .HasColumnName("artist");
-            entity.Property(e => e.Album)
-                .HasMaxLength(250)
-                .HasColumnName("album");
-            entity.Property(e => e.TrackNumber).HasColumnName("trackNumber");
-            entity.Property(e => e.Year).HasColumnName("year");
-            entity.Property(e => e.Genre)
-                .HasMaxLength(100)
-                .HasColumnName("genre");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-
-            entity.HasOne(d => d.Folder).WithMany(p => p.Tracks)
-                .HasForeignKey(d => d.FolderId)
-                .HasConstraintName("FK_MediaTrack_MediaFolder");
-        });
-
-        modelBuilder.Entity<MediaDirectory>(entity =>
-        {
-            entity.HasKey(e => e.RecordId).HasName("PK_directory");
-
-            entity.ToTable("MediaDirectory");
-
-            entity.Property(e => e.RecordId)
-                .HasDefaultValueSql("(newid())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_directory_recordId")
-                .HasColumnName("recordId");
-            entity.Property(e => e.Datetime)
-                .HasDefaultValueSql("(getdate())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_directory_datetime")
-                .HasColumnType("datetime")
-                .HasColumnName("datetime");
-            entity.Property(e => e.Directory)
-                .HasMaxLength(250)
-                .HasColumnName("directory");
-            entity.Property(e => e.MenuId).HasColumnName("menuId");
-
-            entity.HasOne(d => d.Menu).WithMany(p => p.MediaDirectories)
-                .HasForeignKey(d => d.MenuId)
-                .HasConstraintName("FK_MediaDirectory_MediaMenu");
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<MediaMenu>(entity =>
@@ -170,38 +205,11 @@ public partial class WebFamilyDbContext : DbContext
                 .HasColumnName("menu");
         });
 
-        modelBuilder.Entity<MediaMetaDatum>(entity =>
-        {
-            entity.HasKey(e => e.RecordId).HasName("PK_metaData");
-
-            entity.Property(e => e.RecordId)
-                .HasDefaultValueSql("(newid())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_metaData_recordId")
-                .HasColumnName("recordId");
-            entity.Property(e => e.Datetime)
-                .HasDefaultValueSql("(getdate())")
-                .HasAnnotation("Relational:DefaultConstraintName", "DF_metaData_datetime")
-                .HasColumnType("datetime")
-                .HasColumnName("datetime");
-            entity.Property(e => e.DirectoryId).HasColumnName("directoryId");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
-
-            entity.HasOne(d => d.Directory).WithMany(p => p.MediaMetaData)
-                .HasForeignKey(d => d.DirectoryId)
-                .HasConstraintName("FK_MediaMetaData_MediaDirectory");
-        });
-
         modelBuilder.Entity<MediaSubtitle>(entity =>
         {
             entity.HasKey(e => e.RecordId).HasName("PK__MediaSub__FBDF78E902AD87BA");
+
+            entity.HasIndex(e => e.MediaMetaDataRecordId, "IX_MediaSubtitles_MediaMetaDataRecordId");
 
             entity.Property(e => e.RecordId)
                 .HasDefaultValueSql("(newid())")
@@ -209,83 +217,65 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.FileName).HasMaxLength(260);
             entity.Property(e => e.Label).HasMaxLength(50);
             entity.Property(e => e.Language).HasMaxLength(10);
-            entity.HasOne(d => d.Record).WithMany(p => p.MediaSubtitles)
+
+            entity.HasOne(d => d.MediaMetaDataRecord).WithMany(p => p.MediaSubtitles)
                 .HasForeignKey(d => d.MediaMetaDataRecordId)
-                .HasConstraintName("FK_MediaSubtitles_MediaMetaData");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MediaSubtitles_MediaTrack");
         });
 
-        modelBuilder.Entity<MediaView>(entity =>
+        modelBuilder.Entity<MediaTrack>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToView("mediaView");
+            entity.HasKey(e => e.RecordId).HasName("PK_track");
 
-            entity.Property(e => e.Directory)
-                .HasMaxLength(50)
-                .HasColumnName("directory");
-            entity.Property(e => e.DirectoryId).HasColumnName("directoryId");
+            entity.ToTable("MediaTrack");
+
+            entity.HasIndex(e => e.FolderId, "IX_track_folderId");
+
+            entity.HasIndex(e => new { e.FolderId, e.FileName }, "UX_track_folder_fileName").IsUnique();
+
+            entity.Property(e => e.RecordId)
+                .HasDefaultValueSql("(newid())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_recordId")
+                .HasColumnName("recordId");
+            entity.Property(e => e.Album)
+                .HasMaxLength(250)
+                .UseCollation("Latin1_General_100_BIN2")
+                .HasColumnName("album");
+            entity.Property(e => e.Artist)
+                .HasMaxLength(250)
+                .UseCollation("Latin1_General_100_BIN2")
+                .HasColumnName("artist");
+            entity.Property(e => e.Datetime)
+                .HasDefaultValueSql("(getdate())")
+                .HasAnnotation("Relational:DefaultConstraintName", "DF_track_datetime")
+                .HasColumnType("datetime")
+                .HasColumnName("datetime");
             entity.Property(e => e.Duration)
                 .HasMaxLength(50)
                 .HasColumnName("duration");
-            entity.Property(e => e.Menu)
-                .HasMaxLength(50)
-                .HasColumnName("menu");
-            entity.Property(e => e.MenuId).HasColumnName("menuId");
-            entity.Property(e => e.RecordId).HasColumnName("recordId");
+            entity.Property(e => e.FileName)
+                .HasMaxLength(260)
+                .UseCollation("Latin1_General_100_BIN2")
+                .HasColumnName("fileName");
+            entity.Property(e => e.FolderId).HasColumnName("folderId");
+            entity.Property(e => e.Genre)
+                .HasMaxLength(100)
+                .UseCollation("Latin1_General_100_BIN2")
+                .HasColumnName("genre");
             entity.Property(e => e.Title)
-                .HasMaxLength(200)
+                .HasMaxLength(250)
+                .UseCollation("Latin1_General_100_BIN2")
                 .HasColumnName("title");
+            entity.Property(e => e.TrackNumber).HasColumnName("trackNumber");
             entity.Property(e => e.Type)
                 .HasMaxLength(150)
                 .HasColumnName("type");
-        });
+            entity.Property(e => e.Year).HasColumnName("year");
 
-        modelBuilder.Entity<MoviesView>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("moviesView");
-
-            entity.Property(e => e.Assets)
-                .HasMaxLength(65)
-                .HasColumnName("assets");
-            entity.Property(e => e.Directory)
-                .HasMaxLength(50)
-                .HasColumnName("directory");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.RecordId).HasColumnName("recordId");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
-        });
-
-        modelBuilder.Entity<MusicsView>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("musicsView");
-
-            entity.Property(e => e.Assets)
-                .HasMaxLength(65)
-                .HasColumnName("assets");
-            entity.Property(e => e.Directory)
-                .HasMaxLength(50)
-                .HasColumnName("directory");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.RecordId).HasColumnName("recordId");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
+            entity.HasOne(d => d.Folder).WithMany(p => p.MediaTracks)
+                .HasForeignKey(d => d.FolderId)
+                .HasConstraintName("FK_MediaTrack_MediaFolder");
         });
 
         modelBuilder.Entity<Rpm>(entity =>
@@ -298,6 +288,9 @@ public partial class WebFamilyDbContext : DbContext
                 .HasDefaultValueSql("(newid())")
                 .HasAnnotation("Relational:DefaultConstraintName", "DF_rpm_recordId")
                 .HasColumnName("recordId");
+            entity.Property(e => e.Artist)
+                .HasMaxLength(250)
+                .HasColumnName("artist");
             entity.Property(e => e.AudioType)
                 .HasMaxLength(50)
                 .HasColumnName("audioType");
@@ -312,9 +305,6 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .HasColumnName("type");
-            entity.Property(e => e.Artist)
-                .HasMaxLength(250)
-                .HasColumnName("artist");
         });
 
         modelBuilder.Entity<RpmTrack>(entity =>
@@ -327,22 +317,21 @@ public partial class WebFamilyDbContext : DbContext
                 .HasDefaultValueSql("(newid())")
                 .HasAnnotation("Relational:DefaultConstraintName", "DF_RpmTrack_recordId")
                 .HasColumnName("recordId");
+            entity.Property(e => e.Artist)
+                .HasMaxLength(250)
+                .HasColumnName("artist");
             entity.Property(e => e.DateTime)
                 .HasDefaultValueSql("(getdate())")
                 .HasAnnotation("Relational:DefaultConstraintName", "DF_RpmTrack_dateTime")
                 .HasColumnType("datetime")
                 .HasColumnName("dateTime");
+            entity.Property(e => e.DurationSeconds).HasColumnName("durationSeconds");
             entity.Property(e => e.RpmId).HasColumnName("rpmId");
             entity.Property(e => e.Title)
                 .HasMaxLength(250)
                 .HasColumnName("title");
-            entity.Property(e => e.TrackNumber)
-                .HasColumnName("trackNumber");
-            entity.Property(e => e.DurationSeconds)
-                .HasColumnName("durationSeconds");
-            entity.Property(e => e.Artist)
-                .HasMaxLength(250)
-                .HasColumnName("artist");
+            entity.Property(e => e.TrackNumber).HasColumnName("trackNumber");
+
             entity.HasOne(d => d.Rpm).WithMany(p => p.RpmTracks)
                 .HasForeignKey(d => d.RpmId)
                 .HasConstraintName("FK_RpmTrack_rpm");
@@ -363,30 +352,7 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.DueDate).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<VideosView>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("videosView");
-
-            entity.Property(e => e.Assets)
-                .HasMaxLength(65)
-                .HasColumnName("assets");
-            entity.Property(e => e.Directory)
-                .HasMaxLength(50)
-                .HasColumnName("directory");
-            entity.Property(e => e.Duration)
-                .HasMaxLength(50)
-                .HasColumnName("duration");
-            entity.Property(e => e.RecordId).HasColumnName("recordId");
-            entity.Property(e => e.Title)
-                .HasMaxLength(200)
-                .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(150)
-                .HasColumnName("type");
-        });
-
+       
         modelBuilder.Entity<WebTube>(entity =>
         {
             entity.HasKey(e => e.RecordId);
@@ -538,18 +504,7 @@ public partial class WebFamilyDbContext : DbContext
                 .HasForeignKey(d => d.WebTubeId)
                 .HasConstraintName("FK_WebTubeSeries_WebTube");
         });
-        modelBuilder.Entity<MediaEndItem>(entity =>
-        {
-            // Keyless, read-only view mapping - same pattern as the old
-            // AmericanMusicsView/AmericanMusicsDirectoryView mappings.
-            entity.HasNoKey();
-            entity.ToView("MediaEndItemView");
 
-            entity.Property(e => e.FolderId).HasColumnName("folderId");
-            entity.Property(e => e.MenuId).HasColumnName("menuId");
-            entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.CoverImagePath).HasColumnName("coverImagePath");
-        });
         OnModelCreatingPartial(modelBuilder);
     }
 

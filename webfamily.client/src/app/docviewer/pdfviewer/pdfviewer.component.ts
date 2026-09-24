@@ -53,36 +53,6 @@ export class PdfViewerComponent {
   routeParams = computed(() => this.routeParamsResource.value());
   textDocResource = this.mediaService.textDocResource;
   textContent = computed(() => { return this.textDocResource.value(); });
-  //ngOnInit(): void {
-  //  this.activatedRoute.paramMap
-  //    .pipe(takeUntil(this.destroy$))
-  //    .subscribe(params => {
-  //      const type = this.detectFileType(params.get('title') || '');
-  //      const docTitle = params.get('title') || '';
-  //      this.docTitle = docTitle;
-  //      const folder = decodeURIComponent(params.get('folder') || '');
-  //      this.docTitle = docTitle;
-  //      const pdfFile = `${folder}${docTitle}`;
-  //      this.pdfFile = pdfFile;
-  //      if (pdfFile && type) {
-  //        if (type === 'text') {
-  //          this.mediaService.textFolder.set(folder);
-  //          this.mediaService.textFileName.set(docTitle);
-  //        }
-  //      }
-  //      this.params = {
-  //        type: type,
-  //        folder: folder,
-  //        title: docTitle,
-  //        pdfFile: pdfFile
-  //      };
-  //    });
-  //}
-  //ngOnDestroy(): void {
-  //  // Complete the destroy subject to automatically unsubscribe all observables
-  //  this.destroy$.next();
-  //  this.destroy$.complete();
-  //}
   constructor() {
   }
   detectFileType(fileName: string): 'pdf' | 'text' {

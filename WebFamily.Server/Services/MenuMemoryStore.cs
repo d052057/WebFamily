@@ -29,7 +29,7 @@ namespace WebFamily.Server.Services
                     }
 
                     // Load all menu files
-                    var menuFiles = new[] { "books.json", "photos.json", "links.json", "movies.json", "videos.json", "musics.json" };
+                    var menuFiles = new[] { "links.json" };
 
                     foreach (var fileName in menuFiles)
                     {

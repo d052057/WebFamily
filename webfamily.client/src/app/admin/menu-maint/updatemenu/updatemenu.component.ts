@@ -17,7 +17,6 @@ export class UpdatemenuComponent {
   menuService = inject(MenuService);
   folderTreeService = inject(MediaFolderTreeService);
  
-  public textUpdateStatus = signal<any>([]);
   public rpmUpdateStatus = signal<any>([]);
   public initDatabaseStatus = signal<any>([]);
 
@@ -28,7 +27,6 @@ export class UpdatemenuComponent {
   public photosFolderTreeStatus = signal<any>([]);
 
 
-  public textUpdate = signal(false);
   public rpmsUpdate = signal(false);
 
   public initDatabaseUpdate = signal(false);
@@ -43,12 +41,7 @@ export class UpdatemenuComponent {
   // the buttons below still use for other menus (books, photos, text, rpms,
   // and the legacy single-level "BOM" data movies/videos also still have).
   onScanFolderTree(menu: 'musics' | 'movies' | 'videos' |'books'|'photos') {
-    //const updateSignal = menu === 'musics' ? this.songsFolderTreeUpdate
-    //  : menu === 'movies' ? this.moviesFolderTreeUpdate
-    //  : this.videosFolderTreeUpdate;
-    //const statusSignal = menu === 'musics' ? this.songsFolderTreeStatus
-    //  : menu === 'movies' ? this.moviesFolderTreeStatus
-    //  : this.videosFolderTreeStatus;
+  
     const updateMap = {
       musics: this.songsFolderTreeUpdate,
       movies: this.moviesFolderTreeUpdate,
@@ -97,36 +90,5 @@ export class UpdatemenuComponent {
       }
     );
     
-  }
-  onUpdate(menu: string) {
-    
-    switch (menu) {   
-      case 'text':
-        this.textUpdate.set(true);
-        this.textUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.textUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any) => { this.textUpdateStatus.set(data); },
-              error: error => this.textUpdateStatus.set(error)
-            }
-          )
-        break;
-      case 'rpms':
-        this.rpmsUpdate.set(true);
-        this.rpmUpdateStatus.set(['Processing...']);
-        this.mediaservice.updateMetaData(menu)
-          .pipe(first())
-          .pipe(finalize(() => this.rpmsUpdate.set(false)))
-          .subscribe(
-            {
-              next: (data: any) => { this.rpmUpdateStatus.set(data); },
-              error: error => this.rpmUpdateStatus.set(error)
-            }
-          )
-        break;
-    }
   }
 }

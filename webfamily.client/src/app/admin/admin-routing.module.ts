@@ -25,22 +25,6 @@ const routes: Routes = [
         loadComponent: () => import('./menu-maint/menu-maint.component').then(mod => mod.MenuMaintComponent),
         children: [
           {
-            path: 'addmenu',
-            loadComponent: () => import('./menu-maint/addmenu/addmenu.component').then(mod => mod.AddmenuComponent)
-          },
-          {
-            path: 'delmenu',
-            loadComponent: () => import('./menu-maint/delmenu/delmenu.component').then(mod => mod.DelmenuComponent)
-          },
-          {
-            path: 'renamefile',
-            loadComponent: () => import('./menu-maint/rename-file-media-list/rename-file-media-list.component').then(mod => mod.RenameFileMediaListComponent)
-          },
-          {
-            path: 'renamemedia',
-            loadComponent: () => import('./menu-maint/rename-media/rename-media.component').then(mod => mod.RenameMediaComponent)
-          },
-          {
             path: 'musicmaint',
             loadComponent: () => import('./menu-maint/music-maint/music-maint.component').then(mod => mod.MusicMaintComponent),
             data: { menu: 'musics' }

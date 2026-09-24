@@ -8,28 +8,13 @@
             <h5>Documents List</h5>
           </div>
           <div class="card-body">
-            <ul class="list-group list-group-flush">
-              @if (dataSource()) {
-              @for (t of dataSource() | paginate:
-              {
-              itemsPerPage: itemsPerPage(),
-              currentPage: currentPage(),
-              totalItems: dataSource().length
-              }
-              ; track t; let i = $index) {
-              <li class="list-group-item d-flex justify-content-between align-items-start"
-                  (click)="selectedRow(t)" [class.text-bg-primary]="t === rowSelected">{{ t.title }}</li>
-              }
-              }
-            </ul>
-          </div>
-          <div class="card-footer">
-            <pagination-controls previousLabel="Prev"
-                                 nextLabel="Next"
-                                 [maxSize]="5"
-                                 [directionLinks]="true"
-                                 (pageChange)="currentPage.set($event)">
-            </pagination-controls>
+            <app-media-list [items]="listItems()"
+                            icon="bi-file-earmark-pdf"
+                            [showDuration]="false"
+                            [selectedId]="rowSelected?.title ?? null"
+                            emptyMessage="No documents here yet"
+                            (select)="selectedRow($event)">
+            </app-media-list>
           </div>
         </div>
       </div>

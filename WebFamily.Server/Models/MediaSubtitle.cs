@@ -19,5 +19,5 @@ public partial class MediaSubtitle
 
     public bool IsDefault { get; set; }
 
-    public virtual MediaMetaDatum Record { get; set; } = null!;
+    public virtual MediaTrack MediaMetaDataRecord { get; set; } = null!;
 }

@@ -37,11 +37,11 @@ export class MenuService {
   public linkMenu = computed(() => this.linkMenuSignal());
   
   // Observable streams for components that prefer observables
-  public bookMenu$ = this.getMenuObservable('books');
-  public photoMenu$ = this.getMenuObservable('photos');
-  public movieMenu$ = this.getMenuObservable('movies');
-  public videoMenu$ = this.getMenuObservable('videos');
-  public musicMenu$ = this.getMenuObservable('musics');
+  //public bookMenu$ = this.getMenuObservable('books');
+  //public photoMenu$ = this.getMenuObservable('photos');
+  //public movieMenu$ = this.getMenuObservable('movies');
+  //public videoMenu$ = this.getMenuObservable('videos');
+  //public musicMenu$ = this.getMenuObservable('musics');
   public linkMenu$ = this.getMenuObservable('links');
 
   constructor() {
@@ -54,42 +54,42 @@ export class MenuService {
       /*console.log('Initializing menus...');*/
       
       // Load both menus in parallel
-      const [bookData, photoData, movieData, videoData, musicData, linkData] = await Promise.all([
-        this.loadMenuFromServer('books'),
-        this.loadMenuFromServer('photos'),
-        this.loadMenuFromServer('movies'),
-        this.loadMenuFromServer('videos'),
-        this.loadMenuFromServer('musics'),
+      const [linkData] = await Promise.all([
+        //this.loadMenuFromServer('books'),
+        //this.loadMenuFromServer('photos'),
+        //this.loadMenuFromServer('movies'),
+        //this.loadMenuFromServer('videos'),
+        //this.loadMenuFromServer('musics'),
         this.loadMenuFromServer('links')
       ]);
 
       // Store in memory and update signals
-      if (bookData) {
-        this.menuStore.set('book', bookData);
-        this.bookMenuSignal.set(bookData.items);
-        this.updateMenuSubject('books', bookData.items);
-      }
+      //if (bookData) {
+      //  this.menuStore.set('book', bookData);
+      //  this.bookMenuSignal.set(bookData.items);
+      //  this.updateMenuSubject('books', bookData.items);
+      //}
 
-      if (photoData) {
-        this.menuStore.set('photos', photoData);
-        this.photoMenuSignal.set(photoData.items);
-        this.updateMenuSubject('photos', photoData.items);
-      }
-      if (movieData) {
-        this.menuStore.set('movies', movieData);
-        this.movieMenuSignal.set(movieData.items);
-        this.updateMenuSubject('movies', movieData.items);
-      }
-      if (videoData) {
-        this.menuStore.set('videos', videoData);
-        this.videoMenuSignal.set(videoData.items);
-        this.updateMenuSubject('videos', videoData.items);
-      }
-      if (musicData) {
-        this.menuStore.set('musics', musicData);
-        this.musicMenuSignal.set(musicData.items);
-        this.updateMenuSubject('musics', musicData.items);
-      }
+      //if (photoData) {
+      //  this.menuStore.set('photos', photoData);
+      //  this.photoMenuSignal.set(photoData.items);
+      //  this.updateMenuSubject('photos', photoData.items);
+      //}
+      //if (movieData) {
+      //  this.menuStore.set('movies', movieData);
+      //  this.movieMenuSignal.set(movieData.items);
+      //  this.updateMenuSubject('movies', movieData.items);
+      //}
+      //if (videoData) {
+      //  this.menuStore.set('videos', videoData);
+      //  this.videoMenuSignal.set(videoData.items);
+      //  this.updateMenuSubject('videos', videoData.items);
+      //}
+      //if (musicData) {
+      //  this.menuStore.set('musics', musicData);
+      //  this.musicMenuSignal.set(musicData.items);
+      //  this.updateMenuSubject('musics', musicData.items);
+      //}
       if (linkData) {
         this.menuStore.set('links', linkData);
         this.linkMenuSignal.set(linkData.items);
@@ -99,11 +99,11 @@ export class MenuService {
     } catch (error) {
       console.error('Failed to initialize menus:', error);
       // Set empty arrays as fallback
-      this.bookMenuSignal.set([]);
-      this.photoMenuSignal.set([]);
-      this.movieMenuSignal.set([]);
-      this.videoMenuSignal.set([]);
-      this.musicMenuSignal.set([]);
+      //this.bookMenuSignal.set([]);
+      //this.photoMenuSignal.set([]);
+      //this.movieMenuSignal.set([]);
+      //this.videoMenuSignal.set([]);
+      //this.musicMenuSignal.set([]);
       this.linkMenuSignal.set([]);
     }
   }

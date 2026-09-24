@@ -58,13 +58,7 @@
       "name": "[dbo].[AspNetUserTokens]"
     },
     {
-      "name": "[dbo].[MediaDirectory]"
-    },
-    {
       "name": "[dbo].[MediaMenu]"
-    },
-    {
-      "name": "[dbo].[MediaMetaData]"
     },
     {
       "name": "[dbo].[MediaSubtitles]"
@@ -83,6 +77,12 @@
     },
     {
       "name": "[dbo].[WebTubeSeries]"
+    },
+    {
+      "name": "[dbo].[MediaFolder]"
+    },
+    {
+      "name": "[dbo].[MediaTrack]"
     }
   ],
   "type-mappings": {
@@ -93,22 +93,11 @@
   },
   "views": [
     {
-      "name": "[dbo].[americanMusicsDirectoryView]"
+      "name": "[dbo].[MediaEndItemView]"
     },
     {
-      "name": "[dbo].[americanMusicsView]"
-    },
-    {
-      "name": "[dbo].[mediaView]"
-    },
-    {
-      "name": "[dbo].[moviesView]"
-    },
-    {
-      "name": "[dbo].[musicsView]"
-    },
-    {
-      "name": "[dbo].[videosView]"
+      "name": "[dbo].[MediaFolderListView]"
     }
+   
   ]
 }

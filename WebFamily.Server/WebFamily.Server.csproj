@@ -50,7 +50,6 @@
   </ItemGroup>
 	<ItemGroup>
 	  <None Include="Data\artist-lookup.json" />
-	  <None Include="Data\photos.json" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Update="ffmpeg.exe">

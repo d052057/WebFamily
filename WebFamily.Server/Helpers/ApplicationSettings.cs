@@ -36,8 +36,25 @@ public class ApplicationSettings
     /// </summary>
     public string ArtistLookupFilePath { get; set; }
 
+    /// <summary>
+    /// File extensions MediaFolderScanService treats as playable, by media
+    /// type. Configurable here instead of hard-coded so adding/removing an
+    /// extension (e.g. a new ebook format) doesn't need a recompile - just
+    /// an appsettings.json edit and a restart. Extensions must include the
+    /// leading dot (".mp3", not "mp3"); case doesn't matter.
+    /// </summary>
+    public MediaScanExtensionsSettings MediaScanExtensions { get; set; } = new();
+
     //public string GetUrlYoutube()
     //{
     //    return "https://www.googleapis.com/youtube/v3/playlistItems?key=" + ApiKey + "&part=snippet&maxResults=12&playlistId=";
     //}
+}
+
+public class MediaScanExtensionsSettings
+{
+    public List<string> Audio { get; set; } = new();
+    public List<string> Video { get; set; } = new();
+    public List<string> Book { get; set; } = new();
+    public List<string> Photo { get; set; } = new();
 }

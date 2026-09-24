@@ -1,12 +1,12 @@
-import { Component, computed, effect, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { AppSettingsService } from '../shared/services/app-settings.service';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MediaFolderTreeService } from '../shared/services/media-folder-tree.service';
 import { MediaFolderTreeDto } from '../models/media-folder-tree.model';
 import { flattenTracks } from '../shared/utils/media-tree.utils';
+import { MediaListComponent, MediaListItem } from '../shared/media-list/media-list.component';
 
 // Lists one book group's documents (books/:folder). Built on the same
 // MediaFolder/MediaTrack tree as song-browser/play-media, not the legacy
@@ -16,9 +16,12 @@ import { flattenTracks } from '../shared/utils/media-tree.utils';
 // PdfViewerComponent (the child route) is untouched - it builds the actual
 // file path purely from route params, not from this table, so it works the
 // same regardless of which system supplied the title.
+// The list itself is the shared song-list-style component (icon per row,
+// no duration - a document doesn't have one) instead of the old paginated
+// table.
 @Component({
   selector: 'app-docviewer',
-  imports: [NgxPaginationModule, RouterOutlet],
+  imports: [MediaListComponent, RouterOutlet],
   templateUrl: './docviewer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './docviewer.component.scss'
@@ -31,8 +34,6 @@ export class DocViewerComponent {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private treeService = inject(MediaFolderTreeService);
-  currentPage = signal(1);
-  itemsPerPage = signal(10);
 
   rowSelected!: any;
 
@@ -74,14 +75,20 @@ export class DocViewerComponent {
     return flattenTracks(group).map(t => ({ title: t.fileName }));
   });
 
-  selectedRow(row: any) {
-    this.rowSelected = row;
+  // app-media-list's shape - title doubles as the id, since filenames are
+  // already guaranteed unique within one folder by the scan itself.
+  listItems = computed<MediaListItem[]>(() =>
+    this.dataSource().map(d => ({ id: d.title, title: d.title }))
+  );
+
+  selectedRow(item: MediaListItem) {
+    this.rowSelected = { title: item.title };
     const localParams = this.params();
     if (localParams?.fileFolder) {
       const fileFolder = localParams.fileFolder;
       if (fileFolder) {
         let folder = encodeURIComponent(fileFolder);
-        this.router.navigate([folder, row.title],
+        this.router.navigate([folder, item.title],
           {
             relativeTo: this.activatedRoute
           }
