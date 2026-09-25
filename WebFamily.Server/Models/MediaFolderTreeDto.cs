@@ -37,4 +37,19 @@ public class MediaTrackDto
     // has to reconstruct paths from folder names (which may contain
     // special characters).
     public string Url { get; set; } = string.Empty;
+
+    // Empty for anything without subtitles (which is most things - only
+    // ever populated for video, and only when a sibling "closecaption"
+    // folder actually had matching files at scan time).
+    public List<MediaSubtitleDto> Subtitles { get; set; } = new();
+}
+
+public class MediaSubtitleDto
+{
+    public string Language { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+    public bool IsDefault { get; set; }
+
+    // Ready-to-use URL, same treatment as MediaTrackDto.Url.
+    public string Url { get; set; } = string.Empty;
 }

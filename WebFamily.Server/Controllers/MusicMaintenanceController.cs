@@ -163,6 +163,46 @@ namespace WebFamily.Server.Controllers
 
             track.FileName = newFileName;
             _context.MediaTracks.Update(track);
+
+            // Subtitles are named to match the video's own base name
+            // ("{baseName}.{lang}.srt" in a sibling "closecaption" folder -
+            // see Helpers/ClosedCaption.cs), so renaming the video without
+            // renaming its subtitles the same way would silently break the
+            // pairing next time anything reads by convention. Best-effort:
+            // a subtitle rename failing here doesn't roll back the (already
+            // successful) video rename - the file itself is still fine, just
+            // possibly needs a manual fix if this fails.
+            var subtitles = await _context.MediaSubtitles
+                .Where(s => s.MediaMetaDataRecordId == track.RecordId)
+                .ToListAsync();
+            if (subtitles.Count > 0)
+            {
+                var newBaseName = request.NewFileName;
+                var ccFolder = Path.Combine(_mediasDrive, relativeFolderPath, "closecaption");
+
+                foreach (var sub in subtitles)
+                {
+                    try
+                    {
+                        var subExtension = Path.GetExtension(sub.FileName);
+                        var langSuffix = string.IsNullOrEmpty(sub.Language) ? "" : $".{sub.Language}";
+                        var newSubFileName = $"{newBaseName}{langSuffix}{subExtension}";
+                        var oldSubPath = Path.Combine(ccFolder, sub.FileName);
+                        var newSubPath = Path.Combine(ccFolder, newSubFileName);
+
+                        if (System.IO.File.Exists(oldSubPath))
+                        {
+                            System.IO.File.Move(oldSubPath, newSubPath);
+                            sub.FileName = newSubFileName;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Could not rename subtitle {FileName} alongside track {TrackId}", sub.FileName, track.RecordId);
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync();
 
             _logger.LogInformation($"Renamed track {request.TrackId} to '{newFileName}'");
@@ -252,6 +292,41 @@ namespace WebFamily.Server.Controllers
             }
 
             _context.MediaTracks.Remove(track);
+
+            // Same reasoning as ScanAsync's wipe step: MediaSubtitle's FK to
+            // MediaTrack is a required, non-nullable column, which isn't
+            // something SQL Server allows ON DELETE SET NULL on, and nothing
+            // here can assume CASCADE was configured instead - so removed
+            // explicitly rather than relying on the database to handle it.
+            // Their files move to Trash right alongside the track's own file,
+            // not left behind as orphaned files in the closecaption folder.
+            var subtitles = await _context.MediaSubtitles
+                .Where(s => s.MediaMetaDataRecordId == track.RecordId)
+                .ToListAsync();
+            if (subtitles.Count > 0)
+            {
+                var ccFolder = Path.Combine(_mediasDrive, relativeFolderPath, "closecaption");
+                var ccRelative = Path.Combine(relativeFolderPath, "closecaption");
+
+                foreach (var sub in subtitles)
+                {
+                    try
+                    {
+                        var subPath = Path.Combine(ccFolder, sub.FileName);
+                        if (System.IO.File.Exists(subPath))
+                        {
+                            MoveToTrash(subPath, ccRelative, sub.FileName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Could not move subtitle {FileName} to Trash alongside track {TrackId}", sub.FileName, track.RecordId);
+                    }
+                }
+
+                _context.MediaSubtitles.RemoveRange(subtitles);
+            }
+
             await _context.SaveChangesAsync();
 
             _logger.LogInformation($"Deleted track {trackId} ('{track.FileName}') - moved to Trash");
@@ -302,6 +377,20 @@ namespace WebFamily.Server.Controllers
                 .ToListAsync();
             if (tracks.Count > 0)
             {
+                // Files themselves don't need handling here - the whole
+                // folder, closecaption subfolder included, already moved to
+                // Trash in one Directory.Move before this runs. Just the DB
+                // rows need cleaning up, same reasoning as DeleteTrack:
+                // MediaSubtitle's FK to MediaTrack can't be assumed to cascade.
+                var trackIds = tracks.Select(t => t.RecordId).ToList();
+                var subtitles = await _context.MediaSubtitles
+                    .Where(s => trackIds.Contains(s.MediaMetaDataRecordId))
+                    .ToListAsync();
+                if (subtitles.Count > 0)
+                {
+                    _context.MediaSubtitles.RemoveRange(subtitles);
+                }
+
                 _context.MediaTracks.RemoveRange(tracks);
             }
 

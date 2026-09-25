@@ -16,6 +16,18 @@ export interface MediaTrackDto {
   // Relative to the media root (e.g. "songs/Elena Vasquez/Copper Skies/Copper Skies.mp3") -
   // prepend AppSettingsService.mediaBasePath before use.
   url: string;
+  // Empty for anything without subtitles (which is most things - only ever
+  // populated for video, and only when a sibling "closecaption" folder
+  // actually had matching files at scan time).
+  subtitles: MediaSubtitleDto[];
+}
+
+export interface MediaSubtitleDto {
+  language: string;
+  label: string;
+  isDefault: boolean;
+  // Relative to the media root, same convention as MediaTrackDto.url.
+  url: string;
 }
 
 export interface MediaFolderTreeDto {

@@ -31,19 +31,28 @@ public class MediaFolderTreeService : IMediaFolderTreeService
             return new List<MediaFolderTreeDto>();
         }
 
-        // Two queries total, regardless of how deep or wide the tree is -
-        // the nesting is reconstructed in memory below.
+        // Three queries total, regardless of how deep or wide the tree is -
+        // the nesting is reconstructed in memory below. All three filter via
+        // a server-side join (MenuId / Folder.MenuId) rather than pulling
+        // every folder id into an in-memory list and filtering with
+        // .Contains() - that pattern turns into a huge SQL "IN (...)" list
+        // and gets dramatically slower as a menu's folder count grows (this
+        // is exactly what previously caused a SQL timeout on "books").
         var folders = await _context.MediaFolders
             .Where(f => f.MenuId == menuRecord.RecordId)
             .ToListAsync();
 
-        var folderIds = folders.Select(f => f.RecordId).ToList();
         var tracks = await _context.MediaTracks
-            .Where(t => folderIds.Contains(t.FolderId))
+            .Where(t => t.Folder.MenuId == menuRecord.RecordId)
+            .ToListAsync();
+
+        var subtitles = await _context.MediaSubtitles
+            .Where(s => s.MediaMetaDataRecord.Folder.MenuId == menuRecord.RecordId)
             .ToListAsync();
 
         var foldersByParent = folders.ToLookup(f => f.ParentFolderId);
         var tracksByFolder = tracks.ToLookup(t => t.FolderId);
+        var subtitlesByTrack = subtitles.ToLookup(s => s.MediaMetaDataRecordId);
 
         List<MediaFolderTreeDto> BuildLevel(Guid? parentId, string? parentRelativePath, HashSet<Guid> ancestors)
         {
@@ -94,7 +103,22 @@ public class MediaFolderTreeService : IMediaFolderTreeService
                                 // Relative to the media root; the client already knows
                                 // its own base media URL and prepends it (same pattern
                                 // as the existing play-media/play-audio components).
-                                Url = $"{relativePath}/{t.FileName}"
+                                Url = $"{relativePath}/{t.FileName}",
+                                // Subtitles live in a "closecaption" sibling folder next
+                                // to the video itself - not a MediaFolder of its own
+                                // (that folder name is excluded from the scan tree), so
+                                // its files aren't reachable via relativePath the normal
+                                // way and need the "closecaption" segment added explicitly.
+                                Subtitles = subtitlesByTrack[t.RecordId]
+                                    .OrderByDescending(s => s.IsDefault)
+                                    .ThenBy(s => s.Language)
+                                    .Select(s => new MediaSubtitleDto
+                                    {
+                                        Language = s.Language,
+                                        Label = s.Label,
+                                        IsDefault = s.IsDefault,
+                                        Url = $"{relativePath}/closecaption/{s.FileName}"
+                                    }).ToList()
                             }).ToList()
                     };
                 }).ToList();

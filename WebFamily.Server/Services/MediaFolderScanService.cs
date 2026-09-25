@@ -94,6 +94,7 @@ public class MediaFolderScanService : IMediaFolderScanService
 
     private readonly WebFamilyDbContext _context;
     private readonly MimeType _mimeType = new();
+    private readonly ClosedCaption _closedCaption = new();
     private readonly ILogger<MediaFolderScanService>? _logger;
 
     // Tracks top-level (artist-level) names already used in the current scan
@@ -164,10 +165,24 @@ public class MediaFolderScanService : IMediaFolderScanService
         // behind either way. A full rebuild avoids that entirely: whatever's
         // on disk right now, across every configured root, is exactly what
         // ends up in the tables. MediaTrack rows cascade-delete automatically
-        // via the FK to MediaFolder.
+        // via the FK to MediaFolder - MediaSubtitle does NOT reliably cascade
+        // from MediaTrack (its FK is a required, non-nullable column, which
+        // isn't a shape SQL Server allows ON DELETE SET NULL on, and nothing
+        // here can assume CASCADE was configured instead), so those rows are
+        // removed explicitly first rather than relying on the database to
+        // clean them up on its own.
         var existingFolders = await _context.MediaFolders
             .Where(f => f.MenuId == menuRecord.RecordId)
             .ToListAsync();
+
+        var existingSubtitles = await _context.MediaSubtitles
+            .Where(s => s.MediaMetaDataRecord.Folder.MenuId == menuRecord.RecordId)
+            .ToListAsync();
+        if (existingSubtitles.Count > 0)
+        {
+            _context.MediaSubtitles.RemoveRange(existingSubtitles);
+        }
+
         _context.MediaFolders.RemoveRange(existingFolders);
         await _context.SaveChangesAsync();
         results.Add($"Cleared {existingFolders.Count} existing folder(s) for '{menu}'");
@@ -402,6 +417,32 @@ public class MediaFolderScanService : IMediaFolderScanService
         if (_bookExtensions.Contains(Path.GetExtension(filePath)))
         {
             return;
+        }
+
+        // Subtitles only apply to video - ClosedCaption.GetAll checks for a
+        // sibling "closecaption" folder next to filePath either way, so this
+        // gate is purely to avoid a pointless directory check for every
+        // audio/photo file, not a correctness requirement.
+        if (_videoExtensions.Contains(Path.GetExtension(filePath)))
+        {
+            var subtitles = _closedCaption.GetAll(filePath);
+            for (var i = 0; i < subtitles.Count; i++)
+            {
+                var sub = subtitles[i];
+                await _context.MediaSubtitles.AddAsync(new MediaSubtitle
+                {
+                    RecordId = Guid.NewGuid(),
+                    MediaMetaDataRecordId = track.RecordId,
+                    Language = sub.Language,
+                    Label = sub.Label,
+                    FileName = sub.FileName,
+                    // First one found is the default - GetAll has no
+                    // inherent priority order beyond directory enumeration
+                    // order, so this is "some" subtitle rather than
+                    // necessarily the video's original/primary language.
+                    IsDefault = i == 0
+                });
+            }
         }
 
         try

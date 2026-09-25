@@ -41,13 +41,21 @@ export function toAudioItems(tracks: MediaTrackDto[], mediaBasePath: string): Au
 
 /**
  * Converts server track DTOs into the shape app-video-player expects.
- * mediaBasePath is prepended to each track's (root-relative) url.
+ * mediaBasePath is prepended to each track's (root-relative) url, same as
+ * each subtitle's.
  */
 export function toVideoItems(tracks: MediaTrackDto[], mediaBasePath: string): VideoSource[] {
   return tracks.map((t, index) => new VideoSource({
     title: t.displayTitle,
     src: `${mediaBasePath}/${t.url}`,
     type: t.type ?? '',
-    duration: parseDurationToSeconds(t.duration)
+    duration: parseDurationToSeconds(t.duration),
+    captions: t.subtitles.map(s => ({
+      src: `${mediaBasePath}/${s.url}`,
+      kind: 'subtitles',
+      srclang: s.language,
+      label: s.label,
+      default: s.isDefault
+    }))
   }, index + 1));
 }
