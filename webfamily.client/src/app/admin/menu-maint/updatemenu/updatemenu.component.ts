@@ -1,8 +1,6 @@
 import { Component, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { MediaService } from '../../../shared/services/media.service';
 import { MediaFolderTreeService } from '../../../shared/services/media-folder-tree.service';
-import { finalize, first } from 'rxjs';
-import { MenuService } from '../../../shared/services/menu.service';
+import { catchError, concatMap, finalize, first, from, map, of, toArray } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-updatemenu',
@@ -13,8 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   encapsulation: ViewEncapsulation.None
 })
 export class UpdatemenuComponent {
-  mediaservice = inject(MediaService);
-  menuService = inject(MenuService);
   folderTreeService = inject(MediaFolderTreeService);
  
   public rpmUpdateStatus = signal<any>([]);
@@ -36,10 +32,7 @@ export class UpdatemenuComponent {
   public booksFolderTreeUpdate = signal(false);
   public photosFolderTreeUpdate = signal(false);
 
-  // Regenerates MediaFolder/MediaTrack from disk for one menu - the new
-  // recursive folder-tree scan, separate from the legacy updateMetaData path
-  // the buttons below still use for other menus (books, photos, text, rpms,
-  // and the legacy single-level "BOM" data movies/videos also still have).
+  // Regenerates MediaFolder/MediaTrack from disk for one menu.
   onScanFolderTree(menu: 'musics' | 'movies' | 'videos' |'books'|'photos') {
   
     const updateMap = {
@@ -74,21 +67,31 @@ export class UpdatemenuComponent {
       });
   }
 
+  // Clears and rebuilds MediaFolder/MediaTrack for musics, movies, videos and
+  // books in one click - each is scanFolderTree's own existing per-menu
+  // clear-then-rebuild (see MediaFolderScanService.ScanAsync), just run one
+  // after another (concatMap, not parallel) so they aren't all hammering the
+  // database's MediaFolder/MediaTrack tables for different menus at once.
+  // Photos deliberately left out - not asked for here, run its own
+  // "Regenerate Photos Folder Tree" button above if needed.
   onInitDatabaseUpdate() {
     this.initDatabaseUpdate.set(true);
-    this.initDatabaseStatus.set('Processing...');
-    this.menuService.initDatabaseUpdate()
-      .pipe(first())
-      .pipe(finalize(() => this.initDatabaseUpdate.set(false)))
-      .subscribe({
-        next: (response: any) => {
-          this.initDatabaseStatus.set(response.message);
-        },
-        error: (err) => {
-          this.initDatabaseStatus.set(err.error);
-        }
-      }
-    );
-    
+    this.initDatabaseStatus.set(['Processing...']);
+
+    const menus: Array<'musics' | 'movies' | 'videos' | 'books'> = ['musics', 'movies', 'videos', 'books'];
+
+    from(menus).pipe(
+      concatMap(menu =>
+        this.folderTreeService.scanFolderTree(menu).pipe(
+          map(result => ({ menu, result })),
+          catchError(err => of({ menu, result: [`Error: ${JSON.stringify(err.error ?? err.message ?? err)}`] }))
+        )
+      ),
+      toArray(),
+      finalize(() => this.initDatabaseUpdate.set(false))
+    ).subscribe(results => {
+      const combined = results.flatMap(({ menu, result }) => [`--- ${menu} ---`, ...result]);
+      this.initDatabaseStatus.set(combined);
+    });
   }
 }

@@ -161,49 +161,6 @@ export class MenuService {
     return menuData ? menuData.version : null;
   }
 
-  // Add menu item
-  async addMenuItem(menuId: string, newItem: Omit<MenuItem, 'id'>): Promise<boolean> {
-    try {
-      const menuData = await firstValueFrom(
-        this.http.post<MenuData>(`${this.baseUrl}/addMenuItem/${menuId}/items`, newItem)
-      );
-
-      // Update memory store
-      this.menuStore.set(menuId, menuData);
-      
-      // Update signals and observables
-      this.updateMenuSignals(menuId, menuData.items);
-
-      console.log(`Added item '${newItem.title}' to ${menuId} menu`);
-      return true;
-    } catch (error) {
-      console.error(`Failed to add item to ${menuId} menu:`, error);
-      return false;
-    }
-  }
-
-  // Remove menu item
-  async removeMenuItem(menuId: string, itemId: string): Promise<boolean> {
-    const encodedItemId = encodeURIComponent(itemId); 
-    try {
-      const menuData = await firstValueFrom(
-        this.http.delete<MenuData>(`${this.baseUrl}/removeMenuItem/${menuId}/items/${encodedItemId}`)
-      );
-
-      // Update memory store
-      this.menuStore.set(menuId, menuData);
-      
-      // Update signals and observables
-      this.updateMenuSignals(menuId, menuData.items);
-
-      console.log(`Removed item with ID ${itemId} from ${menuId} menu`);
-      return true;
-    } catch (error) {
-      console.error(`Failed to remove item from ${itemId} menu:`, error);
-      return false;
-    }
-  }
-
   // Update menu signals based on menuId
   private updateMenuSignals(menuId: string, items: MenuItem[]): void {
     switch (menuId) {
@@ -261,14 +218,5 @@ export class MenuService {
       menuCount: this.menuStore.size,
       totalItems
     };
-  }
-  RenameFile(record: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/RenameFile`, record)
-  }
-  deleteFile(recordId: any): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/Deletefile/recordId/${recordId}`)
-  }
-  initDatabaseUpdate(): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/initMediaDatabaseAsync`,null);
   }
 }

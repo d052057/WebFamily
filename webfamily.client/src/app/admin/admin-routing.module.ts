@@ -52,10 +52,6 @@ const routes: Routes = [
           {
             path: 'updatemenu',
             loadComponent: () => import('./menu-maint/updatemenu/updatemenu.component').then(mod => mod.UpdatemenuComponent)
-          },
-          {
-            path: ':menu',
-            loadComponent: () => import('./menu-maint/update-video-duration/update-video-duration.component').then(mod => mod.UpdateVideoDurationComponent)
           }
         ]
       },

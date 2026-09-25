@@ -17,10 +17,6 @@
                     routerLink="bookmaint">Book Maintenance</li>
                 <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
                     routerLink="updatemenu">Update Menu (SQL)</li>
-                @for (m of menus; track m) {
-                <li class="list-group-item border-end-0 d-inline-block text-truncate" data-bs-parent="#sidebar"
-                    [routerLink]="[m]">{{ m }} - Update Duration</li>
-                }
             </ul>
         </div>
       </div>
