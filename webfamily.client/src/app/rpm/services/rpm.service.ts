@@ -27,7 +27,7 @@ export class RpmService {
             result.push({
               id: seq++,
               recordId: v.recordId,
-              coverUrl: params.coverFolder + '/' + v.title,
+              coverUrl: params.coverFolder + '/' + v.title + '.jpg',
               folder: v.title.split('.')[0],
               artist: v.artist ?? null,
               audioType: v.audioType ?? null

@@ -77,7 +77,7 @@ public static class ITunesLibraryReader
                 switch (fields[j].Value)
                 {
                     case "Album": album = value; break;
-                    case "Name": name = value; break;
+                    case "Name": name = value + ".wav"; break;
                     case "Artist": artist = value; break;
                 }
             }

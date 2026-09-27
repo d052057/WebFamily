@@ -9,7 +9,6 @@ export interface RpmCoverItem {
 export interface Rpm {
   recordId: string;
   title: string;
-  type: string;
   audioType: string;
   dateTime: string;
   artist?: string | null;

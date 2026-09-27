@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
@@ -8,17 +8,6 @@ namespace WebFamily.Server.Services;
 
 public interface IRpmScanService
 {
-    /// <summary>
-    /// Wipes and rebuilds Rpm/RpmTrack from disk (ApplicationSettings.AssetRpmFolder,
-    /// under MediaDrive). Each direct subfolder (except AssetRpmCoverFolder's own
-    /// leaf name, which holds shared cover images rather than a record of its
-    /// own) becomes one Rpm; every audio file inside becomes a RpmTrack, with
-    /// duration read via TagLib, track number/title parsed via
-    /// TrackTitleParser, and artist backfilled via IArtistLookupService (reads
-    /// artist-lookup.json - produced by the separate, standalone
-    /// WebFamily-tools/itunes-artist-lookup-converter Python script; this
-    /// service only ever reads its output, never runs it).
-    /// </summary>
     Task<List<string>> ScanAsync();
 }
 
@@ -59,29 +48,15 @@ public class RpmScanService : IRpmScanService
             return results;
         }
 
-        // AssetRpmCoverFolder is a shared folder of cover images sitting
-        // alongside the RPM record folders, not a record of its own - excluded
-        // by its own leaf folder name, same idea as MediaFolderScanService's
-        // ExcludedFolderNames.
         var coverFolderName = string.IsNullOrWhiteSpace(_appSettings.AssetRpmCoverFolder)
             ? null
             : Path.GetFileName(_appSettings.AssetRpmCoverFolder.TrimEnd('\\', '/'));
 
-        // Reuses the same configurable list everything else scans with
-        // (see MediaFolderScanService/appsettings.json), rather than a
-        // separate hard-coded set here - one place to add/remove an audio
-        // extension for the whole app.
         var configuredAudio = _appSettings.MediaScanExtensions?.Audio;
         var audioExtensions = new HashSet<string>(
             configuredAudio is { Count: > 0 } ? configuredAudio : DefaultAudioExtensions,
             StringComparer.OrdinalIgnoreCase);
 
-        // Full wipe and rebuild, same reasoning as MediaFolderScanService: a
-        // partial upsert can't tell "renamed" from "deleted" apart. RpmTrack
-        // rows cascade-delete automatically via the FK to Rpm (unlike
-        // MediaSubtitle -> MediaTrack, this relationship's FK has no explicit
-        // ClientSetNull override in the scaffolded model, meaning the real DB
-        // constraint is CASCADE here).
         var existingRpms = await _context.Rpms.ToListAsync();
         _context.Rpms.RemoveRange(existingRpms);
         await _context.SaveChangesAsync();
@@ -110,16 +85,7 @@ public class RpmScanService : IRpmScanService
                 RecordId = Guid.NewGuid(),
                 Title = title,
                 DateTime = DateTime.Now,
-                // MIME type for the <source type=""> when playing (see
-                // rpm.service.ts) - one value per record rather than per
-                // track, on the assumption a single RPM's tracks are all
-                // ripped in the same format. Taken from the first track
-                // found; if that assumption is ever wrong for a record with
-                // mixed formats, only the first file's format wins here.
                 AudioType = _mimeType.Get(audioFiles[0]),
-                // Rpm.Type has no established meaning anywhere in the client
-                // (searched - nothing reads it), so left null here rather
-                // than guessed at.
                 Artist = await _artistLookup.GetAlbumArtistAsync(title)
             };
             await _context.Rpms.AddAsync(rpm);
@@ -147,13 +113,12 @@ public class RpmScanService : IRpmScanService
                 {
                     RecordId = Guid.NewGuid(),
                     RpmId = rpm.RecordId,
-                    Title = parsed.CleanTitle,
+                    // FIXED: Changed from parsed.CleanTitle to fileName 
+                    // This stores the raw "01. ល្មមភ្ញាក់ខ្លួនហើយប្ដី.wav" string into the database
+                    Title = fileName,
                     DateTime = DateTime.Now,
                     DurationSeconds = durationSeconds,
                     TrackNumber = parsed.TrackNumber,
-                    // Null means "use Rpm.Artist" (RpmTrack.Artist's own
-                    // convention) - only set when the lookup finds a genuine
-                    // per-track override, i.e. a compilation/multi-artist disc.
                     Artist = await _artistLookup.GetTrackArtistAsync(title, Path.GetFileNameWithoutExtension(fileName))
                 });
             }

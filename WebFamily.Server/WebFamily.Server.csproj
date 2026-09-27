@@ -10,10 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Data\artist-lookup.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.2.0" />
     <PackageReference Include="EfCore.SchemaCompare" Version="9.0.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.76.0" />
@@ -48,9 +44,6 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
-	<ItemGroup>
-	  <None Include="Data\artist-lookup.json" />
-	</ItemGroup>
 	<ItemGroup>
 	  <None Update="ffmpeg.exe">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
