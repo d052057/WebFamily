@@ -18,7 +18,7 @@ export class RpmService {
     ({
       coverFolder: this.coverFolder()
     }),
-    stream: ({ params }) => this.http.get<Rpm[]>('/Rpm/GetRpmMenu')
+    stream: ({ params }) => this.http.get<Rpm[]>('/api/Rpm/GetRpmMenu')
       .pipe(
         map((data) => {
           let result: RpmCoverItem[] = [];
@@ -54,7 +54,7 @@ export class RpmService {
 
       return { recordId, url, audioType };
     },
-    stream: ({ params }) => this.http.get<any[]>('/Rpm/GetRpmTracks/' + params.recordId)
+    stream: ({ params }) => this.http.get<any[]>('/api/Rpm/GetRpmTracks/' + params.recordId)
       .pipe(
         map((data) => {
           let result: AudioItem[] = [];
@@ -62,7 +62,12 @@ export class RpmService {
           for (let v of data) {
             result.push({
               id: seq++,
-              /*title: v.title,*/
+              // Display-only cleanup: v.title is the raw file name (needed
+              // as-is for the URL below - the backend intentionally stores
+              // it that way, see RpmScanService), so the leading track
+              // number and extension are stripped here just for what's
+              // shown in the player - trackNumber is already surfaced as
+              // its own field, no need to show it twice.
               title: v.title.replace(/^\s*\d+\s*[-.]\s*/, '').replace(/\.[^./\\]+$/, ''),
               // durationSeconds is a real number of seconds now (see
               // RpmTrack.DurationSeconds); AudioItem.duration expects a
@@ -86,7 +91,7 @@ export class RpmService {
   // Wipes and rebuilds Rpm/RpmTrack from disk - native C# regen (TagLib +
   // TrackTitleParser + ArtistLookupService), no Python involved at runtime.
   regenerate(): Observable<string[]> {
-    return this.http.post<string[]>('/Rpm/Regenerate', null);
+    return this.http.post<string[]>('/api/Rpm/Regenerate', null);
   }
 }
 

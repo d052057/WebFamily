@@ -6,7 +6,7 @@ using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 namespace WebFamily.Server.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class RpmController : ControllerBase
     {
@@ -54,7 +54,7 @@ namespace WebFamily.Server.Controllers
         // (MusicMaintenanceController, etc.) - unlike the read-only GET
         // endpoints above, this one needed an explicit [Authorize] since the
         // controller itself has no class-level policy.
-        //[Authorize(Policy = "AdminPolicy")]
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost("Regenerate")]
         public async Task<IActionResult> Regenerate()
         {
