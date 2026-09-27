@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Rpm, RpmCoverItem } from '../interfaces/rpm.interface';
 import { AudioItem } from '../../shared/audio-player/models/audio.model';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { AppSettingsService } from '../../shared/services/app-settings.service';
 @Injectable({
@@ -81,5 +81,11 @@ export class RpmService {
         })
       )
   })
+
+  // Wipes and rebuilds Rpm/RpmTrack from disk - native C# regen (TagLib +
+  // TrackTitleParser + ArtistLookupService), no Python involved at runtime.
+  regenerate(): Observable<string[]> {
+    return this.http.post<string[]>('/Rpm/Regenerate', null);
+  }
 }
 

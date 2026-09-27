@@ -158,7 +158,7 @@
         <tr>
             <td scope="row">
                 <div>
-                    <button type="button" class="btn btn-primary" [disabled]="rpmsUpdate()">
+                    <button type="button" class="btn btn-primary" (click)="onRpmUpdate()" [disabled]="rpmsUpdate()">
                         @if (rpmsUpdate()) {
                         <div class="bouncing-dots">
                             <span></span>

@@ -1,5 +1,6 @@
 import { Component, ViewEncapsulation, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MediaFolderTreeService } from '../../../shared/services/media-folder-tree.service';
+import { RpmService } from '../../../rpm/services/rpm.service';
 import { catchError, concatMap, finalize, first, from, map, of, toArray } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
@@ -12,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class UpdatemenuComponent {
   folderTreeService = inject(MediaFolderTreeService);
+  private rpmService = inject(RpmService);
  
   public rpmUpdateStatus = signal<any>([]);
   public initDatabaseStatus = signal<any>([]);
@@ -93,5 +95,21 @@ export class UpdatemenuComponent {
       const combined = results.flatMap(({ menu, result }) => [`--- ${menu} ---`, ...result]);
       this.initDatabaseStatus.set(combined);
     });
+  }
+
+  // Wipes and rebuilds Rpm/RpmTrack from disk - native C# regen (see
+  // RpmScanService), no Python involved. artist-lookup.json is produced
+  // separately by WebFamily-tools/itunes-artist-lookup-converter; this just
+  // reads whatever that script last wrote there.
+  onRpmUpdate() {
+    this.rpmsUpdate.set(true);
+    this.rpmUpdateStatus.set(['Processing...']);
+    this.rpmService.regenerate()
+      .pipe(first())
+      .pipe(finalize(() => this.rpmsUpdate.set(false)))
+      .subscribe({
+        next: (data: string[]) => { this.rpmUpdateStatus.set(data); },
+        error: (err) => { this.rpmUpdateStatus.set([JSON.stringify(err.error ?? err.message ?? err)]); }
+      });
   }
 }

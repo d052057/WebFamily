@@ -62,6 +62,7 @@ namespace WebFamily.Server
             services.AddScoped<ContextSeedService>();
             services.AddScoped<ITodoServices, TodoServices>();
             services.AddScoped<IRpmServices, RpmServices>();
+            services.AddScoped<IRpmScanService, RpmScanService>();
             services.AddScoped<ITubeServices, TubeServices>();
             services.AddScoped<IMediaFolderScanService, MediaFolderScanService>();
             services.AddScoped<IMediaFolderTreeService, MediaFolderTreeService>();

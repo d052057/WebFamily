@@ -1,26 +1,19 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using WebFamily.Server.Helpers;
 
 namespace WebFamily.Server.Services;
 
 /// <summary>
-/// One album's worth of artist data, as produced by the iTunes-XML-to-JSON
-/// converter. TrackArtists is only populated for compilation/multi-artist
-/// discs; for a normal single-artist album it can be omitted entirely and
-/// every track falls back to AlbumArtist.
+/// One album's worth of artist data, aggregated from iTunes Library.xml.
+/// TrackArtists is only populated for compilation/multi-artist discs; for a
+/// normal single-artist album it can be empty and every track falls back to
+/// AlbumArtist.
 /// </summary>
 public class ArtistLookupAlbum
 {
-    [JsonPropertyName("albumTitle")]
     public string AlbumTitle { get; set; } = string.Empty;
-
-    [JsonPropertyName("albumArtist")]
     public string? AlbumArtist { get; set; }
-
-    [JsonPropertyName("trackArtists")]
     public Dictionary<string, string> TrackArtists { get; set; } = new();
 }
 
@@ -42,23 +35,21 @@ public interface IArtistLookupService
 }
 
 /// <summary>
-/// Reads the JSON shape from ApplicationSettings.ArtistLookupFilePath:
+/// Reads and aggregates ApplicationSettings.ArtistLookupFilePath, an iTunes
+/// "Library.xml" export (see ITunesLibraryReader for the raw parsing side).
+/// Previously this read a pre-aggregated JSON file produced by a separate
+/// Python script (WebFamily-tools/itunes-artist-lookup-converter, now
+/// retired) - that aggregation (group tracks by album, compute per-track
+/// artists, compute a majority-vote album artist) now happens here instead,
+/// directly from the raw XML, cutting out the manual conversion step
+/// entirely.
 ///
-///   [
-///     {
-///       "albumTitle": "Abbey Road",
-///       "albumArtist": "The Beatles",
-///       "trackArtists": {}
-///     },
-///     {
-///       "albumTitle": "Now That's What I Call Music 42",
-///       "albumArtist": null,
-///       "trackArtists": {
-///         "Everybody Hurts": "R.E.M.",
-///         "Wonderwall": "Oasis"
-///       }
-///     }
-///   ]
+/// Why per-track artist, not per-album: most personal music libraries - and
+/// this one in particular - turn out to be compilation discs, where each
+/// track can have a different artist. AlbumArtist is still computed as a
+/// convenience fallback, but only when one artist clearly dominates the
+/// album (see MajorityThreshold below); otherwise it's left null and every
+/// track relies on its own TrackArtists entry.
 ///
 /// Matching is case-insensitive and ignores leading track numbers /
 /// punctuation differences. In this library, the DB's album titles are
@@ -71,6 +62,12 @@ public interface IArtistLookupService
 /// </summary>
 public class ArtistLookupService : IArtistLookupService
 {
+    // If one artist accounts for at least this fraction of an album's
+    // tracks, it's used as the album-level fallback artist. Mirrors the
+    // threshold the old Python converter used - tune here if it turns out
+    // too aggressive/conservative once real data is loaded.
+    private const double MajorityThreshold = 0.6;
+
     private readonly ILogger<ArtistLookupService> _logger;
     private readonly string? _filePath;
 
@@ -146,16 +143,54 @@ public class ArtistLookupService : IArtistLookupService
             if (!File.Exists(_filePath))
             {
                 _logger.LogInformation(
-                    "Artist lookup file not found at {FilePath} - artist backfill skipped, Rpm.Artist will stay null.",
+                    "iTunes Library.xml not found at {FilePath} - artist backfill skipped, Rpm.Artist will stay null.",
                     _filePath);
                 return null;
             }
 
-            var json = await File.ReadAllTextAsync(_filePath);
-            var list = JsonSerializer.Deserialize<List<ArtistLookupAlbum>>(json, new JsonSerializerOptions
+            // Parsing a real Library.xml (thousands of tracks) is not
+            // instant - kept off the request thread rather than blocking on
+            // synchronous XML I/O directly inside this async method.
+            var tracks = await Task.Run(() => ITunesLibraryReader.ReadTracks(_filePath));
+
+            var list = new List<ArtistLookupAlbum>();
+            foreach (var group in tracks
+                         .Where(t => !string.IsNullOrWhiteSpace(t.Album) && !string.IsNullOrWhiteSpace(t.Name))
+                         .GroupBy(t => t.Album!))
             {
-                PropertyNameCaseInsensitive = true
-            }) ?? new List<ArtistLookupAlbum>();
+                var trackArtists = new Dictionary<string, string>();
+                var artistCounts = new Dictionary<string, int>();
+                var trackCount = 0;
+
+                foreach (var t in group)
+                {
+                    trackCount++;
+                    var artist = NormalizeWhitespace(t.Artist);
+                    if (string.IsNullOrEmpty(artist)) continue;
+
+                    // Last-write-wins on a duplicate clean title within one
+                    // album, same as the old Python dict assignment did.
+                    trackArtists[TrackTitleParser.Extract(t.Name!).CleanTitle] = artist;
+                    artistCounts[artist] = artistCounts.GetValueOrDefault(artist) + 1;
+                }
+
+                string? albumArtist = null;
+                if (artistCounts.Count > 0)
+                {
+                    var top = artistCounts.OrderByDescending(kv => kv.Value).First();
+                    if ((double)top.Value / trackCount >= MajorityThreshold)
+                    {
+                        albumArtist = top.Key;
+                    }
+                }
+
+                list.Add(new ArtistLookupAlbum
+                {
+                    AlbumTitle = group.Key,
+                    AlbumArtist = albumArtist,
+                    TrackArtists = trackArtists
+                });
+            }
 
             _albumsByNormalizedTitle = list
                 .GroupBy(a => Normalize(a.AlbumTitle))
@@ -197,7 +232,7 @@ public class ArtistLookupService : IArtistLookupService
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Failed to load artist lookup file at {FilePath} - artist backfill skipped this run.", _filePath);
+            _logger.LogWarning(ex, "Failed to load/parse iTunes Library.xml at {FilePath} - artist backfill skipped this run.", _filePath);
             return null;
         }
         finally
@@ -220,5 +255,15 @@ public class ArtistLookupService : IArtistLookupService
             .ToArray();
 
         return new string(chars);
+    }
+
+    /// <summary>
+    /// Collapses runs of whitespace (some libraries have double-space typos
+    /// in artist credits, e.g. "Sin Sisamouth,  Pen Ron") and trims.
+    /// </summary>
+    private static string NormalizeWhitespace(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+        return string.Join(' ', value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
     }
 }
