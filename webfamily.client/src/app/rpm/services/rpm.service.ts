@@ -62,7 +62,8 @@ export class RpmService {
           for (let v of data) {
             result.push({
               id: seq++,
-              title: v.title,
+              /*title: v.title,*/
+              title: v.title.replace(/^\s*\d+\s*[-.]\s*/, '').replace(/\.[^./\\]+$/, ''),
               // durationSeconds is a real number of seconds now (see
               // RpmTrack.DurationSeconds); AudioItem.duration expects a
               // number, so this also fixes a pre-existing type mismatch
