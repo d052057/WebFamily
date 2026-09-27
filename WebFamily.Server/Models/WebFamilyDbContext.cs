@@ -302,9 +302,6 @@ public partial class WebFamilyDbContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(250)
                 .HasColumnName("title");
-            entity.Property(e => e.Type)
-                .HasMaxLength(50)
-                .HasColumnName("type");
         });
 
         modelBuilder.Entity<RpmTrack>(entity =>

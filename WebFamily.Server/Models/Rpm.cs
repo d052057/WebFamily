@@ -8,8 +8,6 @@ public partial class Rpm
 
     public string Title { get; set; }
 
-    public string Type { get; set; }
-
     public string AudioType { get; set; }
 
     public DateTime DateTime { get; set; }
