@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.Text.RegularExpressions;
 
 namespace WebFamily.Server.Helpers;

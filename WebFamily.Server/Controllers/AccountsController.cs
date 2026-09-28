@@ -1,4 +1,6 @@
-﻿using Google.Apis.Auth;
+﻿#nullable disable
+
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

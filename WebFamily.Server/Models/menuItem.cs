@@ -1,4 +1,6 @@
 ﻿// Models/MenuItem.cs
+#nullable disable
+
 using System.Text.Json.Serialization;
 
 namespace WebFamily.Server.Models

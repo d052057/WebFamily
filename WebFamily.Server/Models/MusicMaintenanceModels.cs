@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace WebFamily.Server.Models
 {
     // Renames an artist/album/disc folder (MediaFolder). No file extension

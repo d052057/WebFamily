@@ -1,4 +1,6 @@
 ﻿// Services/MenuMemoryStore.cs
+#nullable disable
+
 using System.Collections.Concurrent;
 using System.Text.Json;
 using WebFamily.Server.Models;

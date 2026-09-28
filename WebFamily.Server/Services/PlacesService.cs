@@ -1,4 +1,6 @@
 ﻿// Services/IPlacesService.cs
+#nullable disable
+
 using System.Text.Json;
 using WebFamily.Server.Models;
 

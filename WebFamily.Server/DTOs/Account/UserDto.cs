@@ -1,4 +1,6 @@
-﻿namespace WebFamily.Server.DTOs.Account
+﻿#nullable disable
+
+namespace WebFamily.Server.DTOs.Account
 {
     public class UserDto
     {

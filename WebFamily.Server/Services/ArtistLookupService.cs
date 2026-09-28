@@ -1,3 +1,5 @@
+#nullable disable
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;

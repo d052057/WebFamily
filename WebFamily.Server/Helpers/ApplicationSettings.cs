@@ -1,4 +1,6 @@
-﻿namespace WebFamily.Server.Helpers;
+﻿#nullable disable
+
+namespace WebFamily.Server.Helpers;
 
 //public class AppFolderSettings
 //{

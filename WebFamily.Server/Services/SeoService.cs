@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#nullable disable
+
+using Newtonsoft.Json;
 using WebFamily.Server.Models;
 
 namespace WebFamily.Server.Services

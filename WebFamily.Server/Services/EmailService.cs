@@ -1,4 +1,6 @@
-﻿using Mailjet.Client;
+﻿#nullable disable
+
+using Mailjet.Client;
 using Mailjet.Client.TransactionalEmails;
 using WebFamily.Server.DTOs.Account;
 

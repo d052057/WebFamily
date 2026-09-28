@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
+
+using Microsoft.EntityFrameworkCore;
 using WebFamily.Server.Models;
 namespace WebFamily.Server.Services
 {

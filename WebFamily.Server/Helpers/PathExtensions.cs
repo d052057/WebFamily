@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace WebFamily.Server.Helpers
 {
     public static class PathExtensions

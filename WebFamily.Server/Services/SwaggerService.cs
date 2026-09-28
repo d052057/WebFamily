@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿#nullable disable
+
+using Microsoft.OpenApi.Models;
 
 namespace WebFamily.Server.Services
 {

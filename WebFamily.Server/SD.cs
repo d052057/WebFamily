@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿#nullable disable
+
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 namespace WebFamily.Server

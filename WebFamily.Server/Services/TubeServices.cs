@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿#nullable disable
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
 using WebFamily.Server.Models;

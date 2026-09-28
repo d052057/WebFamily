@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace WebFamily.Server.Models;
 
 /// <summary>

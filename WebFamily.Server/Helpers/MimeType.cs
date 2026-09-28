@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
+﻿#nullable disable
+
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace WebFamily.Server.Helpers;
 public class MimeType

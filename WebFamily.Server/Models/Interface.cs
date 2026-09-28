@@ -1,4 +1,6 @@
-﻿namespace WebFamily.Server.Models
+﻿#nullable disable
+
+namespace WebFamily.Server.Models
 {
     public class YTDownload
     {

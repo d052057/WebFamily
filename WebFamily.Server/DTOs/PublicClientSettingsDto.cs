@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace WebFamily.Server.DTOs
 {
     // Only put values here that are safe to expose publicly (they end up

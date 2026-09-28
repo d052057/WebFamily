@@ -1,8 +1,11 @@
+#nullable disable
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using WebFamily.Server.Helpers;
 using WebFamily.Server.Services;
 
+#nullable disable
 namespace WebFamily.Server.Controllers
 {
     [Route("[controller]")]

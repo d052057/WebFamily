@@ -1,4 +1,6 @@
-﻿namespace WebFamily.Server.DTOs.Admin
+﻿#nullable disable
+
+namespace WebFamily.Server.DTOs.Admin
 {
     public class MemberViewDto
     {

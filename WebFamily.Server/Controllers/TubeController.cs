@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿#nullable disable
+
+using Microsoft.AspNetCore.Mvc;
 using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 
