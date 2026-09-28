@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\JsonMenu.cs" />
+    <Compile Remove="Models\MediaEndItem.cs" />
+    <Compile Remove="Models\MenuDataRecord.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.2.0" />
     <PackageReference Include="EfCore.SchemaCompare" Version="9.0.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.76.0" />
