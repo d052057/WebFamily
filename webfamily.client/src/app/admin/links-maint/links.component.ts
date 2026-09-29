@@ -1,82 +1,56 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TodoMaintComponent } from './todomaint.component';
-import { TodoService } from '../../todo/services/todo.service';
-import { MatTableModule, MatTableDataSource } from '@angular/material/table'
-import { SnackService } from '../../shared/services/snack.service'
+import { LinksMaintComponent } from './linksmaint.component';
+import { LinksService, linksErrorText } from './links.service';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { SnackService } from '../../shared/services/snack.service';
 import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { languages } from '../../models/languages'
+import { languages } from '../../models/languages';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CdkColumnDef } from '@angular/cdk/table';
 import { VoiceDirective } from '../../shared/directives/voice.directive';
+import { MenuItem } from '../../models/menu-item.model';
+
+// Duplicate of the Todo maintenance screen, backed by Data/links.json (via
+// LinksController) instead of the Todo SQL table.
 @Component({
-  selector: 'app-todo',
-  imports: [VoiceDirective, MatIconModule, FormsModule, ReactiveFormsModule, MatSelectModule, MatTableModule, MatFormFieldModule, MatPaginator, MatInputModule],
-  templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss'],
+  selector: 'app-links',
+  imports: [VoiceDirective, MatIconModule, FormsModule, ReactiveFormsModule, MatSelectModule, MatTableModule, MatSortModule, MatFormFieldModule, MatPaginator, MatInputModule],
+  templateUrl: './links.component.html',
+  styleUrls: ['./links.component.scss'],
   providers: [CdkColumnDef],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TodoComponent {
+export class LinksComponent {
   isUserSpeaking: boolean = false;
   langData = languages;
   langSelected: number = 0;
   langSearch: string = this.langData[this.langSelected].search;
   searchVal = signal('');
-  initColumns: any[] = [
-    {
-      name: 'displayDueDate',
-      display: 'Due Date'
-    },
-    {
-      name: 'displayTime',
-      display: 'Time'
-    },
-    {
-      name: 'note',
-      display: 'Note'
-    },
-    {
-      name: 'assigned',
-      display: 'Assigned To'
-    },
-    {
-      name: 'action',
-      display: 'action'
-    }
-  ];
-  displayedColumns = this.initColumns.map(col => col.name);
+  displayedColumns = ['title', 'param', 'action'];
 
   readonly paginator = viewChild(MatPaginator);
   readonly sort = viewChild(MatSort);
   private _dialog = inject(MatDialog);
-  public service = inject(TodoService);
+  public service = inject(LinksService);
   private snackbar = inject(SnackService);
-  resource = this.service.todoDataRS;
-  private dataSource = new MatTableDataSource<any>([]);
+  resource = this.service.linksDataRS;
+  private dataSource = new MatTableDataSource<MenuItem>([]);
   filteredData = computed(() => {
     const searchStr = (this.searchVal() || '').toLowerCase();
-    const allData = (this.resource.value() || []);
+    const allData: MenuItem[] = this.resource.value() || [];
 
-    const filtered = allData ? allData.filter(
-      (item: any) => {
-        return (
-          (item.displayDueDate ?? '').toLowerCase().includes(searchStr) ||
-          (item.displayTime ?? '').toLowerCase().includes(searchStr) ||
-          (item.note ?? '').toLowerCase().includes(searchStr) ||
-          (item.assigned ?? '').toLowerCase().includes(searchStr)
-        );
-      }
-    ) : [];
-
-    this.dataSource.data = filtered;
+    this.dataSource.data = allData.filter(item =>
+      (item.title ?? '').toLowerCase().includes(searchStr) ||
+      (item.param ?? '').toLowerCase().includes(searchStr)
+    );
     return this.dataSource;
   });
   constructor() {
@@ -95,14 +69,13 @@ export class TodoComponent {
       }
     });
   }
-  deleteTodo(row: any) {
-    // Todo previously had no confirmation step at all before deleting -
-    // added one here for consistency with Links Maintenance, using the same
-    // Material dialog rather than a native browser confirm().
+  deleteLink(row: MenuItem) {
+    // Replaces window.confirm() with a Material dialog matching the rest of
+    // the app's UI, instead of a native browser popup.
     const dialogRef = this._dialog.open(ConfirmDialogComponent, {
       data: {
-        title: 'Delete todo',
-        message: `Delete "${row.note || 'this item'}"? This can't be undone.`,
+        title: 'Delete link',
+        message: `Delete the link "${row.title}"? This can't be undone.`,
         confirmLabel: 'Delete',
         destructive: true
       }
@@ -111,43 +84,40 @@ export class TodoComponent {
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) return;
 
-      this.service.deleteTodo(row.recordId).subscribe({
+      this.service.deleteLink(row.id).subscribe({
         next: () => {
-          this.snackbar.openSnackBar('Employee deleted!', 'done');
-          this.service.todoDataRS.reload();
+          this.snackbar.openSnackBar('Link deleted!', 'done');
+          this.service.linksDataRS.reload();
         },
-        error: console.log,
+        error: (err) => {
+          this.snackbar.openSnackBar(linksErrorText(err), 'Error');
+          // A stale id (list changed underneath us) is the likely cause of a
+          // 404 - refresh so the next attempt uses current ids.
+          this.service.linksDataRS.reload();
+        },
       });
     });
   }
   openAddNew() {
-    const dialogRef = this._dialog.open(TodoMaintComponent, { width: '50%', height: '80%' });
+    const dialogRef = this._dialog.open(LinksMaintComponent, { width: '50%', height: '60%' });
     dialogRef.afterClosed().subscribe({
       next: (val: boolean) => {
         if (val) {
-          this.service.todoDataRS.reload();
+          this.service.linksDataRS.reload();
         }
       },
     });
   }
-  openEdit(row: any) {
-    let data = {
-      recordId: row.recordId,
-      dueDate: row.dueDate,
-      note: row.note,
-      assigned: row.assigned,
-      dateTime: row.Date,
-      displayDueDate: row.displayDueDate,
-      displayTime: row.displayTime
-    }
-    const dialogRef = this._dialog.open(TodoMaintComponent, {
-      data, width: '50%', height: '80%'
+  openEdit(row: MenuItem) {
+    const data = { id: row.id, title: row.title, param: row.param };
+    const dialogRef = this._dialog.open(LinksMaintComponent, {
+      data, width: '50%', height: '60%'
     });
 
     dialogRef.afterClosed().subscribe({
       next: (val: boolean) => {
         if (val) {
-          this.service.todoDataRS.reload();
+          this.service.linksDataRS.reload();
         }
       },
     });
@@ -160,7 +130,6 @@ export class TodoComponent {
   }
   checkMic(): void {
     this.isUserSpeaking = !this.isUserSpeaking;
-    
   }
   onVoiceInput(transcript: string | any) {
     let currentText = this.searchVal() + ' ' + transcript;

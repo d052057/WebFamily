@@ -1,0 +1,65 @@
+<div class="container p-3">
+  <h3>{{ data ? 'Edit Existing Link' : 'Add new Link' }}</h3>
+  <div class="row">
+    <mat-form-field appearance="outline">
+      <mat-label>Choose Current Speaking Language</mat-label>
+      <mat-select [(value)]="langSelected">
+        <mat-select-trigger>
+          <mat-icon svgIcon="{{ langData[langSelected].icon }}"></mat-icon> {{ langData[langSelected].display }}
+        </mat-select-trigger>
+        @for (s of langData; track s; let i = $index) {
+          <mat-option [value]="i">
+            <mat-icon svgIcon="{{ s.icon }}"></mat-icon> {{ s.display }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <form [formGroup]="fldform" (ngSubmit)="onSubmit()">
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input appVoice type="text"
+               formControlName="title"
+               matInput
+               (voiceInput)="onVoiceInput($event)"
+               [microphone]="isTitleUserSpeaking"
+               [language]="langData[langSelected].code" />
+        <span matSuffix style="padding-right:1rem">
+          @if (!isTitleUserSpeaking) {
+            <mat-icon (click)="checkMic()" class="circle">mic_off</mat-icon>
+          }
+          @if (isTitleUserSpeaking) {
+            <mat-icon (click)="checkMic()" class="circle">mic</mat-icon>
+          }
+        </span>
+        @if (f.title.errors?.required) {
+          <mat-error>Title is required</mat-error>
+        } @else if (f.title.errors?.maxlength) {
+          <mat-error>Title must be 200 characters or fewer</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div class="row form-group">
+      <mat-form-field appearance="outline">
+        <mat-label>URL</mat-label>
+        <input type="url" formControlName="param" matInput placeholder="https://" />
+        @if (f.param.errors?.required) {
+          <mat-error>URL is required</mat-error>
+        } @else if (f.param.errors?.pattern) {
+          <mat-error>Must be a full web address starting with http:// or https://</mat-error>
+        } @else if (f.param.errors?.maxlength) {
+          <mat-error>URL must be 2000 characters or fewer</mat-error>
+        }
+      </mat-form-field>
+    </div>
+    <div class="form-group pt-3">
+      <button class="btn btn-primary me-2" [disabled]="saving">
+        {{ data ? 'Update' : 'Save' }}
+      </button>
+      <button type="button" class="btn btn-outline-info" [mat-dialog-close]="false">
+        Close
+      </button>
+    </div>
+  </form>
+</div>

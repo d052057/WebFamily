@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Todo List Entry Maintenance</h1>
+  <h1>Links Maintenance</h1>
   <mat-form-field appearance="outline" style="display:flex">
     <mat-label>Search Tools</mat-label>
     <input appVoice type="search" matInput
@@ -33,31 +33,18 @@
   </mat-form-field>
   <mat-table #table [dataSource]="filteredData()" matSort class="mat-elevation-z8" multiTemplateDataRows>
 
-    <!-- ID Column -->
-    <ng-container matColumnDef="recordId">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.recordId}} </mat-cell>
+    <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{ row.title }}</mat-cell>
     </ng-container>
 
-    <!-- Progress Column -->
-    <ng-container matColumnDef="displayDueDate">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Due Date </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.displayDueDate }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="displayTime">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Start Time </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.displayTime }}</mat-cell>
+    <ng-container matColumnDef="param">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Link </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <a [href]="row.param" target="_blank" rel="noopener noreferrer" class="link-url">{{ row.param }}</a>
+      </mat-cell>
     </ng-container>
 
-
-    <ng-container matColumnDef="note">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Note </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{ row.note }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="assigned">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Assigned To </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.assigned}}</mat-cell>
-    </ng-container>
     <ng-container matColumnDef="action">
       <mat-header-cell *matHeaderCellDef>
         <span><i class='bi bi-plus-circle' (click)="openAddNew()"></i> Add New</span>
@@ -66,7 +53,7 @@
       <mat-cell *matCellDef="let row; let i=index;">
 
         <span class='bi bi-pencil-fill edit-button' (click)="openEdit(row)" style="margin-right: 1rem"> Edit</span>
-        <span class='bi bi-trash-fill delete-button' (click)="deleteTodo(row)"> Delete</span>
+        <span class='bi bi-trash-fill delete-button' (click)="deleteLink(row)"> Delete</span>
       </mat-cell>
     </ng-container>
 
@@ -74,9 +61,8 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
     <tr class="mat-row no-data-row" *matNoDataRow>
-      <td class="mat-cell" colspan="5">No data matching the filter "{{ searchVal() }}"</td>
+      <td class="mat-cell" colspan="3">No data matching the filter "{{ searchVal() }}"</td>
     </tr>
   </mat-table>
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>
-

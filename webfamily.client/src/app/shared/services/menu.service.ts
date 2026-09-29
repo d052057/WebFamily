@@ -180,6 +180,7 @@ export class MenuService {
         this.musicMenuSignal.set(items);
         break;
       case 'link':
+      case 'links':
         this.linkMenuSignal.set(items);
         break;
     }

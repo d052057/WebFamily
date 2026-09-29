@@ -19,6 +19,11 @@ const routes: Routes = [
       { path: 'add-edit-member/:id', component: AddEditMemberComponent},
       // path for managing todo entries (moved here from the public /todo route)
       { path: 'todo-maint', component: TodoComponent },
+      // path for managing the Links dropdown (Data/links.json) - a copy of todo-maint backed by links.json
+      {
+        path: 'links-maint',
+        loadComponent: () => import('./links-maint/links.component').then(mod => mod.LinksComponent)
+      },
       // path for menu maintenance (moved here from the public /menumaint route)
       {
         path: 'menumaint',
