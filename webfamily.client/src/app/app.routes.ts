@@ -4,7 +4,6 @@ import { PlayComponent } from './play/play.component';
 import { AuthorizationGuard } from './shared/guards/authorization.guard';
 import { ContactComponent } from './contact/contact.component';
 
-const todoModule = () => import('./todo/todo.module').then(x => x.TodoModule);
 const tubeModule = () => import('./tube/tube.module').then(x => x.TubeModule);
 
 export const routes: Routes = [
@@ -20,8 +19,12 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'todo',
-    loadChildren: todoModule
+    // Was loadChildren -> TodoModule -> TodoRoutingModule (both empty
+    // wrappers - TodoListComponent was already standalone underneath).
+    // Direct loadComponent, same as every other lazy route here, same URL.
+    path: 'todo/todo-list',
+    loadComponent: () => import('./todo/todo-list/todo-list.component')
+      .then(mod => mod.TodoListComponent)
   },
   {
     path: 'videos/:folder',
