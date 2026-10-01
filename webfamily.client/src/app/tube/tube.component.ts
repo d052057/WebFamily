@@ -8,17 +8,11 @@ import { SnackService } from '../shared/services/snack.service';
 import { Webtube } from './models/webtubes.model'
 import { first, Subject, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { languages } from '../../app/models/languages';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { VoiceDirective } from '../../app/shared/directives/voice.directive';
+import { SearchBoxComponent } from '../shared/search-box/search-box.component';
 
 @Component({
   selector: 'app-tube',
-  imports: [MatFormFieldModule, MatIconModule, MatTableModule, ReactiveFormsModule, MatPaginator, MatSelectModule, MatInputModule, VoiceDirective, FormsModule],
+  imports: [SearchBoxComponent, MatTableModule, MatPaginator],
   templateUrl: './tube.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './tube.component.scss'
@@ -30,10 +24,6 @@ export class TubeComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
 
   voiceSubscription!: Subscription;
-  isUserSpeaking: boolean = false;
-  langData = languages;
-  langSelected: number = 0;
-  langSearch: string = this.langData[this.langSelected].search;
 
   searchVal = signal('');
   pageIndex = signal(0);
@@ -120,19 +110,6 @@ export class TubeComponent implements OnDestroy {
 
   onSearch(searchStr: string) {
     this.searchVal.set(searchStr);
-  }
-
-  onLangSelectChange() {
-    this.langSearch = this.langData[this.langSelected].search;
-  }
-
-  onVoiceInput(transcript: string | any) {
-    let currentText = this.searchVal() + ' ' + transcript;
-    this.searchVal.set(currentText.trim());
-  }
-
-  checkMic(): void {
-    this.isUserSpeaking = !this.isUserSpeaking;
   }
 
   onPage(e: PageEvent) {

@@ -8,27 +8,17 @@ import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dial
 
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { languages } from '../../models/languages'
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CdkColumnDef } from '@angular/cdk/table';
-import { VoiceDirective } from '../../shared/directives/voice.directive';
+import { SearchBoxComponent } from '../../shared/search-box/search-box.component';
 @Component({
   selector: 'app-todo',
-  imports: [VoiceDirective, MatIconModule, FormsModule, ReactiveFormsModule, MatSelectModule, MatTableModule, MatFormFieldModule, MatPaginator, MatInputModule],
+  imports: [SearchBoxComponent, MatTableModule, MatPaginator],
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [CdkColumnDef],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoComponent {
-  isUserSpeaking: boolean = false;
-  langData = languages;
-  langSelected: number = 0;
-  langSearch: string = this.langData[this.langSelected].search;
   searchVal = signal('');
   initColumns: any[] = [
     {
@@ -152,18 +142,7 @@ export class TodoComponent {
       },
     });
   }
-  onLangSelectChange() {
-    this.langSearch = this.langData[this.langSelected].search;
-  }
   onSearch(searchStr: string): void {
     this.searchVal.set(searchStr);
-  }
-  checkMic(): void {
-    this.isUserSpeaking = !this.isUserSpeaking;
-    
-  }
-  onVoiceInput(transcript: string | any) {
-    let currentText = this.searchVal() + ' ' + transcript;
-    this.searchVal.set(currentText.trim());
   }
 }

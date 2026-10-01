@@ -1,5 +1,6 @@
 <div class="container pt-5" style="width:100%">
   <h4>Todo List...</h4>
+  <app-search-box label="Search Tools" (searchChange)="onSearch($event)"></app-search-box>
   <div>
     <table class="table table-bordered">
       <thead>
@@ -11,12 +12,17 @@
         </tr>
       </thead>
       <tbody>
-        @for(p of todoRecords(); track p){
+        @for(p of filteredRecords(); track p){
         <tr>
           <td class="text-start">{{p.displayDueDate}}</td>
           <td class="text-start">{{p.displayTime}}</td>
           <td class="text-start">{{p.note}}</td>
           <td class="text-start">{{p.assigned}}</td>
+        </tr>
+        }
+        @if (!filteredRecords().length) {
+        <tr>
+          <td colspan="4" class="text-center text-muted">No matching items</td>
         </tr>
         }
       </tbody>
