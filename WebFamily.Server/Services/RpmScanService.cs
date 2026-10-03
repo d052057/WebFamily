@@ -64,6 +64,9 @@ public class RpmScanService : IRpmScanService
         await _context.SaveChangesAsync();
         results.Add($"Cleared {existingRpms.Count} existing record(s)");
 
+        results.Add("Artist lookup: " + await _artistLookup.GetLoadStatusAsync());
+        int trackTotal = 0, trackMatched = 0;
+
         foreach (var folder in Directory.GetDirectories(rpmRoot))
         {
             var title = Path.GetFileName(folder.TrimEnd(Path.DirectorySeparatorChar));
@@ -111,6 +114,13 @@ public class RpmScanService : IRpmScanService
                     _logger?.LogWarning(ex, "Could not read duration for {FilePath}", filePath);
                 }
 
+                // Pass the full file name: TrackTitleParser.Extract strips the
+                // extension itself, and stripping it here first would make
+                // names like "01. Title" collapse to "01".
+                var trackArtist = await _artistLookup.GetTrackArtistAsync(title, fileName);
+                trackTotal++;
+                if (trackArtist != null) trackMatched++;
+
                 await _context.RpmTracks.AddAsync(new RpmTrack
                 {
                     RecordId = Guid.NewGuid(),
@@ -121,7 +131,7 @@ public class RpmScanService : IRpmScanService
                     DateTime = DateTime.Now,
                     DurationSeconds = durationSeconds,
                     TrackNumber = parsed.TrackNumber,
-                    Artist = await _artistLookup.GetTrackArtistAsync(title, Path.GetFileNameWithoutExtension(fileName))
+                    Artist = trackArtist
                 });
             }
 
@@ -129,6 +139,7 @@ public class RpmScanService : IRpmScanService
         }
 
         await _context.SaveChangesAsync();
+        results.Add($"Track artists matched: {trackMatched}/{trackTotal}");
         results.Add("RPM regen complete");
         return results;
     }

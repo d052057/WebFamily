@@ -34,6 +34,14 @@ public interface IArtistLookupService
     /// ArtistLookupService).
     /// </summary>
     Task<string?> GetTrackArtistAsync(string albumTitle, string trackTitle);
+
+    /// <summary>
+    /// Human-readable outcome of loading the iTunes Library.xml (loaded N
+    /// albums / file not found at ... / parse error ...), so callers like
+    /// the Regenerate endpoint can surface it instead of it only being in
+    /// the server log.
+    /// </summary>
+    Task<string> GetLoadStatusAsync();
 }
 
 /// <summary>
@@ -74,16 +82,34 @@ public class ArtistLookupService : IArtistLookupService
     private readonly string? _filePath;
 
     private Dictionary<string, ArtistLookupAlbum>? _albumsByNormalizedTitle;
+    private Dictionary<int, ArtistLookupAlbum>? _albumsByNumber;
     private Dictionary<string, string>? _globalTrackArtists;
     private HashSet<string>? _ambiguousTrackTitles;
 
     private bool _loadAttempted;
+    private string _loadStatus = "not loaded yet";
     private readonly SemaphoreSlim _loadLock = new(1, 1);
 
-    public ArtistLookupService(IOptions<ApplicationSettings> appSettings, ILogger<ArtistLookupService> logger)
+    public ArtistLookupService(
+        IOptions<ApplicationSettings> appSettings,
+        ILogger<ArtistLookupService> logger,
+        IHostEnvironment? env = null)
     {
         _logger = logger;
-        _filePath = appSettings.Value.ArtistLookupFilePath;
+
+        // A relative path resolves against the process working directory,
+        // which differs under IIS / published / service hosting - anchor it
+        // to the content root instead.
+        var path = appSettings.Value.ArtistLookupFilePath;
+        _filePath = string.IsNullOrWhiteSpace(path) || Path.IsPathRooted(path) || env == null
+            ? path
+            : Path.Combine(env.ContentRootPath, path);
+    }
+
+    public async Task<string> GetLoadStatusAsync()
+    {
+        await EnsureLoadedAsync();
+        return _loadStatus;
     }
 
     public async Task<string?> GetAlbumArtistAsync(string albumTitle)
@@ -91,9 +117,7 @@ public class ArtistLookupService : IArtistLookupService
         var albums = await EnsureLoadedAsync();
         if (albums == null) return null;
 
-        return albums.TryGetValue(Normalize(albumTitle), out var album)
-            ? album.AlbumArtist
-            : null;
+        return FindAlbum(albums, albumTitle)?.AlbumArtist;
     }
 
     public async Task<string?> GetTrackArtistAsync(string albumTitle, string trackTitle)
@@ -104,7 +128,8 @@ public class ArtistLookupService : IArtistLookupService
         var parsed = TrackTitleParser.Extract(trackTitle);
         var normalizedTrack = Normalize(parsed.CleanTitle);
 
-        if (albums.TryGetValue(Normalize(albumTitle), out var album))
+        var album = FindAlbum(albums, albumTitle);
+        if (album != null)
         {
             foreach (var (candidateTitle, artist) in album.TrackArtists)
             {
@@ -137,6 +162,7 @@ public class ArtistLookupService : IArtistLookupService
 
             if (string.IsNullOrWhiteSpace(_filePath))
             {
+                _loadStatus = "ArtistLookupFilePath is not configured";
                 _logger.LogInformation(
                     "ArtistLookupFilePath is not configured - artist backfill skipped, Rpm.Artist will stay null.");
                 return null;
@@ -144,6 +170,7 @@ public class ArtistLookupService : IArtistLookupService
 
             if (!File.Exists(_filePath))
             {
+                _loadStatus = $"Library.xml NOT FOUND at: {_filePath}";
                 _logger.LogInformation(
                     "iTunes Library.xml not found at {FilePath} - artist backfill skipped, Rpm.Artist will stay null.",
                     _filePath);
@@ -198,6 +225,16 @@ public class ArtistLookupService : IArtistLookupService
                 .GroupBy(a => Normalize(a.AlbumTitle))
                 .ToDictionary(g => g.Key, g => g.First());
 
+            // "RPM-03" (folder) <-> "រស្មីពានមាស លេខ 03" (iTunes album): the
+            // names differ but both end in the same album number. Only
+            // numbers that identify exactly ONE album are indexed.
+            _albumsByNumber = list
+                .Select(a => (Number: TrailingNumber(a.AlbumTitle), Album: a))
+                .Where(x => x.Number.HasValue)
+                .GroupBy(x => x.Number!.Value)
+                .Where(g => g.Count() == 1)
+                .ToDictionary(g => g.Key, g => g.First().Album);
+
             var allTrackEntries = list
                 .SelectMany(a => a.TrackArtists.Select(kv => new
                 {
@@ -227,6 +264,7 @@ public class ArtistLookupService : IArtistLookupService
                     string.Join(", ", _ambiguousTrackTitles.Take(20)));
             }
 
+            _loadStatus = $"Library.xml loaded: {tracks.Count} tracks, {list.Count} albums, from {_filePath}";
             _logger.LogInformation(
                 "Loaded artist lookup for {AlbumCount} albums ({GlobalTrackCount} globally matchable tracks, {AmbiguousCount} ambiguous) from {FilePath}",
                 list.Count, _globalTrackArtists.Count, _ambiguousTrackTitles.Count, _filePath);
@@ -234,6 +272,7 @@ public class ArtistLookupService : IArtistLookupService
         }
         catch (Exception ex)
         {
+            _loadStatus = $"Library.xml FAILED to load ({ex.GetType().Name}: {ex.Message}) at: {_filePath}";
             _logger.LogWarning(ex, "Failed to load/parse iTunes Library.xml at {FilePath} - artist backfill skipped this run.", _filePath);
             return null;
         }
@@ -241,6 +280,24 @@ public class ArtistLookupService : IArtistLookupService
         {
             _loadLock.Release();
         }
+    }
+
+    private ArtistLookupAlbum? FindAlbum(Dictionary<string, ArtistLookupAlbum> albums, string albumTitle)
+    {
+        if (albums.TryGetValue(Normalize(albumTitle), out var exact))
+            return exact;
+
+        var number = TrailingNumber(albumTitle);
+        return number.HasValue && _albumsByNumber != null && _albumsByNumber.TryGetValue(number.Value, out var byNumber)
+            ? byNumber
+            : null;
+    }
+
+    private static int? TrailingNumber(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        var m = System.Text.RegularExpressions.Regex.Match(value, @"(\d+)\s*$");
+        return m.Success && int.TryParse(m.Groups[1].Value, out var n) ? n : null;
     }
 
     /// <summary>
