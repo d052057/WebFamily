@@ -65,7 +65,9 @@ public class MediaFolderScanService : IMediaFolderScanService
     private static readonly HashSet<string> ExcludedFolderNames = new(StringComparer.OrdinalIgnoreCase)
     {
         "rpm",
-        "closecaption"
+        "closecaption",
+        "converted",
+        "separated"
     };
 
     // Folders known to be pure pass-through wrappers - no identity of their

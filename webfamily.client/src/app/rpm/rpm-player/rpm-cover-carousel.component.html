@@ -1,0 +1,48 @@
+<div class="carousel-root"
+     tabindex="0"
+     role="group"
+     aria-roledescription="carousel"
+     aria-label="CD covers"
+     (keydown)="onKeydown($event)">
+
+  <div class="stage"
+       (pointerdown)="onPointerDown($event)"
+       (pointermove)="onPointerMove($event)"
+       (pointerup)="onPointerUp()"
+       (pointercancel)="onPointerUp()"
+       (pointerleave)="onPointerUp()">
+    @for (slide of slides(); track slide.item.id) {
+      <figure class="slide"
+              [class.center]="slide.offset === 0"
+              [class.edge]="abs(slide.offset) === 3"
+              [style.--o]="slide.offset"
+              [style.--a]="abs(slide.offset)"
+              [style.--ar]="ratioOf(slide.item.id)"
+              [style.z-index]="10 - abs(slide.offset)"
+              [attr.aria-hidden]="slide.offset !== 0"
+              (click)="onSlideClick(slide, $event)">
+        @if (slide.item.coverUrl) {
+          <img [src]="slide.item.coverUrl"
+               [alt]="slide.item.folder || 'CD ' + slide.item.id"
+               draggable="false"
+               decoding="async"
+               (load)="onImageLoad(slide.item.id, $event)">
+        } @else {
+          <div class="no-cover"><i class="bi bi-disc"></i></div>
+        }
+      </figure>
+    }
+
+    <button type="button" class="arrow arrow-left" aria-label="Previous CD" (click)="prev()">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+    <button type="button" class="arrow arrow-right" aria-label="Next CD" (click)="next()">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+  <div class="meta" aria-live="polite">
+    <span class="count">CD {{ index() + 1 }} / {{ total() }}</span>
+    @if (pending()) { <span class="loading-dot" title="Loading this CD…"></span> }
+  </div>
+</div>

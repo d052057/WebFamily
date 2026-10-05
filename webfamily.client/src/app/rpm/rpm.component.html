@@ -3,7 +3,11 @@
     <div class="content-area">
         @if (selectedPicture) {
         <div>
-            <app-audio-player [dataSource]="dataResult()" [imagePoster]="poster" [albumTitle]="selectedPicture.folder"></app-audio-player>
+            <app-rpm-player [dataSource]="dataResult()"
+                            [albumTitle]="selectedPicture.folder"
+                            [covers]="dataResource()"
+                            [selectedCoverId]="selectedPicture.id"
+                            (coverSelected)="onPictureSelected($event)"></app-rpm-player>
         </div>
         }
     </div>
@@ -11,6 +15,7 @@
     <!-- Right gallery area (1/3 width) -->
     @if (dataResource().length > 0) {
     <app-scrolling-gallery [pictureData]="dataResource()"
+                           [selectedId]="selectedPicture?.id ?? null"
                            (pictureSelected)="onPictureSelected($event)">
     </app-scrolling-gallery>
     }

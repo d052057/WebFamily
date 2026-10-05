@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.carousel-root {
+  outline: none;
+  user-select: none;
+  &:focus-visible .stage { box-shadow: 0 0 0 2px var(--bs-primary, #0d6efd); border-radius: 12px; }
+}
+
+/* 3D stage: centre cover on top of the stage, neighbours smaller and angled behind it.
+   Everything hangs from the TOP edge so the picture lines up with the top of the player. */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;               /* wider than a cover, so the neighbours peek out at the sides */
+  min-height: 180px;
+  max-height: calc(100vh - 220px);   /* never taller than the screen */
+  perspective: 1200px;
+  perspective-origin: 50% 0;
+  touch-action: pan-y;               /* vertical page scroll still works; horizontal drag = swipe */
+  cursor: grab;
+  overflow: hidden;
+}
+
+/* Each cover keeps its real rectangle: height fills the stage, width follows the image ratio (--ar). */
+.slide {
+  --spread: 34%;                     /* distance between neighbours, as a share of the stage width */
+  position: absolute;
+  top: 0;
+  left: calc(50% + var(--o) * var(--spread));
+  height: 100%;
+  aspect-ratio: var(--ar, 1.4);
+  margin: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #1b2129;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  transform-origin: 50% 0;
+  transform:
+    translateX(-50%)
+    rotateY(calc(var(--o) * -32deg))
+    scale(calc(1 - var(--a) * 0.14));
+  opacity: calc(1 - var(--a) * 0.3);
+  filter: brightness(calc(1 - var(--a) * 0.18));
+  transition: left 0.45s cubic-bezier(0.22, 0.8, 0.28, 1),
+              transform 0.45s cubic-bezier(0.22, 0.8, 0.28, 1),
+              opacity 0.45s ease, filter 0.45s ease;
+  animation: pop 0.35s ease both;
+  will-change: transform, left;
+
+  &.center {
+    cursor: default;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Cover leaving/entering the window at the edges fades out completely. */
+  &.edge { opacity: 0; pointer-events: none; }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;             /* show the whole picture, never crop */
+    display: block;
+    pointer-events: none;
+  }
+}
+
+.no-cover {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 2.5rem;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+
+  &:hover { background: var(--bs-primary, #0d6efd); opacity: 1; transform: translateY(-50%) scale(1.1); }
+  &:active { transform: translateY(-50%) scale(0.93); }
+  &:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+}
+.arrow-left  { left: 4px; }
+.arrow-right { right: 4px; }
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+/* Small pulsing dot while the newly chosen CD is about to load. */
+.loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bs-primary, #0d6efd);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes pop {
+  from { opacity: 0; }
+}
+
+@keyframes pulse {
+  50% { opacity: 0.25; transform: scale(0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide { transition: none; animation: none; }
+  .loading-dot { animation: none; }
+}

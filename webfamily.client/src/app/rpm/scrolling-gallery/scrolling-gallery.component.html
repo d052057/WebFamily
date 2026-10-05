@@ -1,45 +1,65 @@
-<div class="gallery-container">
-  <div class="gallery-viewport" #galleryViewport>
-    <div class="gallery-track" #galleryTrack
-      [style.transform]="'translateY(' + translateY + 'px)'">
-      @for (picture of pictures; track picture; let i = $index) {
-        <div
-          class="picture-item"
-          [attr.data-picture-id]="picture.id"
-          (click)="onPictureClick(picture)"
-          [style.animation-delay]="(i % 2 === 0 ? '0.1s' : '0.2s')">
-          @if (!picture.coverUrl) {
-            <div class="picture-placeholder">
-              <i class="bi bi-image"></i>
-              Picture {{picture.id}}
-            </div>
-          }
+<div class="gallery-container" [style.--visible]="visibleCount()">
+  <div class="gallery-viewport"
+       #galleryViewport
+       role="listbox"
+       aria-label="Album covers"
+       (scroll)="onScroll()"
+       (keydown)="onKeydown($event)">
+    <div class="gallery-track">
+    @for (picture of pictures(); track picture.id) {
+      <div class="picture-item"
+           role="option"
+           tabindex="0"
+           [class.selected]="picture.id === activeId()"
+           [attr.aria-selected]="picture.id === activeId()"
+           [attr.data-picture-id]="picture.id"
+           (click)="select(picture)"
+           (keydown.enter)="select(picture)"
+           (keydown.space)="$event.preventDefault(); select(picture)">
+        <div class="cover" [class.loaded]="!picture.coverUrl || loaded().has(picture.id)">
           @if (picture.coverUrl) {
-            <img
-              [src]="picture.coverUrl"
-              [alt]="picture.folder || 'Picture ' + picture.id"
-              class="picture-image">
+            <img [src]="picture.coverUrl"
+                 [alt]="picture.folder || 'Album ' + picture.id"
+                 loading="lazy"
+                 decoding="async"
+                 draggable="false"
+                 (load)="onImageLoad(picture.id)"
+                 (error)="onImageLoad(picture.id)"
+                 class="picture-image">
+          } @else {
+            <div class="picture-placeholder"><i class="bi bi-disc"></i></div>
           }
         </div>
-      }
+        <div class="caption">
+          <span class="title">{{ picture.folder || 'Album ' + picture.id }}</span>
+          @if (picture.artist) { <span class="artist">{{ picture.artist }}</span> }
+        </div>
+        <div class="now-playing" aria-hidden="true"><i class="bi bi-soundwave"></i></div>
+      </div>
+    }
     </div>
   </div>
 
-  <!-- Navigation buttons -->
-  <button class="nav-button nav-up"
-    (click)="scrollUp()"
-    [disabled]="currentPosition === 0">
-    <i class="bi bi-chevron-up"></i>
-  </button>
+  <div class="gallery-footer">
+    <button type="button" class="nav-button nav-up"
+            aria-label="Previous picture"
+            (click)="scrollStep(-1)"
+            [disabled]="!canScrollUp()">
+      <i class="bi bi-chevron-up"></i>
+    </button>
+    <span class="gallery-indicator" aria-live="polite">
+      {{ firstVisible() }}–{{ lastVisible() }} of {{ totalItems() }}
+    </span>
+    <button type="button" class="nav-button nav-down"
+            aria-label="Next picture"
+            (click)="scrollStep(1)"
+            [disabled]="!canScrollDown()">
+      <i class="bi bi-chevron-down"></i>
+    </button>
+  </div>
 
-  <button class="nav-button nav-down"
-    (click)="scrollDown()"
-    [disabled]="currentPosition === maxPosition">
-    <i class="bi bi-chevron-down"></i>
-  </button>
-
-  <!-- Gallery indicator -->
-  <div class="gallery-indicator">
-    {{startItem}}-{{endItem}} of {{totalItems}}
+  <div class="scroll-rail" aria-hidden="true">
+    <div class="scroll-thumb" [style.top.%]="progress() * (100 - 100 / (maxIndex() + 1))"
+         [style.height.%]="100 / (maxIndex() + 1)"></div>
   </div>
 </div>

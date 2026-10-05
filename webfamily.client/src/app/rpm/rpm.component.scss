@@ -8,6 +8,9 @@ body {
   box-sizing: border-box;
 }
 .main-container {
+  /* Shared top offset: player card and gallery's first card both start this far below the navbar.
+     Matches Bootstrap's py-3 (1rem) on the audio player's container. */
+  --rpm-top: 1rem;
   display: flex;
   height: calc(100vh - 56px); /* Adjust 56px to your navbar height */
   margin-top: 56px; /* Add margin equal to navbar height if navbar is fixed */
@@ -19,7 +22,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;   /* top-aligned (was centred) */
 }
 
 .album-header {
@@ -28,7 +31,7 @@ body {
 .content-area {
   flex: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   /* Add these properties for better zoom handling */
   overflow: hidden;
@@ -39,7 +42,7 @@ body {
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 @media (max-width: 768px) {

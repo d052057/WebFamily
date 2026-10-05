@@ -1,150 +1,258 @@
-.gallery-container {
-  position: relative;
-  background: rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+:host {
+  display: block;
+  flex: 1;
+  min-width: 260px;
+  max-width: 420px;
   height: 100%;
+  min-height: 0;
+}
+
+/* Layout: [up button] [viewport: exactly 5 cards] [footer: counter + down button] */
+.gallery-container {
+  --pad: 8px;
+  --gap: 10px;
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(var(--bs-body-color-rgb, 0, 0, 0), 0.04);
+  border-left: 1px solid rgba(var(--bs-body-color-rgb, 0, 0, 0), 0.1);
 }
 
 .gallery-viewport {
-  height: 100%;
-  overflow: hidden;
   position: relative;
-}
-
-.gallery-track {
+  flex: 1 1 0;
+  min-height: 0;
+  container-type: size;           /* lets cards size themselves from the viewport height */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding: var(--pad) 14px var(--pad) 12px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  padding: 20px 0;
+  gap: var(--gap);
+  outline: none;
+  /* No CSS snap / smooth-scroll: the component animates and snaps itself. */
+
+  &::-webkit-scrollbar { display: none; }
 }
 
+/* Card height = (viewport height - padding - gaps) / visible  ->  exactly N cards per page. */
 .picture-item {
-  margin: 10px 15px;
+  --card-h: calc((100cqh - 2 * var(--pad) - (var(--visible) - 1) * var(--gap)) / var(--visible));
+  flex: 0 0 var(--card-h);
+  height: var(--card-h);
+  position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
   cursor: pointer;
-  background: #f8f9fa;
-  position: relative;
+  background: #1b2129;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active { transform: scale(0.985); }
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d6efd);
+    outline-offset: 2px;
+  }
+
+  &.selected {
+    box-shadow: 0 0 0 3px var(--bs-primary, #0d6efd), 0 8px 22px rgba(0, 0, 0, 0.4);
+    .now-playing { opacity: 1; transform: scale(1); }
+  }
 }
 
-.picture-item:hover {
-  transform: translateX(-10px) scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-}
-
-.picture-item::before {
-  content: '';
+.cover {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 1;
-}
+  inset: 0;
+  background: linear-gradient(135deg, #2b3440, #1b2129);
 
-.picture-item:hover::before {
-  opacity: 1;
-}
-
-.picture-placeholder {
-  width: 100%;
-  height: 120px;
-  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1976d2;
-  font-weight: 600;
-  font-size: 0.9rem;
-  position: relative;
-}
-
-.picture-placeholder i {
-  margin-right: 8px;
-  font-size: 1.2rem;
+  &:not(.loaded)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.12) 50%, transparent 70%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s linear infinite;
+  }
 }
 
 .picture-image {
   width: 100%;
-  height: 120px;
+  height: 100%;
   object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.5s ease;
+  user-select: none;
 }
 
-.nav-button {
+.cover.loaded .picture-image { opacity: 1; }
+.picture-item:hover .picture-image { transform: scale(1.05); }
+
+.picture-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 2rem;
+}
+
+/* Title sits on a gradient over the bottom of the cover. */
+.caption {
   position: absolute;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 12px 8px;
+  line-height: 1.25;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  pointer-events: none;
+
+  .title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .artist {
+    font-size: 0.72rem;
+    opacity: 0.75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.now-playing {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
+  background: var(--bs-primary, #0d6efd);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Up button sits above the viewport, down button + counter below it. */
+.nav-button {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 100%;
+  height: 34px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  color: inherit;
+  background: transparent;
+  transition: background 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+
+  i { font-size: 1.1rem; transition: transform 0.15s ease; }
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--bs-primary-rgb, 13, 110, 253), 0.15);
+    i { transform: scale(1.25); }
+  }
+  &:active:not(:disabled) i { transform: scale(0.9); }
+  &:focus-visible { outline: 2px solid var(--bs-primary, #0d6efd); outline-offset: -2px; }
+  &:disabled { opacity: 0.25; cursor: default; }
 }
 
-.nav-button:hover:not(:disabled) {
-  background: white;
-  transform: scale(1.1);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-}
-
-.nav-button:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-.nav-button i {
-  color: #333;
-  font-size: 1.2rem;
-}
-
-.nav-up {
-  top: 30px;
-}
-
-.nav-down {
-  bottom: 30px;
-}
-
-.nav-button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
+.gallery-footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery-indicator {
+  align-self: center;
+  padding: 2px 0;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.nav-up { order: -1; }
+
+/* Slim position rail on the right edge of the viewport. */
+.scroll-rail {
   position: absolute;
-  top: 50%;
-  right: 80px;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  backdrop-filter: blur(10px);
+  top: 42px;
+  bottom: 70px;
+  right: 4px;
+  width: 3px;
+  border-radius: 3px;
+  background: rgba(128, 128, 128, 0.2);
+  pointer-events: none;
 }
 
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.scroll-thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-height: 12px;
+  border-radius: 3px;
+  background: var(--bs-primary, #0d6efd);
 }
 
-.picture-item {
-  animation: slideInRight 0.6s ease forwards;
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* Mobile: horizontal strip under the player (native swipe, snaps to a card). */
+@media (max-width: 768px) {
+  :host {
+    max-width: none;
+    width: 100%;
+    height: 150px;
+    flex: 0 0 150px;
+  }
+
+  .gallery-container { border-left: none; border-top: 1px solid rgba(128, 128, 128, 0.25); }
+
+  .gallery-viewport {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 10px 12px;
+  }
+
+  .picture-item {
+    flex: 0 0 auto;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .nav-button, .gallery-footer, .scroll-rail { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picture-item, .picture-image, .now-playing { transition: none !important; }
+  .cover::after { animation: none !important; }
 }
