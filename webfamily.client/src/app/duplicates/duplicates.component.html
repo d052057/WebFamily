@@ -21,10 +21,7 @@
     </div>
   }
 
-    <app-search-box placeholder="Search file name or path (Khmer or English, not case sensitive)"
-                    lang="km"
-                    [value]="q()"
-                    (searched)="onSearch($event)" />
+  <app-search-box label="Search file name or path" (searchChange)="onSearch($event)"></app-search-box>
 
   <!-- Content filter toggle -->
   <div class="btn-group flex-wrap mb-3" role="group" aria-label="Content filter">

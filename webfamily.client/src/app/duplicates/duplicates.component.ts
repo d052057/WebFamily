@@ -1,5 +1,7 @@
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { SearchBoxComponent } from '../shared/search-box/search-box.component';
 import {
   ContentMode,
@@ -40,16 +42,23 @@ export class DuplicatesComponent implements OnDestroy {
   readonly viewer = signal<{ name: string; url: SafeUrl } | null>(null);
   private viewerRaw: string | null = null;
 
+  /** The shared search box emits on every keystroke, so debounce here before hitting the API. */
+  private readonly search$ = new Subject<string>();
+
   constructor() {
+    this.search$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe(v => {
+        this.q.set(v.trim());
+        this.page.set(1); // a new search starts at page 1
+        this.load();
+      });
     this.load();
   }
 
-  /** Called by <app-search-box> (already debounced, IME-safe). */
-  onSearch(value: string) {               // 3. runs when the box emits
-    if (value === this.q() && this.data()) return;
-    this.q.set(value);
-    this.page.set(1);                     //    a new search starts at page 1
-    this.load();
+  /** Wired to (searchChange) of the app's shared <app-search-box>. */
+  onSearch(value: string) {
+    this.search$.next(value);
   }
 
   setMode(m: ContentMode) {

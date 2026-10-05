@@ -16,7 +16,7 @@ public record DuplicatesPageDto(string? Q, string Mode, int Page, int TotalPages
 
 [ApiController]
 [Route("api/duplicates")]
-// TODO: re-enable before deploying: [Authorize] (or [Authorize(Roles = "Admin")])
+[Authorize(Policy = "AdminPolicy")]
 public class DuplicatesApiController : ControllerBase
 {
     private const int PageSize = 20; // groups per page

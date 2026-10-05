@@ -68,8 +68,8 @@ export const routes: Routes = [
     path: 'duplicates',
     title: 'Duplicate files',
     loadComponent: () =>
-      import('./duplicates/duplicates.component').then(m => m.DuplicatesComponent)
-    // canActivate: [authGuard],   // add back together with [Authorize] on the server
+      import('./duplicates/duplicates.component').then(m => m.DuplicatesComponent),
+      canActivate: [AuthorizationGuard],   // add back together with [Authorize] on the server
   },
   {
     path: 'tubelink',
