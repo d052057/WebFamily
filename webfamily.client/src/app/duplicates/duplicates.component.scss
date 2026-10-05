@@ -1,0 +1,3 @@
+.photo-view { max-height: 75vh; }
+/* Khmer glyphs need a font that supports them; falls back to system fonts */
+[lang="km"] { font-family: "Noto Sans Khmer", "Khmer UI", "Leelawadee UI", system-ui, sans-serif; }

@@ -8,6 +8,7 @@ namespace WebFamily.Server.Models;
 
 public partial class WebFamilyDbContext : DbContext
 {
+    const string CI = "Latin1_General_100_CI_AS";
     public WebFamilyDbContext(DbContextOptions<WebFamilyDbContext> options)
         : base(options)
     {
@@ -46,6 +47,9 @@ public partial class WebFamilyDbContext : DbContext
     public virtual DbSet<WebTube> WebTubes { get; set; }
 
     public virtual DbSet<WebTubeSeries> WebTubeSeries { get; set; }
+
+    public DbSet<MediaFileRecord> MediaFiles => Set<MediaFileRecord>();
+    public DbSet<MediaFileAction> MediaFileActions => Set<MediaFileAction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -500,6 +504,23 @@ public partial class WebFamilyDbContext : DbContext
             entity.HasOne(d => d.WebTube).WithMany(p => p.WebTubeSeries)
                 .HasForeignKey(d => d.WebTubeId)
                 .HasConstraintName("FK_WebTubeSeries_WebTube");
+        });
+        modelBuilder.Entity<MediaFileRecord>(e =>
+        {
+            e.ToTable("MediaFiles");
+            e.Property(x => x.FullPath).UseCollation(CI);
+            e.Property(x => x.FileName).UseCollation(CI);
+            e.Property(x => x.Extension).UseCollation(CI);
+            e.Property(x => x.QuarantinePath).UseCollation(CI);
+            e.Property(x => x.Sha256).HasColumnType("char(64)");
+            e.HasIndex(x => x.FullPath).IsUnique();
+            e.HasIndex(x => new { x.Status, x.SizeBytes });
+        });
+
+        modelBuilder.Entity<MediaFileAction>(e =>
+        {
+            e.ToTable("MediaFileActions");
+            e.HasOne(x => x.Media).WithMany(f => f.Actions).HasForeignKey(x => x.MediaFileId);
         });
 
         OnModelCreatingPartial(modelBuilder);

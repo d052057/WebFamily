@@ -1,0 +1,127 @@
+<div class="container py-3">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h2 class="h4 mb-0">
+      Duplicate files
+      @if (data(); as d) { <small class="text-muted">({{ d.totalGroups }} groups shown)</small> }
+    </h2>
+    <button type="button" class="btn btn-outline-primary" [disabled]="scanning()" (click)="rescan()">
+      @if (scanning()) { <span class="spinner-border spinner-border-sm me-1"></span> Scanning... }
+      @else { Rescan D:\medias }
+    </button>
+  </div>
+
+  @if (message(); as m) {
+    <div class="alert alert-success alert-dismissible">
+      {{ m }}<button type="button" class="btn-close" (click)="message.set(null)"></button>
+    </div>
+  }
+  @if (error(); as e) {
+    <div class="alert alert-danger alert-dismissible">
+      {{ e }}<button type="button" class="btn-close" (click)="error.set(null)"></button>
+    </div>
+  }
+
+    <app-search-box placeholder="Search file name or path (Khmer or English, not case sensitive)"
+                    lang="km"
+                    [value]="q()"
+                    (searched)="onSearch($event)" />
+
+  <!-- Content filter toggle -->
+  <div class="btn-group flex-wrap mb-3" role="group" aria-label="Content filter">
+    @for (m of modes; track m.key) {
+      <button
+        type="button"
+        class="btn"
+        [class.btn-primary]="mode() === m.key"
+        [class.btn-outline-primary]="mode() !== m.key"
+        [attr.aria-pressed]="mode() === m.key"
+        (click)="setMode(m.key)">
+        {{ m.label }}
+        @if (counts(); as c) { <span class="badge text-bg-light ms-1">{{ c[m.key] }}</span> }
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+  }
+
+  @if (data(); as d) {
+    @for (g of d.groups; track g.sizeBytes) {
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span>
+            Size: <strong>{{ g.sizeBytes.toLocaleString() }}</strong> bytes
+            <span class="text-muted">({{ mb(g.sizeBytes) }} MB)</span>
+          </span>
+          @switch (g.contentStatus) {
+            @case ('identical') { <span class="badge text-bg-danger">Identical content</span> }
+            @case ('partial') { <span class="badge text-bg-warning">Some files identical</span> }
+            @case ('different') { <span class="badge text-bg-success">Different content</span> }
+            @default { <span class="badge text-bg-secondary">Hash pending - rescan</span> }
+          }
+        </div>
+
+        <ul class="list-group list-group-flush">
+          @for (f of g.files; track f.id) {
+            <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2">
+              <div class="text-break">
+                <div lang="km" class="fw-semibold">{{ f.fileName }}</div>
+                <small class="text-muted" lang="km">{{ f.fullPath }}</small>
+                @if (f.sha256) {
+                  <span class="badge text-bg-info ms-2" [title]="f.sha256">
+                    #{{ hashNo(g, f) }} {{ f.sha256.substring(0, 8) }}
+                  </span>
+                }
+              </div>
+              <div class="btn-group btn-group-sm flex-shrink-0">
+                @if (f.isPhoto) {
+                  <button type="button" class="btn btn-outline-secondary" (click)="view(f)">View</button>
+                }
+                <button type="button" class="btn btn-outline-danger" (click)="remove(f)">Delete</button>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    } @empty {
+      @if (!loading()) { <p class="text-muted">No groups match this filter.</p> }
+    }
+
+    @if (d.totalPages > 1) {
+      <nav>
+        <ul class="pagination flex-wrap">
+          <li class="page-item" [class.disabled]="d.page === 1">
+            <button class="page-link" (click)="goto(d.page - 1)">&laquo;</button>
+          </li>
+          @for (p of [].constructor(d.totalPages); track $index) {
+            <li class="page-item" [class.active]="$index + 1 === d.page">
+              <button class="page-link" (click)="goto($index + 1)">{{ $index + 1 }}</button>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="d.page === d.totalPages">
+            <button class="page-link" (click)="goto(d.page + 1)">&raquo;</button>
+          </li>
+        </ul>
+      </nav>
+    }
+  }
+</div>
+
+<!-- Photo viewer: Bootstrap modal classes driven by Angular (no bootstrap.js needed) -->
+@if (viewer(); as v) {
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" (click)="closeViewer()">
+    <div class="modal-dialog modal-xl modal-dialog-centered" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title text-break" lang="km">{{ v.name }}</h6>
+          <button type="button" class="btn-close" aria-label="Close" (click)="closeViewer()"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img [src]="v.url" [alt]="v.name" class="img-fluid photo-view" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+}
