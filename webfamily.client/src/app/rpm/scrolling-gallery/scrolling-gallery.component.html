@@ -16,7 +16,9 @@
            (click)="select(picture)"
            (keydown.enter)="select(picture)"
            (keydown.space)="$event.preventDefault(); select(picture)">
-        <div class="cover" [class.loaded]="!picture.coverUrl || loaded().has(picture.id)">
+        <div class="cover"
+             [class.loaded]="!picture.coverUrl || loaded().has(picture.id)"
+             [style.--img]="coverBg(picture.coverUrl)">
           @if (picture.coverUrl) {
             <img [src]="picture.coverUrl"
                  [alt]="picture.folder || 'Album ' + picture.id"

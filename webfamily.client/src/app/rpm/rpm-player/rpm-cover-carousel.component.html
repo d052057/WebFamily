@@ -5,7 +5,7 @@
      aria-label="CD covers"
      (keydown)="onKeydown($event)">
 
-  <div class="stage"
+  <div class="stage" #stage
        (pointerdown)="onPointerDown($event)"
        (pointermove)="onPointerMove($event)"
        (pointerup)="onPointerUp()"
@@ -42,7 +42,17 @@
   </div>
 
   <div class="meta" aria-live="polite">
-    <span class="count">CD {{ index() + 1 }} / {{ total() }}</span>
+    <label class="jump">
+      CD
+      <input #jump
+             type="number" min="1" [max]="total()"
+             [value]="index() + 1"
+             aria-label="Jump to CD number"
+             (change)="onJump(jump)"
+             (keydown.enter)="jump.blur()"
+             (keydown)="$event.stopPropagation()">
+      / {{ total() }}
+    </label>
     @if (pending()) { <span class="loading-dot" title="Loading this CD…"></span> }
   </div>
 </div>

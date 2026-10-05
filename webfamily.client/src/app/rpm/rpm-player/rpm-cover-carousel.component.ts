@@ -3,7 +3,8 @@
 // that is loaded in the player; browsing to another one (arrows, swipe, click a side
 // cover, ←/→ keys) selects that album after a short pause.
 import {
-  Component, ChangeDetectionStrategy, OnDestroy, computed, effect, input, output, signal, untracked
+  Component, ChangeDetectionStrategy, AfterViewInit, ElementRef, HostListener, OnDestroy,
+  computed, effect, input, output, signal, untracked, viewChild
 } from '@angular/core';
 import { RpmCoverItem } from '../interfaces/rpm.interface';
 
@@ -20,7 +21,8 @@ interface Slide {
   styleUrl: './rpm-cover-carousel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RpmCoverCarouselComponent implements OnDestroy {
+export class RpmCoverCarouselComponent implements AfterViewInit, OnDestroy {
+  private readonly stage = viewChild.required<ElementRef<HTMLElement>>('stage');
   covers = input.required<RpmCoverItem[]>();
   /** Id of the album currently loaded in the player. */
   selectedId = input<number | null>(null);
@@ -85,8 +87,57 @@ export class RpmCoverCarouselComponent implements OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    // Non-passive so the wheel can be used for browsing without scrolling the page.
+    this.stage().nativeElement.addEventListener('wheel', this.wheelHandler, { passive: false });
+  }
+
   ngOnDestroy(): void {
     clearTimeout(this.settleTimer);
+    this.stage().nativeElement.removeEventListener('wheel', this.wheelHandler);
+  }
+
+  // ---------- mouse wheel / trackpad ----------
+
+  private wheelAccum = 0;
+  private wheelLock = false;
+  private readonly wheelHandler = (e: WheelEvent) => {
+    e.preventDefault();
+    if (this.wheelLock) return;
+    // Use whichever axis the user is mostly moving (trackpad sideways swipe or normal wheel).
+    const raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    this.wheelAccum += e.deltaMode === 1 ? raw * 33 : raw;
+    if (Math.abs(this.wheelAccum) < 50) return;
+    const dir = this.wheelAccum > 0 ? 1 : -1;
+    this.wheelAccum = 0;
+    this.wheelLock = true;
+    setTimeout(() => (this.wheelLock = false), 260);
+    this.moveBy(dir);
+  };
+
+  // ---------- jump to a CD number ----------
+
+  jumpTo(value: string): void {
+    const n = this.total();
+    const num = Math.round(Number(value));
+    if (!n || !Number.isFinite(num)) return;
+    this.goTo(Math.min(n, Math.max(1, num)) - 1);
+  }
+
+  onJump(input: HTMLInputElement): void {
+    this.jumpTo(input.value);
+    input.value = String(this.index() + 1); // show the clamped / accepted number
+  }
+
+  /** ←/→ work anywhere on the page (unless you're typing or using a slider). */
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(e: KeyboardEvent): void {
+    if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const t = e.target as HTMLElement | null;
+    if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+    e.preventDefault();
+    e.key === 'ArrowLeft' ? this.prev() : this.next();
   }
 
   abs(n: number): number { return Math.abs(n); }

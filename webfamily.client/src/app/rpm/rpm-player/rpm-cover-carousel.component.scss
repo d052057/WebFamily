@@ -115,6 +115,29 @@
   opacity: 0.75;
 }
 
+.jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+
+  input {
+    width: 3.6em;
+    padding: 1px 4px;
+    text-align: center;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.45);
+    border-radius: 6px;
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    &:focus { outline: 2px solid var(--bs-primary, #0d6efd); outline-offset: 1px; }
+  }
+}
+
 /* Small pulsing dot while the newly chosen CD is about to load. */
 .loading-dot {
   width: 8px;

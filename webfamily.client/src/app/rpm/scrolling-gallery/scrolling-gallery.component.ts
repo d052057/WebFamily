@@ -89,6 +89,11 @@ export class ScrollingGalleryComponent implements AfterViewInit, OnDestroy {
     clearTimeout(this.snapTimer);
   }
 
+  /** CSS background value for the blurred backdrop behind a letterboxed cover. */
+  coverBg(url: string | null | undefined): string | null {
+    return url ? 'url("' + url.replace(/"/g, '%22').replace(/\\/g, '%5C').replace(/[\r\n]/g, '') + '")' : null;
+  }
+
   onImageLoad(id: number): void {
     this.loaded.update(s => new Set(s).add(id));
   }

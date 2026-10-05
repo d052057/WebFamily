@@ -7,9 +7,11 @@
   min-height: 0;
 }
 
-/* Layout: [up button] [viewport: exactly 5 cards] [footer: counter + down button] */
+/* Layout: [viewport: exactly 5 cards, starts at the very top] [footer: up | counter | down] */
 .gallery-container {
-  --pad: 8px;
+  /* First card's top edge lines up with the player card: --rpm-top is set by rpm.component.scss */
+  --pad-top: var(--rpm-top, 1rem);
+  --pad-bottom: 8px;
   --gap: 10px;
   position: relative;
   height: 100%;
@@ -24,23 +26,26 @@
   position: relative;
   flex: 1 1 0;
   min-height: 0;
-  container-type: size;           /* lets cards size themselves from the viewport height */
+  container-type: size;           /* cards size themselves from the viewport height (no padding here) */
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
-  padding: var(--pad) 14px var(--pad) 12px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
   outline: none;
   /* No CSS snap / smooth-scroll: the component animates and snaps itself. */
 
   &::-webkit-scrollbar { display: none; }
 }
 
+.gallery-track {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: var(--pad-top) 14px var(--pad-bottom) 12px;
+}
+
 /* Card height = (viewport height - padding - gaps) / visible  ->  exactly N cards per page. */
 .picture-item {
-  --card-h: calc((100cqh - 2 * var(--pad) - (var(--visible) - 1) * var(--gap)) / var(--visible));
+  --card-h: calc((100cqh - var(--pad-top) - var(--pad-bottom) - (var(--visible) - 1) * var(--gap)) / var(--visible));
   flex: 0 0 var(--card-h);
   height: var(--card-h);
   position: relative;
@@ -84,10 +89,26 @@
   }
 }
 
+/* Blurred copy of the cover fills the card behind the full, uncropped picture. */
+.cover::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  background-image: var(--img);
+  background-size: cover;
+  background-position: center;
+  filter: blur(14px) brightness(0.65);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.cover.loaded::before { opacity: 1; }
+
 .picture-image {
+  position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;            /* whole rectangle, no cropping */
   display: block;
   opacity: 0;
   transition: opacity 0.35s ease, transform 0.5s ease;
@@ -159,8 +180,7 @@
 /* Up button sits above the viewport, down button + counter below it. */
 .nav-button {
   flex: 0 0 auto;
-  align-self: center;
-  width: 100%;
+  width: 56px;
   height: 34px;
   border: none;
   display: flex;
@@ -185,25 +205,26 @@
 .gallery-footer {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
 }
 
 .gallery-indicator {
-  align-self: center;
-  padding: 2px 0;
+  flex: 1;
+  text-align: center;
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
   opacity: 0.7;
   pointer-events: none;
 }
 
-.nav-up { order: -1; }
-
 /* Slim position rail on the right edge of the viewport. */
 .scroll-rail {
   position: absolute;
-  top: 42px;
-  bottom: 70px;
+  top: var(--pad-top);
+  bottom: 42px;
   right: 4px;
   width: 3px;
   border-radius: 3px;
@@ -237,9 +258,13 @@
   .gallery-container { border-left: none; border-top: 1px solid rgba(128, 128, 128, 0.25); }
 
   .gallery-viewport {
-    flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
+  }
+
+  .gallery-track {
+    flex-direction: row;
+    height: 100%;
     padding: 10px 12px;
   }
 
