@@ -80,7 +80,7 @@ export class UpdatemenuComponent {
     this.initDatabaseUpdate.set(true);
     this.initDatabaseStatus.set(['Processing...']);
 
-    const menus: Array<'musics' | 'movies' | 'videos' | 'books'> = ['musics', 'movies', 'videos', 'books'];
+    const menus: Array<'musics' | 'movies' | 'videos' | 'books' | 'photos'> = ['musics', 'movies', 'videos', 'books', 'photos'];
 
     from(menus).pipe(
       concatMap(menu =>
