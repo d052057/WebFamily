@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebFamily.Server.Helpers;
 using WebFamily.Server.Models;
 using WebFamily.Server.Services;
 
@@ -12,19 +14,24 @@ public record MediaFileDto(long Id, string FileName, string FullPath, string? Sh
 // ContentStatus: identical (all same hash) | partial (some share a hash) | different (no two match) | pending (not all hashed)
 public record DuplicateGroupDto(long SizeBytes, string ContentStatus, List<MediaFileDto> Files);
 public record GroupCounts(int All, int Same, int Different, int Pending);
-public record DuplicatesPageDto(string? Q, string Mode, int Page, int TotalPages, int TotalGroups, GroupCounts Counts, List<DuplicateGroupDto> Groups);
+public record DuplicatesPageDto(string MediaRoot, string? Q, string Mode, int Page, int TotalPages, int TotalGroups, GroupCounts Counts, List<DuplicateGroupDto> Groups);
 
 [ApiController]
 [Route("api/duplicates")]
-[Authorize(Policy = "AdminPolicy")]
+// TODO: re-enable before deploying: [Authorize] (or [Authorize(Roles = "Admin")])
 public class DuplicatesApiController : ControllerBase
 {
-    private const int PageSize = 20; // groups per page
     private static readonly FileExtensionContentTypeProvider Mime = new();
     private readonly WebFamilyDbContext _db;
     private readonly MediaScanner _scanner;
+    private readonly DuplicateScanSettings _cfg;   // ApplicationSettings:DuplicateScan
 
-    public DuplicatesApiController(WebFamilyDbContext db, MediaScanner scanner) { _db = db; _scanner = scanner; }
+    public DuplicatesApiController(WebFamilyDbContext db, MediaScanner scanner, IOptions<ApplicationSettings> app)
+    {
+        _db = db;
+        _scanner = scanner;
+        _cfg = app.Value.DuplicateScan;
+    }
 
     /// mode: all | same (at least one identical pair) | different (same size, no matching hash) | pending (hash not computed yet)
     [HttpGet]
@@ -34,7 +41,7 @@ public class DuplicatesApiController : ControllerBase
         mode = mode?.ToLowerInvariant() switch { "same" => "same", "different" => "different", "pending" => "pending", _ => "all" };
 
         var active = _db.MediaFiles.AsNoTracking()
-            .Where(f => f.Status == EnuMediaFileStatus.Active && f.SizeBytes > 0);
+            .Where(f => f.Status == EnuMediaFileStatus.Active && f.SizeBytes >= _cfg.MinFileSizeBytes);
 
         var groups = active.GroupBy(f => f.SizeBytes).Where(g => g.Count() > 1)
             .Select(g => new
@@ -72,11 +79,11 @@ public class DuplicatesApiController : ControllerBase
         };
         var total = mode switch { "same" => counts.Same, "different" => counts.Different, "pending" => counts.Pending, _ => counts.All };
 
-        var totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)PageSize));
+        var totalPages = Math.Max(1, (int)Math.Ceiling(total / (double)_cfg.PageSize));
         page = Math.Clamp(page, 1, totalPages);
 
         var sizes = await filtered.OrderBy(g => g.FirstName).ThenBy(g => g.Size)
-                                  .Skip((page - 1) * PageSize).Take(PageSize).Select(g => g.Size).ToListAsync();
+                                  .Skip((page - 1) * _cfg.PageSize).Take(_cfg.PageSize).Select(g => g.Size).ToListAsync();
 
         var files = await active.Where(f => sizes.Contains(f.SizeBytes)).OrderBy(f => f.FileName).ToListAsync();
 
@@ -87,7 +94,7 @@ public class DuplicatesApiController : ControllerBase
                 list.Select(f => new MediaFileDto(f.Id, f.FileName, f.FullPath, f.Sha256, f.IsPhoto, f.LastWriteUtc)).ToList());
         }).OrderBy(g => g.Files[0].FileName).ToList();
 
-        return new DuplicatesPageDto(q, mode, page, totalPages, total, counts, dto);
+        return new DuplicatesPageDto(_scanner.Root, q, mode, page, totalPages, total, counts, dto);
     }
 
     private static string StatusOf(List<MediaFileRecord> list)

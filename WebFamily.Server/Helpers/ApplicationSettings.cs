@@ -30,6 +30,15 @@ public class ApplicationSettings
 
     public string AssetTextFolder { get; set; }
     public string TrashFolder { get; set; }
+
+    /// <summary>
+    /// Where the Duplicates page moves files "deleted" for final review.
+    /// Keep it OUTSIDE MediaDrive so rescans don't pick the files up again.
+    /// </summary>
+    public string ReviewFolder { get; set; } = @"D:\medias_review";
+
+    /// <summary>Duplicate-file finder options (scanner + Duplicates page).</summary>
+    public DuplicateScanSettings DuplicateScan { get; set; } = new();
     /// <summary>
     /// Full path to the JSON artist lookup file (see IArtistLookupService),
     /// generated from the iTunes Library XML export. Optional: if unset or
@@ -59,4 +68,25 @@ public class MediaScanExtensionsSettings
     public List<string> Video { get; set; } = new();
     public List<string> Book { get; set; } = new();
     public List<string> Photo { get; set; } = new();
+}
+
+public class DuplicateScanSettings
+{
+    /// <summary>Duplicate groups shown per page.</summary>
+    public int PageSize { get; set; } = 20;
+
+    /// <summary>Files with a longer full path are skipped (MediaFiles.FullPath is NVARCHAR(450)).</summary>
+    public int MaxPathLength { get; set; } = 450;
+
+    /// <summary>Files smaller than this are ignored (1 skips empty files).</summary>
+    public long MinFileSizeBytes { get; set; } = 1;
+
+    /// <summary>Read buffer used when computing SHA-256, in bytes.</summary>
+    public int HashBufferBytes { get; set; } = 81920;
+
+    /// <summary>
+    /// Which MediaScanExtensions groups are scanned: Photo, Video, Audio, Book.
+    /// Leave empty to scan every file under MediaDrive. Only Photo files get the View button.
+    /// </summary>
+    public List<string> ScanTypes { get; set; } = new() { "Photo", "Video", "Audio", "Book" };
 }

@@ -29,6 +29,8 @@ export interface GroupCounts {
 }
 
 export interface DuplicatesPage {
+  /** MediaDrive from appsettings.json (shown on the Rescan button). */
+  mediaRoot: string;
   q: string | null;
   mode: ContentMode;
   page: number;

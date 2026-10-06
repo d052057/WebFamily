@@ -1,8 +1,12 @@
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
+import { NotifierService } from '../shared/notifier/notifier.service';
 import { SearchBoxComponent } from '../shared/search-box/search-box.component';
+import { SnackService } from '../shared/services/snack.service';
 import {
   ContentMode,
   DuplicateGroup,
@@ -21,6 +25,9 @@ import {
 export class DuplicatesComponent implements OnDestroy {
   private readonly svc = inject(DuplicatesService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly dialog = inject(MatDialog);
+  private readonly snack = inject(SnackService);       // quick confirmations (auto-dismiss)
+  private readonly notifier = inject(NotifierService); // errors (stay until dismissed)
 
   /** Toggle buttons; keys match GroupCounts and the API `mode` parameter. */
   readonly modes: { key: ContentMode; label: string }[] = [
@@ -37,17 +44,16 @@ export class DuplicatesComponent implements OnDestroy {
   readonly counts = computed(() => this.data()?.counts ?? null);
   readonly loading = signal(false);
   readonly scanning = signal(false);
-  readonly message = signal<string | null>(null);
-  readonly error = signal<string | null>(null);
   readonly viewer = signal<{ name: string; url: SafeUrl } | null>(null);
   private viewerRaw: string | null = null;
 
   /** The shared search box emits on every keystroke, so debounce here before hitting the API. */
+  private static readonly SEARCH_DEBOUNCE_MS = 400;
   private readonly search$ = new Subject<string>();
 
   constructor() {
     this.search$
-      .pipe(debounceTime(400), distinctUntilChanged(), takeUntilDestroyed())
+      .pipe(debounceTime(DuplicatesComponent.SEARCH_DEBOUNCE_MS), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe(v => {
         this.q.set(v.trim());
         this.page.set(1); // a new search starts at page 1
@@ -77,7 +83,6 @@ export class DuplicatesComponent implements OnDestroy {
 
   load() {
     this.loading.set(true);
-    this.error.set(null);
     this.svc.list(this.q(), this.page(), this.mode()).subscribe({
       next: d => {
         this.data.set(d);
@@ -85,7 +90,7 @@ export class DuplicatesComponent implements OnDestroy {
         this.loading.set(false);
       },
       error: e => {
-        this.error.set(e?.error?.detail ?? 'Failed to load duplicates.');
+        this.fail(e, 'Failed to load duplicates.');
         this.loading.set(false);
       },
     });
@@ -93,31 +98,45 @@ export class DuplicatesComponent implements OnDestroy {
 
   rescan() {
     this.scanning.set(true);
-    this.message.set(null);
-    this.error.set(null);
     this.svc.scan().subscribe({
       next: r => {
-        this.message.set(`Scan done: ${r.seen} files, ${r.added} new, ${r.missing} missing, ${r.hashed} hashed.`);
+        this.snack.openSnackBar(
+          `Scan done: ${r.seen} files, ${r.added} new, ${r.missing} missing, ${r.hashed} hashed.`,
+          'done',
+        );
         this.scanning.set(false);
         this.load();
       },
       error: e => {
-        this.error.set(e?.error?.detail ?? 'Scan failed.');
+        this.fail(e, 'Scan failed.');
         this.scanning.set(false);
       },
     });
   }
 
   remove(f: MediaFile) {
-    if (!confirm(`Move "${f.fileName}" to the review folder?`)) return;
-    this.message.set(null);
-    this.error.set(null);
-    this.svc.delete(f.id).subscribe({
-      next: r => {
-        this.message.set(`Moved to review folder: ${r.movedTo}`);
-        this.load();
+    // Material dialog (same as the other maintenance screens) instead of window.confirm().
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Move to review folder',
+        message: `Move "${f.fileName}" to the review folder? You can check it there before deleting it for good.`,
+        confirmLabel: 'Move',
+        destructive: true,
       },
-      error: e => this.error.set(e?.error?.detail ?? 'Delete failed.'),
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+      this.svc.delete(f.id).subscribe({
+        next: () => {
+          this.snack.openSnackBar('File moved to the review folder.', 'done');
+          this.load();
+        },
+        error: e => {
+          this.fail(e, 'Delete failed.');
+          this.load(); // the list may be stale (file already gone)
+        },
+      });
     });
   }
 
@@ -128,8 +147,13 @@ export class DuplicatesComponent implements OnDestroy {
         this.viewerRaw = URL.createObjectURL(blob);
         this.viewer.set({ name: f.fileName, url: this.sanitizer.bypassSecurityTrustUrl(this.viewerRaw) });
       },
-      error: () => this.error.set('Could not load the photo.'),
+      error: () => this.fail(null, 'Could not load the photo.'),
     });
+  }
+
+  /** Errors use the app's NotifierService so they stay on screen until dismissed. */
+  private fail(e: any, fallback: string) {
+    this.notifier.showNotification(e?.error?.detail ?? fallback, 'Close', 'danger');
   }
 
   closeViewer() {

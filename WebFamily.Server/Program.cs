@@ -32,16 +32,6 @@ builder.Services.ConfigureCorsServices();
 builder.Services.Configure<ApplicationSettings>(builder.Configuration.GetSection("ApplicationSettings"));
 builder.Services.ConfigureReverseProxyServices(builder.Configuration);
 
-builder.Services.Configure<MediaOptions>(o =>
-{
-    var s = builder.Configuration.GetSection("ApplicationSettings");
-    o.Root = s["MediaDrive"] ?? @"D:\medias";
-    o.ReviewFolder = s["ReviewFolder"] ?? @"D:\medias_review";
-    if (!string.IsNullOrWhiteSpace(s["TrashFolder"]))
-        o.ExcludeFolders.Add(s["TrashFolder"]!);
-});
-
-
 var app = builder.Build();
 
 MenuMemoryStore.Initialize(app.Services.GetRequiredService<ILogger<Program>>());

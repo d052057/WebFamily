@@ -6,20 +6,10 @@
     </h2>
     <button type="button" class="btn btn-outline-primary" [disabled]="scanning()" (click)="rescan()">
       @if (scanning()) { <span class="spinner-border spinner-border-sm me-1"></span> Scanning... }
-      @else { Rescan D:\medias }
+      @else { Rescan {{ data()?.mediaRoot }} }
     </button>
   </div>
 
-  @if (message(); as m) {
-    <div class="alert alert-success alert-dismissible">
-      {{ m }}<button type="button" class="btn-close" (click)="message.set(null)"></button>
-    </div>
-  }
-  @if (error(); as e) {
-    <div class="alert alert-danger alert-dismissible">
-      {{ e }}<button type="button" class="btn-close" (click)="error.set(null)"></button>
-    </div>
-  }
 
   <app-search-box label="Search file name or path" (searchChange)="onSearch($event)"></app-search-box>
 
