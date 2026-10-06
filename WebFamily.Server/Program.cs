@@ -78,6 +78,7 @@ namespace WebFamily.Server
             services.AddScoped<ISeoService, SeoService>();
 
             services.AddScoped<MediaScanner>();
+            services.AddSingleton<MediaScanJob>();
             return services;
         }
 

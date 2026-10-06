@@ -2,7 +2,7 @@ import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, timer } from 'rxjs';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 import { NotifierService } from '../shared/notifier/notifier.service';
 import { SearchBoxComponent } from '../shared/search-box/search-box.component';
@@ -12,6 +12,7 @@ import {
   DuplicateGroup,
   DuplicatesPage,
   DuplicatesService,
+  ScanStatus,
   MediaFile,
 } from '../shared/services/duplicates.service';
 
@@ -43,7 +44,17 @@ export class DuplicatesComponent implements OnDestroy {
   readonly data = signal<DuplicatesPage | null>(null);
   readonly counts = computed(() => this.data()?.counts ?? null);
   readonly loading = signal(false);
-  readonly scanning = signal(false);
+  /** Latest status of the background scan; null until the first status call returns. */
+  readonly scan = signal<ScanStatus | null>(null);
+  readonly scanning = computed(() => this.scan()?.running ?? false);
+  readonly scanText = computed(() => {
+    const s = this.scan();
+    if (!s?.running) return '';
+    if (s.phase === 'Hashing') return `Hashing ${s.hashDone.toLocaleString()} / ${s.hashTotal.toLocaleString()} files`;
+    if (s.phase === 'Scanning files') return `Scanning... ${s.filesSeen.toLocaleString()} files found`;
+    return 'Starting scan...';
+  });
+  private pollSub?: Subscription;
   readonly viewer = signal<{ name: string; url: SafeUrl } | null>(null);
   private viewerRaw: string | null = null;
 
@@ -60,6 +71,7 @@ export class DuplicatesComponent implements OnDestroy {
         this.load();
       });
     this.load();
+    this.resumeScanStatus();
   }
 
   /** Wired to (searchChange) of the app's shared <app-search-box>. */
@@ -96,22 +108,61 @@ export class DuplicatesComponent implements OnDestroy {
     });
   }
 
+  /** Starts the background scan, then polls its progress. The HTTP call returns at once. */
   rescan() {
-    this.scanning.set(true);
-    this.svc.scan().subscribe({
-      next: r => {
-        this.snack.openSnackBar(
-          `Scan done: ${r.seen} files, ${r.added} new, ${r.missing} missing, ${r.hashed} hashed.`,
-          'done',
-        );
-        this.scanning.set(false);
-        this.load();
+    this.svc.startScan().subscribe({
+      next: st => {
+        this.scan.set(st);
+        this.poll();
       },
       error: e => {
-        this.fail(e, 'Scan failed.');
-        this.scanning.set(false);
+        if (e.status === 409 && e.error) {
+          // a scan is already running (another tab/user): just follow it
+          this.scan.set(e.error);
+          this.poll();
+        } else {
+          this.fail(e, 'Could not start the scan.');
+        }
       },
     });
+  }
+
+  cancelScan() {
+    this.svc.cancelScan().subscribe({ error: e => this.fail(e, 'Could not cancel the scan.') });
+  }
+
+  /** On page load: if a scan is already running (e.g. after a browser refresh), keep showing progress. */
+  private resumeScanStatus() {
+    this.svc.scanStatus().subscribe({
+      next: st => {
+        this.scan.set(st);
+        if (st.running) this.poll();
+      },
+      error: () => {
+        /* status is optional on load; ignore */
+      },
+    });
+  }
+
+  private poll() {
+    this.pollSub?.unsubscribe();
+    this.pollSub = timer(0, 2000)
+      .pipe(switchMap(() => this.svc.scanStatus()))
+      .subscribe({
+        next: st => {
+          this.scan.set(st);
+          if (st.running) return;
+
+          this.pollSub?.unsubscribe();
+          if (st.error) this.notifier.showNotification(st.error, 'Close', 'danger');
+          else if (st.message) this.snack.openSnackBar(st.message, 'done');
+          this.load(); // show the new results
+        },
+        error: e => {
+          this.pollSub?.unsubscribe();
+          this.fail(e, 'Lost contact with the scan status. Refresh the page to check on it.');
+        },
+      });
   }
 
   remove(f: MediaFile) {
@@ -173,6 +224,7 @@ export class DuplicatesComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.pollSub?.unsubscribe(); // the scan itself keeps running on the server
     this.closeViewer();
   }
 }

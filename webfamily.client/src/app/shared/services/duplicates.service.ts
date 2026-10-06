@@ -40,11 +40,18 @@ export interface DuplicatesPage {
   groups: DuplicateGroup[];
 }
 
-export interface ScanResult {
-  seen: number;
-  added: number;
-  missing: number;
-  hashed: number;
+/** Live state of the background scan (polled while it runs). */
+export interface ScanStatus {
+  running: boolean;
+  /** Idle | Starting | Scanning files | Hashing | Done | Cancelled | Failed */
+  phase: string;
+  filesSeen: number;
+  hashDone: number;
+  hashTotal: number;
+  startedUtc: string | null;
+  finishedUtc: string | null;
+  message: string | null;
+  error: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -56,8 +63,17 @@ export class DuplicatesService {
     return this.http.get<DuplicatesPage>(this.base, { params: { q, page, mode } });
   }
 
-  scan() {
-    return this.http.post<ScanResult>(`${this.base}/scan`, {});
+  /** Starts a background scan. 409 means one is already running (body is the current status). */
+  startScan() {
+    return this.http.post<ScanStatus>(`${this.base}/scan`, {});
+  }
+
+  scanStatus() {
+    return this.http.get<ScanStatus>(`${this.base}/scan/status`);
+  }
+
+  cancelScan() {
+    return this.http.post<ScanStatus>(`${this.base}/scan/cancel`, {});
   }
 
   delete(id: number) {

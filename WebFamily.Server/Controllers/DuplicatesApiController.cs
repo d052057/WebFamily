@@ -24,12 +24,14 @@ public class DuplicatesApiController : ControllerBase
     private static readonly FileExtensionContentTypeProvider Mime = new();
     private readonly WebFamilyDbContext _db;
     private readonly MediaScanner _scanner;
+    private readonly MediaScanJob _job;            // runs scans in the background
     private readonly DuplicateScanSettings _cfg;   // ApplicationSettings:DuplicateScan
 
-    public DuplicatesApiController(WebFamilyDbContext db, MediaScanner scanner, IOptions<ApplicationSettings> app)
+    public DuplicatesApiController(WebFamilyDbContext db, MediaScanner scanner, MediaScanJob job, IOptions<ApplicationSettings> app)
     {
         _db = db;
         _scanner = scanner;
+        _job = job;
         _cfg = app.Value.DuplicateScan;
     }
 
@@ -104,16 +106,20 @@ public class DuplicatesApiController : ControllerBase
         return distinct == 1 ? "identical" : distinct < list.Count ? "partial" : "different";
     }
 
+    /// Starts a background scan and returns at once (202). 409 if one is already running.
     [HttpPost("scan")]
-    public async Task<IActionResult> Scan(CancellationToken ct)
+    public IActionResult StartScan() =>
+        _job.TryStart() ? Accepted(_job.Status) : Conflict(_job.Status);
+
+    /// Progress for the page to poll.
+    [HttpGet("scan/status")]
+    public ActionResult<ScanStatus> GetScanStatus() => _job.Status;
+
+    [HttpPost("scan/cancel")]
+    public IActionResult CancelScan()
     {
-        try { return Ok(await _scanner.ScanAsync(ct)); }
-        catch (OperationCanceledException) { return StatusCode(499); } // client gave up / timed out
-        catch (Exception ex)
-        {
-            // surface the real cause to the Angular alert instead of a bare 500
-            return Problem(ex.GetBaseException().Message, statusCode: 500);
-        }
+        _job.Cancel();
+        return Accepted(_job.Status);
     }
 
     // NOTE: <img src> cannot send an Authorization header, so the Angular client fetches photos as blobs.

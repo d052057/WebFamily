@@ -8,6 +8,9 @@ namespace WebFamily.Server.Services;
 
 public record ScanResult(int Seen, int Added, int Missing, int Hashed);
 
+/// <summary>Live progress reported to the background job (Phase: "Scanning files" or "Hashing").</summary>
+public record ScanProgress(string Phase, int FilesSeen, int HashDone, int HashTotal);
+
 /// <summary>
 /// Inventories MediaDrive into MediaFiles and hashes same-size files.
 /// Every setting comes from appsettings.json -> ApplicationSettings
@@ -56,7 +59,7 @@ public class MediaScanner
     private static HashSet<string> ToSet(IEnumerable<string> items) =>
         new(items.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()), StringComparer.OrdinalIgnoreCase);
 
-    public async Task<ScanResult> ScanAsync(CancellationToken ct = default)
+    public async Task<ScanResult> ScanAsync(Action<ScanProgress>? progress = null, CancellationToken ct = default)
     {
         if (!Directory.Exists(Root))
             throw new DirectoryNotFoundException($"Media root not found: {Root}");
@@ -80,6 +83,7 @@ public class MediaScanner
             if (_scanExt != null && !_scanExt.Contains(info.Extension)) continue;
             if (info.Length < _cfg.MinFileSizeBytes) continue;
             seen.Add(path);
+            if (seen.Count % 500 == 0) progress?.Invoke(new ScanProgress("Scanning files", seen.Count, 0, 0));
 
             if (!existing.TryGetValue(path, out var row))
             {
@@ -98,6 +102,9 @@ public class MediaScanner
             row.Status = EnuMediaFileStatus.Active;
             row.QuarantinePath = null;
             row.ScannedUtc = now;
+
+            // save in batches: millions of tracked rows in one SaveChanges is slow and memory hungry
+            if (seen.Count % 2000 == 0) await _db.SaveChangesAsync(ct);
         }
 
         int missing = 0;
@@ -105,12 +112,14 @@ public class MediaScanner
             if (!seen.Contains(p) && row.Status == EnuMediaFileStatus.Active) { row.Status = EnuMediaFileStatus.Missing; missing++; }
 
         await _db.SaveChangesAsync(ct);
-        int hashed = await HashDuplicateSizesAsync(ct);
+        progress?.Invoke(new ScanProgress("Scanning files", seen.Count, 0, 0));
+        int hashed = await HashDuplicateSizesAsync(progress, seen.Count, ct);
         return new ScanResult(seen.Count, added, missing, hashed);
     }
 
     /// Hash (SHA-256) every active file, photo or not, that shares its size with another file.
-    private async Task<int> HashDuplicateSizesAsync(CancellationToken ct)
+    /// Hashes are saved every 50 files and again on cancel/failure, so a rerun continues where it stopped.
+    private async Task<int> HashDuplicateSizesAsync(Action<ScanProgress>? progress, int filesSeen, CancellationToken ct)
     {
         var minSize = _cfg.MinFileSizeBytes;
         var dupSizes = _db.MediaFiles
@@ -121,21 +130,32 @@ public class MediaScanner
             .Where(f => f.Status == EnuMediaFileStatus.Active && f.Sha256 == null && dupSizes.Contains(f.SizeBytes))
             .ToListAsync(ct);
 
-        int n = 0;
-        foreach (var f in todo)
+        int hashed = 0, done = 0, total = todo.Count;
+        progress?.Invoke(new ScanProgress("Hashing", filesSeen, 0, total));
+        try
         {
-            try
+            foreach (var f in todo)
             {
-                await using var fs = new FileStream(f.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read, _cfg.HashBufferBytes, true);
-                f.Sha256 = Convert.ToHexString(await SHA256.HashDataAsync(fs, ct)).ToLowerInvariant();
-                n++;
-                if (n % 50 == 0) await _db.SaveChangesAsync(ct);
+                ct.ThrowIfCancellationRequested();
+                try
+                {
+                    await using var fs = new FileStream(f.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read, _cfg.HashBufferBytes, true);
+                    f.Sha256 = Convert.ToHexString(await SHA256.HashDataAsync(fs, ct)).ToLowerInvariant();
+                    hashed++;
+                    if (hashed % 50 == 0) await _db.SaveChangesAsync(ct);
+                }
+                catch (IOException) { /* locked or vanished: try next scan */ }
+                catch (UnauthorizedAccessException) { }
+
+                progress?.Invoke(new ScanProgress("Hashing", filesSeen, ++done, total));
             }
-            catch (IOException) { /* locked: try next scan */ }
-            catch (UnauthorizedAccessException) { }
         }
-        await _db.SaveChangesAsync(ct);
-        return n;
+        finally
+        {
+            // keep the work done so far, even when cancelled or failed
+            await _db.SaveChangesAsync(CancellationToken.None);
+        }
+        return hashed;
     }
 
     /// Moves the file into ReviewFolder (keeping its relative path) and updates the DB.
