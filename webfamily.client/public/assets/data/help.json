@@ -133,5 +133,23 @@
       "at last, click save to create the new iso file",
       "Done!"
     ]
+  },
+  {
+    "title": "IIS AppPool Permissions",
+    "lines": [
+      "mkdir d:\\medias\\separated",
+      "icacls \"C:\\Tools\\demucs314\" /grant \"IIS AppPool\\webdownload:(OI)(CI)RX\"",
+      "icacls \"C:\\Tools\\demucs-models\" /grant \"IIS AppPool\\webdownload:(OI)(CI)M\"",
+      "icacls \"d:\\medias\\separated\" /grant \"IIS AppPool\\webdownload:(OI)(CI)M\""
+    ]
+  },
+  {
+    "title": "Install Demucs",
+    "lines": [
+      "mkdir C:\\Tools",
+      "py -3.14 -m venv C:\\Tools\\demucs314",
+      "C:\\Tools\\demucs314\\Scripts\\python.exe -m pip install --upgrade pip",
+      "C:\\Tools\\demucs314\\Scripts\\python.exe -m pip install demucs numpy"
+    ]
   }
 ]
