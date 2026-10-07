@@ -293,13 +293,10 @@ namespace WebFamily.Server.Controllers
                 return StatusCode(500, $"An unexpected error occurred while deleting the file: {ex.Message}");
             }
 
-            // Same reasoning as ScanAsync's wipe step: MediaSubtitle's FK to
-            // MediaTrack is a required, non-nullable column, which isn't
-            // something SQL Server allows ON DELETE SET NULL on, and nothing
-            // here can assume CASCADE was configured instead - so removed
-            // explicitly rather than relying on the database to handle it.
-            // Their files move to Trash right alongside the track's own file,
-            // not left behind as orphaned files in the closecaption folder.
+            // The track's subtitle ROWS go with it: MediaSubtitle's FK to MediaTrack cascades on delete
+            // (EF removes the subtitles loaded below, the database cascade covers any it hasn't loaded).
+            // Their FILES are moved to Trash right alongside the track's own file here, not left behind
+            // as orphaned files in the closecaption folder.
             var subtitles = await _context.MediaSubtitles
                 .Where(s => s.MediaMetaDataRecordId == track.RecordId)
                 .ToListAsync();
@@ -323,10 +320,10 @@ namespace WebFamily.Server.Controllers
                         _logger.LogWarning(ex, "Could not move subtitle {FileName} to Trash alongside track {TrackId}", sub.FileName, track.RecordId);
                     }
                 }
-
-                //_context.MediaSubtitles.RemoveRange(subtitles);
-                _context.MediaTracks.Remove(track); // it will remove the subtitles via cascade delete if configured, otherwise we handle them above
             }
+
+            // Always remove the track row itself - with or without subtitles.
+            _context.MediaTracks.Remove(track);
 
             await _context.SaveChangesAsync();
 

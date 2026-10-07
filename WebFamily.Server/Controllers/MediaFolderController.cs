@@ -30,13 +30,29 @@ namespace WebFamily.Server.Controllers
         [HttpPost("Scan")]
         public async Task<ActionResult<List<string>>> Scan(string menu)
         {
-            var roots = ResolveScanRoots(menu);
-            if (roots.Count == 0)
+            // Only a menu that exists in the MediaMenu table can be scanned. The menu name also becomes
+            // a folder name below, so this check is what keeps a crafted value (e.g. "..\\x") out of the path.
+            var canonical = (await _treeService.GetMenus())
+                .FirstOrDefault(m => string.Equals(m, menu, StringComparison.OrdinalIgnoreCase));
+            if (canonical is null)
             {
-                return BadRequest($"No configured root folder for menu '{menu}'.");
+                return BadRequest($"'{menu}' is not a menu in the MediaMenu table.");
             }
 
-            var results = await _scanService.ScanAsync(menu, roots);
+            var roots = ResolveScanRoots(canonical);
+            if (roots.Count == 0)
+            {
+                return BadRequest($"No usable scan folder for menu '{canonical}'.");
+            }
+
+            // The scan clears the menu's rows first, so refuse to start if the folder isn't there
+            // (a missing folder or an offline drive would otherwise wipe the menu for nothing).
+            if (!Directory.Exists(roots[0].PhysicalPath))
+            {
+                return BadRequest($"Scan folder not found: {roots[0].PhysicalPath}");
+            }
+
+            var results = await _scanService.ScanAsync(canonical, roots);
             return Ok(results);
         }
 
@@ -57,41 +73,30 @@ namespace WebFamily.Server.Controllers
             return Ok(tree);
         }
 
-        // Every menu -> physical root mapping lives here, once. "musics" is a
-        // single root now (the whole musics folder) - the scan service's
-        // shape-based detection finds every real end-item (artist) underneath
-        // on its own, no matter how many pass-through/category folders
-        // (AmericanMusics, a "Songs" wrapper, etc.) sit above them. No
-        // per-name exclusion list needed here anymore.
-        private static readonly Dictionary<string, Func<ApplicationSettings, string?>> MenuRootMap =
-            new(StringComparer.OrdinalIgnoreCase)
-            {
-                ["musics"] = s => s.AssetAlbumFolder,
-                ["movies"] = s => s.AssetMovieFolder,
-                ["videos"] = s => s.AssetVideoFolder,
-                ["books"] = s => s.AssetBookFolder,
-                ["photos"] = s => s.AssetPhotoFolder
-            };
-
+        // A menu's scan folder is its own name under MediaDrive, unless
+        // ApplicationSettings:MediaMenus overrides it (see ApplicationSettings.GetMenuFolder). Nothing
+        // here names a menu, so a new MediaMenu row works without a code change.
         private List<ScanRoot> ResolveScanRoots(string menu)
         {
-            if (!MenuRootMap.TryGetValue(menu, out var selector))
-            {
-                return new List<ScanRoot>();
-            }
-
-            var relativePath = selector(_appSettings);
+            var relativePath = _appSettings.GetMenuFolder(menu);
             if (string.IsNullOrEmpty(relativePath))
             {
                 return new List<ScanRoot>();
             }
 
-            var mediasDrive = Path.Combine(_appSettings.MediaDrive, "");
+            var mediaRoot = Path.TrimEndingDirectorySeparator(Path.GetFullPath(_appSettings.MediaDrive));
+            var physicalPath = Path.GetFullPath(Path.Combine(mediaRoot, relativePath));
+
+            // The folder must sit inside MediaDrive, whatever the setting or menu name says.
+            if (!physicalPath.StartsWith(mediaRoot + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            {
+                return new List<ScanRoot>();
+            }
 
             return new List<ScanRoot>
             {
                 new(
-                    PhysicalPath: Path.Combine(mediasDrive, relativePath),
+                    PhysicalPath: physicalPath,
                     UrlPrefix: relativePath.Replace('\\', '/'))
             };
         }

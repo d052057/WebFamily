@@ -54,11 +54,14 @@ public class MediaFolderScanService : IMediaFolderScanService
     private readonly HashSet<string> _bookExtensions;
     private readonly HashSet<string> _photoExtensions;
 
-    // Audio+video only - "books" and "photos" are resolved to their own sets
-    // by ExtensionsForMenu below, keyed on the menu itself (not URL prefixes,
-    // which reset to null on every recursive call and can't be relied on
-    // below the top level - see ExtensionsForMenu's own comment).
+    // Audio+video: what a menu scans when ApplicationSettings.MediaMenus gives it no ExtensionGroups.
+    // Which set a menu really uses is resolved by ExtensionsForMenu below, keyed on the menu itself
+    // (not URL prefixes, which reset to null on every recursive call and can't be relied on below
+    // the top level - see ExtensionsForMenu's own comment).
     private readonly HashSet<string> _playableExtensions;
+
+    private readonly ApplicationSettings _appSettings;
+    private readonly Dictionary<string, HashSet<string>> _extensionGroups;
 
     // Folders that belong to a different, already-existing app feature
     // entirely (rpm has its own dedicated tables/UI) - skipped outright.
@@ -112,6 +115,7 @@ public class MediaFolderScanService : IMediaFolderScanService
     {
         _context = context;
         _logger = logger;
+        _appSettings = appSettings.Value ?? new ApplicationSettings();
 
         var configured = appSettings.Value?.MediaScanExtensions;
         _audioExtensions = BuildExtensionSet(configured?.Audio, DefaultAudioExtensions);
@@ -119,6 +123,13 @@ public class MediaFolderScanService : IMediaFolderScanService
         _bookExtensions = BuildExtensionSet(configured?.Book, DefaultBookExtensions);
         _photoExtensions = BuildExtensionSet(configured?.Photo, DefaultPhotoExtensions);
         _playableExtensions = new HashSet<string>(_audioExtensions.Union(_videoExtensions), StringComparer.OrdinalIgnoreCase);
+        _extensionGroups = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Audio"] = _audioExtensions,
+            ["Video"] = _videoExtensions,
+            ["Book"] = _bookExtensions,
+            ["Photo"] = _photoExtensions
+        };
     }
 
     private static HashSet<string> BuildExtensionSet(List<string>? configured, string[] defaults)
@@ -136,12 +147,21 @@ public class MediaFolderScanService : IMediaFolderScanService
     // first call and resets to null on every recursive call below that -
     // relying on it for this caused books/photos below the top level to
     // silently fall back to the audio/video set and get skipped.
-    private HashSet<string> ExtensionsForMenu(string menu) => menu switch
+    //
+    // The groups come from ApplicationSettings.MediaMenus[menu].ExtensionGroups (Audio, Video, Book,
+    // Photo); a menu with no entry scans Audio + Video.
+    private HashSet<string> ExtensionsForMenu(string menu)
     {
-        "books" => _bookExtensions,
-        "photos" => _photoExtensions,
-        _ => _playableExtensions
-    };
+        var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var group in _appSettings.GetMenuExtensionGroups(menu))
+        {
+            if (_extensionGroups.TryGetValue(group, out var set))
+                result.UnionWith(set);
+            else
+                _logger?.LogWarning("Unknown extension group '{Group}' for menu '{Menu}'; use Audio, Video, Book or Photo.", group, menu);
+        }
+        return result.Count > 0 ? result : _playableExtensions;
+    }
 
     public async Task<List<string>> ScanAsync(string menu, IReadOnlyList<ScanRoot> roots)
     {

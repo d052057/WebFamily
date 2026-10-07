@@ -56,10 +56,37 @@ public class ApplicationSettings
     /// </summary>
     public MediaScanExtensionsSettings MediaScanExtensions { get; set; } = new();
 
+    /// <summary>
+    /// Scan options for the menus in the MediaMenu table, keyed by MediaMenu.Menu (case-insensitive).
+    /// A menu needs an entry ONLY when it differs from the defaults: its folder is the menu's own name
+    /// under MediaDrive, and it scans Audio + Video files. A new MediaMenu row such as "podcasts" therefore
+    /// works with no settings at all.
+    /// </summary>
+    public Dictionary<string, MediaMenuScanSettings> MediaMenus { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    private static readonly string[] DefaultMenuExtensionGroups = { "Audio", "Video" };
+
+    /// <summary>Folder to scan for a menu, relative to MediaDrive.</summary>
+    public string GetMenuFolder(string menu) =>
+        MediaMenus.TryGetValue(menu, out var m) && !string.IsNullOrWhiteSpace(m?.Folder) ? m.Folder.Trim() : menu;
+
+    /// <summary>Which MediaScanExtensions groups (Audio, Video, Book, Photo) a menu's scan accepts.</summary>
+    public IReadOnlyList<string> GetMenuExtensionGroups(string menu) =>
+        MediaMenus.TryGetValue(menu, out var m) && m?.ExtensionGroups is { Count: > 0 } ? m.ExtensionGroups : DefaultMenuExtensionGroups;
+
     //public string GetUrlYoutube()
     //{
     //    return "https://www.googleapis.com/youtube/v3/playlistItems?key=" + ApiKey + "&part=snippet&maxResults=12&playlistId=";
     //}
+}
+
+public class MediaMenuScanSettings
+{
+    /// <summary>Folder under MediaDrive. Empty = the menu's own name.</summary>
+    public string Folder { get; set; }
+
+    /// <summary>Any of Audio, Video, Book, Photo. Empty = Audio and Video.</summary>
+    public List<string> ExtensionGroups { get; set; }
 }
 
 public class MediaScanExtensionsSettings
