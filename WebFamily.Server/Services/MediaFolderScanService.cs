@@ -179,14 +179,6 @@ public class MediaFolderScanService : IMediaFolderScanService
             .Where(f => f.MenuId == menuRecord.RecordId)
             .ToListAsync();
 
-        var existingSubtitles = await _context.MediaSubtitles
-            .Where(s => s.MediaMetaDataRecord.Folder.MenuId == menuRecord.RecordId)
-            .ToListAsync();
-        if (existingSubtitles.Count > 0)
-        {
-            _context.MediaSubtitles.RemoveRange(existingSubtitles);
-        }
-
         _context.MediaFolders.RemoveRange(existingFolders);
         await _context.SaveChangesAsync();
         results.Add($"Cleared {existingFolders.Count} existing folder(s) for '{menu}'");
