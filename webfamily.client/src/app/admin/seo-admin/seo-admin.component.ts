@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SeoAdminService, SeoData } from '../../shared/services/seo-admin';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-seo-admin',
@@ -11,6 +13,8 @@ import { SeoAdminService, SeoData } from '../../shared/services/seo-admin';
 })
 export class SeoAdminComponent implements OnInit {
   seoAdminService = inject(SeoAdminService);
+  private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef);
   seoDataList: any = {};
   seoKeys: string[] = [];
 
@@ -180,26 +184,39 @@ export class SeoAdminComponent implements OnInit {
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete SEO entry: ${this.selectedKey}?`)) {
-      return;
-    }
+    // Material confirmation dialog (same one Todo, Links and Duplicates use) instead of a native confirm().
+    const key = this.selectedKey;
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Delete SEO entry',
+          message: `Are you sure you want to delete SEO entry: ${key}?`,
+          confirmLabel: 'Delete',
+          destructive: true
+        }
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (!confirmed) return;
 
-    this.loading = true;
-    this.seoAdminService.deleteSeoData(this.selectedKey).subscribe({
-      next: () => {
-        this.showMessage('SEO entry deleted successfully', 'success');
-        this.loading = false;
-        this.selectedKey = '';
-        this.seoForm.reset();
-        this.loadAllSeoData();
-        this.clearSeoCache();
-      },
-      error: (error) => {
-        console.error('Error deleting SEO data:', error);
-        this.showMessage('Error deleting SEO entry', 'error');
-        this.loading = false;
-      }
-    });
+        this.loading = true;
+        this.cdr.markForCheck();
+        this.seoAdminService.deleteSeoData(key).subscribe({
+          next: () => {
+            this.showMessage('SEO entry deleted successfully', 'success');
+            this.loading = false;
+            this.selectedKey = '';
+            this.seoForm.reset();
+            this.loadAllSeoData();
+            this.clearSeoCache();
+          },
+          error: (error) => {
+            console.error('Error deleting SEO data:', error);
+            this.showMessage('Error deleting SEO entry', 'error');
+            this.loading = false;
+          }
+        });
+      });
   }
 
   backupSeoData() {

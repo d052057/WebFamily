@@ -7,6 +7,7 @@ import { SnackService } from '../../../shared/services/snack.service';
 import { MediaFolderTreeDto, MediaTrackDto } from '../../../models/media-folder-tree.model';
 import { flattenTracks } from '../../../shared/utils/media-tree.utils';
 import { SearchBoxComponent } from '../../../shared/search-box/search-box.component';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
 import { MusicMaintNodeComponent } from './music-maint-node/music-maint-node.component';
 import { RenameNodeComponent, RenameNodeDialogData } from './rename-node/rename-node.component';
 
@@ -118,23 +119,22 @@ export class MusicMaintComponent {
 
   deleteArtist(artist: MediaFolderTreeDto, event: Event): void {
     event.stopPropagation();
-    const confirmed = window.confirm(
-      `Delete "${artist.name}" and everything inside it? It will be moved to Trash, not permanently deleted.`
-    );
-    if (!confirmed) return;
-
-    this.musicMaintenanceService.deleteFolder(artist.id).subscribe({
-      next: (response: any) => {
-        this.toastr.openSnackBar(response.message, 'Delete');
-        if (this.selectedArtistId() === artist.id) {
-          this.selectedArtistId.set(null);
+    this.confirmDelete(
+      `Delete ${this.groupLabel.toLowerCase()}`,
+      `Delete "${artist.name}" and everything inside it? It will be moved to Trash, not permanently deleted.`,
+      () => this.musicMaintenanceService.deleteFolder(artist.id).subscribe({
+        next: (response: any) => {
+          this.toastr.openSnackBar(response.message, 'Delete');
+          if (this.selectedArtistId() === artist.id) {
+            this.selectedArtistId.set(null);
+          }
+          this.treeService.treeResource.reload();
+        },
+        error: (err) => {
+          this.toastr.openSnackBar(JSON.stringify(err.error), 'Delete');
         }
-        this.treeService.treeResource.reload();
-      },
-      error: (err) => {
-        this.toastr.openSnackBar(JSON.stringify(err.error), 'Delete');
-      }
-    });
+      })
+    );
   }
 
   onRenameTrack(track: MediaTrackDto): void {
@@ -142,20 +142,32 @@ export class MusicMaintComponent {
   }
 
   onDeleteTrack(track: MediaTrackDto): void {
-    const confirmed = window.confirm(
-      `Delete "${track.displayTitle}"? It will be moved to Trash, not permanently deleted.`
+    this.confirmDelete(
+      `Delete ${this.itemLabel}`,
+      `Delete "${track.displayTitle}"? It will be moved to Trash, not permanently deleted.`,
+      () => this.musicMaintenanceService.deleteTrack(track.id).subscribe({
+        next: (response: any) => {
+          this.toastr.openSnackBar(response.message, 'Delete');
+          this.treeService.treeResource.reload();
+        },
+        error: (err) => {
+          this.toastr.openSnackBar(JSON.stringify(err.error), 'Delete');
+        }
+      })
     );
-    if (!confirmed) return;
+  }
 
-    this.musicMaintenanceService.deleteTrack(track.id).subscribe({
-      next: (response: any) => {
-        this.toastr.openSnackBar(response.message, 'Delete');
-        this.treeService.treeResource.reload();
-      },
-      error: (err) => {
-        this.toastr.openSnackBar(JSON.stringify(err.error), 'Delete');
-      }
-    });
+  // Material confirmation dialog (same one Todo, Links and Duplicates use) instead of a native
+  // window.confirm(). Runs onConfirmed only when the user presses Delete.
+  private confirmDelete(title: string, message: string, onConfirmed: () => void): void {
+    this._dialog
+      .open(ConfirmDialogComponent, {
+        data: { title, message, confirmLabel: 'Delete', destructive: true }
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) onConfirmed();
+      });
   }
 
   private openRenameDialog(data: RenameNodeDialogData): void {
