@@ -293,8 +293,6 @@ namespace WebFamily.Server.Controllers
                 return StatusCode(500, $"An unexpected error occurred while deleting the file: {ex.Message}");
             }
 
-            _context.MediaTracks.Remove(track);
-
             // Same reasoning as ScanAsync's wipe step: MediaSubtitle's FK to
             // MediaTrack is a required, non-nullable column, which isn't
             // something SQL Server allows ON DELETE SET NULL on, and nothing
@@ -326,7 +324,8 @@ namespace WebFamily.Server.Controllers
                     }
                 }
 
-                _context.MediaSubtitles.RemoveRange(subtitles);
+                //_context.MediaSubtitles.RemoveRange(subtitles);
+                _context.MediaTracks.Remove(track); // it will remove the subtitles via cascade delete if configured, otherwise we handle them above
             }
 
             await _context.SaveChangesAsync();
