@@ -224,7 +224,6 @@ public partial class WebFamilyDbContext : DbContext
 
             entity.HasOne(d => d.MediaMetaDataRecord).WithMany(p => p.MediaSubtitles)
                 .HasForeignKey(d => d.MediaMetaDataRecordId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_MediaSubtitles_MediaTrack");
         });
 

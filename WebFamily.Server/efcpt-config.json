@@ -83,6 +83,12 @@
     },
     {
       "name": "[dbo].[MediaTrack]"
+    },
+    {
+      "name": "[dbo].[MediaFileActions]"
+    },
+    {
+      "name": "[dbo].[MediaFiles]"
     }
   ],
   "type-mappings": {
@@ -97,7 +103,9 @@
     },
     {
       "name": "[dbo].[MediaFolderListView]"
+    },
+    {
+      "name": "[dbo].[View_1]"
     }
-   
   ]
 }

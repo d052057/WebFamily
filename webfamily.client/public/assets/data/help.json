@@ -151,5 +151,15 @@
       "C:\\Tools\\demucs314\\Scripts\\python.exe -m pip install --upgrade pip",
       "C:\\Tools\\demucs314\\Scripts\\python.exe -m pip install demucs numpy"
     ]
+  },
+  {
+    "title": "efcpt",
+    "lines": [
+      "efcpt \"Server=.\\SQLEXPRESS;Database=webfamilydb;Integrated Security=True;TrustServerCertificate=True\" mssql",
+      "efcpt efcpt.config.json mssql",
+      "-- note: before run the command below again,change Models to ModelTest so that it will dump the output to Modeltest",
+      "efcpt \"Server=.\\SQLEXPRESS;Database=webfamilydb;Integrated Security=True;TrustServerCertificate=True\" mssql",
+      "efcpt efcpt.config.json mssql"
+    ]
   }
 ]
