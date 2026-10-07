@@ -29,6 +29,12 @@ export class MediaFolderTreeService {
     return this.http.post<string[]>(`/MediaFolder/Scan?menu=${menu}`, null);
   }
 
+  // Every menu name in the MediaMenu table (e.g. "musics", "movies", ...). The menu list lives only
+  // in the database; screens that need one button / tab per menu loop over this.
+  getMenus(): Observable<string[]> {
+    return this.http.get<string[]>('/MediaFolder/Menus');
+  }
+
   // One-shot fetch, independent of the `menu` signal/treeResource above.
   // Use this when more than one menu's tree is needed at the same time (e.g.
   // the nav bar showing Movies and Videos dropdowns simultaneously) - the

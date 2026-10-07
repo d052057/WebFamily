@@ -40,6 +40,14 @@ namespace WebFamily.Server.Controllers
             return Ok(results);
         }
 
+        // Every menu name in the MediaMenu table, e.g. ["musics","movies","videos","books","photos"].
+        // GET /MediaFolder/Menus
+        [HttpGet("Menus")]
+        public async Task<ActionResult<List<string>>> Menus()
+        {
+            return Ok(await _treeService.GetMenus());
+        }
+
         // Returns the full folder tree (artists -> albums -> ... -> songs) for one menu.
         // e.g. GET /MediaFolder/Tree/musics
         [HttpGet("Tree/{menu}")]

@@ -14,6 +14,12 @@ public interface IMediaFolderTreeService
     /// for a "children of one folder" call instead and fetch lazily.
     /// </summary>
     Task<List<MediaFolderTreeDto>> GetFolderTree(string menu);
+
+    /// <summary>
+    /// Every menu name in the MediaMenu table (musics, movies, ...), oldest first.
+    /// This table is the single source of menu names for the client.
+    /// </summary>
+    Task<List<string>> GetMenus();
 }
 
 public class MediaFolderTreeService : IMediaFolderTreeService
@@ -24,6 +30,13 @@ public class MediaFolderTreeService : IMediaFolderTreeService
     {
         _context = context;
     }
+
+    public Task<List<string>> GetMenus() =>
+        _context.MediaMenus
+            .AsNoTracking()
+            .OrderBy(m => m.Datetime).ThenBy(m => m.Menu)
+            .Select(m => m.Menu)
+            .ToListAsync();
 
     public async Task<List<MediaFolderTreeDto>> GetFolderTree(string menu)
     {
