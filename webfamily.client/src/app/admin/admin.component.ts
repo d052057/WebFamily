@@ -1,9 +1,10 @@
-import { Component, OnInit, TemplateRef, inject, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { AdminService } from './admin.service';
 import { SharedService } from '../shared/shared.service';
 import { MemberView } from '../shared/models/admin/memberView';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { MatDialog } from '@angular/material/dialog';
 import { setTheme } from 'ngx-bootstrap/utils';
+import { ConfirmDialogComponent } from '../shared/confirm-dialog/confirm-dialog.component';
 import { TitleCasePipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -17,11 +18,9 @@ import { RouterLink } from '@angular/router';
 export class AdminComponent implements OnInit {
   private adminService = inject(AdminService);
   private sharedService = inject(SharedService);
-  private modalService = inject(BsModalService);
+  private _dialog = inject(MatDialog);
 
   members = signal<MemberView[]>([]);
-  memberToDelete: MemberView | undefined;
-  modalRef?: BsModalRef;
 
   ngOnInit(): void {
     this.adminService.getMembers().subscribe({
@@ -47,30 +46,33 @@ export class AdminComponent implements OnInit {
     })
   }
 
-  deleteMember(id: string, template: TemplateRef<any>) {
-    let member = this.findMember(id);
-    if (member) {
-      this.memberToDelete = member;
-      this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
-    }
-  }
+  deleteMember(id: string) {
+    const member = this.findMember(id);
+    if (!member) return;
 
-  confirm() {
-    if(this.memberToDelete) {
-      this.adminService.deleteMember(this.memberToDelete.id).subscribe({
+    this.confirmDelete(
+      'Delete member',
+      `Are you sure you want to delete ${member.userName}?`,
+      () => this.adminService.deleteMember(member.id).subscribe({
         next: _ => {
-          this.sharedService.showNotification(true, 'Deleted', `Member of ${this.memberToDelete?.userName} has been deleted!`);
-          this.members.update(list => list.filter(x => x.id !== this.memberToDelete?.id));
-          this.memberToDelete = undefined;
-          this.modalRef?.hide();
+          this.sharedService.showNotification(true, 'Deleted', `Member of ${member.userName} has been deleted!`);
+          this.members.update(list => list.filter(x => x.id !== member.id));
         }
       })
-    }
+    );
   }
 
-  decline() {
-    this.memberToDelete = undefined;
-    this.modalRef?.hide();
+  // Material confirmation dialog (same one Todo, Links, Duplicates and music-maint use).
+  // Runs onConfirmed only when the user presses Delete.
+  private confirmDelete(title: string, message: string, onConfirmed: () => void): void {
+    this._dialog
+      .open(ConfirmDialogComponent, {
+        data: { title, message, confirmLabel: 'Delete', destructive: true }
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) onConfirmed();
+      });
   }
 
   private handleLockUnlockFilterAndMessage(id: string, locking: boolean) {

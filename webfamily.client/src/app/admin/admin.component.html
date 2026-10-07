@@ -51,7 +51,7 @@
               <button class="btn btn-primary btn-sm me-2" routerLink="/admin/add-edit-member/{{member.id}}">
                 <i class="bi bi-pencil"></i> Edit
               </button>
-              <button class="btn btn-danger btn-sm" (click)="deleteMember(member.id, template)">
+              <button class="btn btn-danger btn-sm" (click)="deleteMember(member.id)">
                 <i class="bi bi-trash"></i> Delete
               </button>
             </div>
@@ -61,12 +61,4 @@
     </tbody>
   </table>
 </div>
-
-<ng-template #template>
-  <div class="modal-body text-center">
-    <p>Are you sure you want to delete {{memberToDelete?.userName}}?</p>
-    <button type="button" class="btn btn-default" (click)="confirm()">Yes</button>
-    <button type="button" class="btn btn-primary" (click)="decline()">No</button>
-  </div>
-</ng-template>
 </div>

@@ -7,16 +7,9 @@ export interface ConfirmDialogData {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
-  // Renders the confirm button in red rather than the default primary color -
-  // for destructive actions (delete), not needed for a routine confirmation.
   destructive?: boolean;
 }
 
-// Replaces window.confirm() across the app with something that actually
-// matches the rest of the UI (Material styling, no browser chrome/URL bar
-// showing through it) instead of a native browser dialog. Returns true/false
-// via afterClosed(), same contract every existing MatDialog usage here
-// already expects.
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
