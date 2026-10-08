@@ -211,6 +211,16 @@ public class MediaFolderScanService : IMediaFolderScanService
                 continue;
             }
 
+            // Only the sub-folders of a root are scanned; files lying directly in it are not. Say so, with
+            // the count, instead of ignoring them silently.
+            var looseMatching = Directory.EnumerateFiles(root.PhysicalPath)
+                .Count(f => allowedExtensions.Contains(Path.GetExtension(f)));
+            if (looseMatching > 0)
+            {
+                results.Add($"Note: {looseMatching} '{menu}' file(s) sit directly in '{root.PhysicalPath}' and were not scanned " +
+                            "- put them in a sub-folder (only sub-folders of the root are scanned)");
+            }
+
             foreach (var topLevelDir in Directory.GetDirectories(root.PhysicalPath))
             {
                 await ScanForEndItemsAsync(topLevelDir, menuId: menuRecord.RecordId, parentFolderId: null,
@@ -219,6 +229,12 @@ public class MediaFolderScanService : IMediaFolderScanService
         }
 
         await _context.SaveChangesAsync();
+
+        var skipped = results.Count(r => r.Contains("skipped", StringComparison.OrdinalIgnoreCase));
+        if (skipped > 0)
+        {
+            results.Add($"{skipped} folder(s) were skipped - see the lines above for why");
+        }
         results.Add("Scan complete");
         return results;
     }
@@ -276,7 +292,7 @@ public class MediaFolderScanService : IMediaFolderScanService
 
         if (!hasPlayableFiles && !hasSubDirectories)
         {
-            results.Add($"{name}: empty, skipped");
+            results.Add($"{name}: empty, skipped{DescribeUnmatchedFiles(physicalPath, allowedExtensions)}");
             return;
         }
 
@@ -352,7 +368,9 @@ public class MediaFolderScanService : IMediaFolderScanService
             await AddTrackAsync(folder.RecordId, filePath, fileName);
         }
 
-        results.Add($"{name}: {playableFiles.Count} media file(s)");
+        results.Add(playableFiles.Count > 0
+            ? $"{name}: {playableFiles.Count} media file(s)"
+            : $"{name}: 0 media file(s){DescribeUnmatchedFiles(physicalPath, allowedExtensions)}");
 
         foreach (var subDirectory in Directory.GetDirectories(physicalPath))
         {
@@ -367,6 +385,30 @@ public class MediaFolderScanService : IMediaFolderScanService
         }
 
         return folder.RecordId;
+    }
+
+    // For a folder that yielded no tracks: the file types it DOES contain but this menu doesn't scan,
+    // e.g. " - not scanned: .webp x12, .heic x3". That is the list to add to
+    // ApplicationSettings:MediaScanExtensions (Book / Photo / Audio / Video) in appsettings.json.
+    // Empty string when the folder holds no files at all.
+    private static string DescribeUnmatchedFiles(string physicalPath, HashSet<string> allowedExtensions)
+    {
+        try
+        {
+            var found = Directory.EnumerateFiles(physicalPath)
+                .Select(f => Path.GetExtension(f).ToLowerInvariant())
+                .Where(e => !allowedExtensions.Contains(e))
+                .GroupBy(e => e.Length == 0 ? "(no extension)" : e)
+                .OrderByDescending(g => g.Count())
+                .Take(5)
+                .Select(g => $"{g.Key} x{g.Count()}")
+                .ToList();
+            return found.Count == 0 ? "" : " - not scanned: " + string.Join(", ", found);
+        }
+        catch (Exception)
+        {
+            return "";
+        }
     }
 
     // Appends a numeric suffix if this exact top-level name was already used
